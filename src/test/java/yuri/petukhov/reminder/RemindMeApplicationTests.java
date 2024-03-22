@@ -1,10 +1,10 @@
-package yuri.petukhov.kanji.kanji;
+package yuri.petukhov.reminder;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class KanjiApplicationTests {
+class RemindMeApplicationTests {
 
 	@Test
 	void contextLoads() {
