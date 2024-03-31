@@ -7,7 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
+import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.repository.CardRepository;
 import yuri.petukhov.reminder.business.model.User;
@@ -15,6 +17,7 @@ import yuri.petukhov.reminder.business.model.User;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -81,7 +84,7 @@ class CardServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test setting recall mode for cards")
+    @DisplayName("Test setting Recall Mode for cards - successful case")
     void setRecallModeForList() {
 
         List<Card> cards = Arrays.asList(new Card(), new Card());
@@ -99,7 +102,7 @@ class CardServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test setting recall mode for a card")
+    @DisplayName("Test setting Recall Mode for a card - successful case")
     void setRecallMode() {
         Card card = new Card();
         RecallMode recallMode = RecallMode.WAIT;
@@ -116,22 +119,84 @@ class CardServiceImplTest {
 
 
     @Test
+    @DisplayName("Test finding a card by User ID - successful case")
     void findActiveCardByUserId() {
+        User user = new User();
+        user.setId(1L);
+        Card card = new Card();
+        card.setId(1L);
+        card.setUser(user);
+        card.setActivity(CardActivity.ACTIVE);
+
+        when(cardRepository.findActiveCardByUserId(user.getId())).thenReturn(Optional.of(card));
+
+        Optional<Card> result = cardService.findActiveCardByUserId(user.getId());
+
+        assertEquals(card, result.get());
     }
 
     @Test
+    @DisplayName("Test setting a Card Activity - successful case")
     void setActivity() {
+        Card card = new Card();
+        card.setId(1L);
+
+        cardService.setActivity(card, CardActivity.INACTIVE);
+
+        verify(cardRepository).save(card);
     }
 
     @Test
+    @DisplayName("Test saving a card - successful case")
     void save() {
+        Card card = new Card();
+        card.setId(1L);
+
+        cardService.save(card);
+
+        verify(cardRepository).save(card);
     }
 
     @Test
+    @DisplayName("Test setting of a Reminder Interval - successful case")
     void setReminderInterval() {
+        Card card = new Card();
+        card.setId(1L);
+        LocalDateTime time = LocalDateTime.now();
+        ReminderInterval interval = ReminderInterval.DAYS_60;
+
+        cardService.setReminderInterval(card, time, interval);
+
+        verify(cardRepository).save(card);
     }
 
     @Test
+    @DisplayName("Test finding a card for Recall Mode - successful case")
     void findCardForRecallMode() {
+        User user = new User();
+        user.setId(1L);
+        Card card = new Card();
+        card.setId(1L);
+        card.setUser(user);
+        card.setRecallMode(RecallMode.RECALL);
+
+        when(cardRepository.findFirstByUserIdAndRecallMode(user.getId(), RecallMode.RECALL)).thenReturn(Optional.of(card));
+
+        Optional<Card> result = cardService.findCardForRecallMode(user.getId());
+
+        verify(cardRepository).findFirstByUserIdAndRecallMode(user.getId(), RecallMode.RECALL);
+    }
+
+    @Test
+    @DisplayName("Test deleting a card - successful case")
+    void shouldDeleteCard() {
+        Card card = new Card();
+        card.setId(1L);
+
+        doNothing().when(cardRepository).delete(card);
+
+        cardService.deleteCard(card);
+
+        verify(cardRepository).delete(card);
     }
 }
