@@ -1,5 +1,6 @@
 package yuri.petukhov.reminder.bot.listener;
 
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import yuri.petukhov.reminder.handling.handler.CommandHandler;
 @Slf4j
 public class UpdateDispatcher {
     private final CommandHandler commandHandler;
+    private final TelegramBot telegramBot;
 
     public void handleIncomingMessage(Message message, Long chatId, Long userId, UserRole userRole, UserCardInputState cardState) {
         String messageText = message.text();

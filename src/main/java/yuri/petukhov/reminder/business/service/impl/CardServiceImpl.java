@@ -2,23 +2,34 @@ package yuri.petukhov.reminder.business.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import yuri.petukhov.reminder.business.DTO.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
+import yuri.petukhov.reminder.business.exception.CardNotFoundException;
+import yuri.petukhov.reminder.business.mapper.CardMapper;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.User;
 import yuri.petukhov.reminder.business.repository.CardRepository;
 import yuri.petukhov.reminder.business.service.CardService;
+import yuri.petukhov.reminder.business.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static yuri.petukhov.reminder.business.enums.CardActivity.INACTIVE;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
+    private final CardMapper mapper;
+    private final UserService userService;
 
     @Override
     public void createNewCard(String word, User user) {
@@ -101,5 +112,50 @@ public class CardServiceImpl implements CardService {
     @Override
     public void deleteCard(Card card) {
         cardRepository.delete(card);
+    }
+
+    @Override
+    public List<Card> getAllCardsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        return cardRepository.findAllByUserId(userId, pageable).getContent();
+    }
+
+
+    @Override
+    public List<Card> getAllCardsByUserIdAndReminderInterval(Long userId, ReminderInterval interval, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        return cardRepository.findAllByUserIdAndReminderInterval(userId, interval, pageable).getContent();
+    }
+
+    @Override
+    public List<Card> getCardByName(Long userId, String cardName) {
+        return cardRepository.findAllByCardNameAndUserId(userId, cardName);
+    }
+
+    @Override
+    public Card updateCard(Long userId, Long cardId, CardUpdate updatedCard) {
+        Card card = cardRepository.findByIdAndUserId(cardId, userId)
+                .orElseThrow(() -> new CardNotFoundException("Карточка с id " + cardId + " у пользователя " + userId + " не найдена"));
+        return cardRepository.save(mapper.updateCard(card, updatedCard));
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteCardById(Long userId, Long cardId) {
+        if (cardRepository.findCardByUserId(userId, cardId).isPresent()) {
+            cardRepository.deleteById(cardId);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void addNewCard(CardUpdate card, Long userId) {
+        User user = userService.findUserById(userId);
+        Card newCard = Card.createCard(card.getCardName(), user);
+        newCard.setActivity(INACTIVE);
+        newCard.setCardMeaning(card.getCardMeaning());
+        cardRepository.save(mapper.updateCard(newCard, card));
     }
 }

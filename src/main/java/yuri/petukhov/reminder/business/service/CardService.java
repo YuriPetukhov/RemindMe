@@ -1,5 +1,6 @@
 package yuri.petukhov.reminder.business.service;
 
+import yuri.petukhov.reminder.business.DTO.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -35,4 +36,16 @@ public interface CardService {
     Optional<Card> findCardForRecallMode(Long userId);
 
     void deleteCard(Card card);
+
+    List<Card> getAllCardsByUserId(Long userId, Integer pageNumber, Integer pageSize);
+
+    List<Card> getAllCardsByUserIdAndReminderInterval(Long userId, ReminderInterval interval, Integer pageNumber, Integer pageSize);
+
+    List<Card> getCardByName(Long userId, String cardName);
+
+    Card updateCard(Long userId, Long cardId, CardUpdate updatedCard);
+
+    boolean deleteCardById(Long cardId, Long userId);
+
+    void addNewCard(CardUpdate card, Long userId);
 }

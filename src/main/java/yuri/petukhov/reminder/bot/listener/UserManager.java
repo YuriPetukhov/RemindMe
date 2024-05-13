@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class UserManager {
     private final UpdateDispatcher updateDispatcher;
     private final UserService userService;
-    private final TelegramBot telegramBot;
     public void dispatch(Update update) {
         if (update == null) return;
 
