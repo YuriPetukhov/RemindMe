@@ -158,4 +158,19 @@ public class CardServiceImpl implements CardService {
         newCard.setCardMeaning(card.getCardMeaning());
         cardRepository.save(mapper.updateCard(newCard, card));
     }
+
+    @Override
+    public List<Card> getCardByCardActivity(Long userId, CardActivity activity) {
+        return cardRepository.findCardByCardActivity(userId, activity);
+    }
+
+    @Override
+    public List<Card> getCardByRecallMode(Long userId, RecallMode mode) {
+        return cardRepository.findCardByRecallMode(userId, mode);
+    }
+
+    @Override
+    public List<Card> getCardByReminderDateTime(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        return cardRepository.findCardByReminderDateTime(userId, startTime, endTime);
+    }
 }

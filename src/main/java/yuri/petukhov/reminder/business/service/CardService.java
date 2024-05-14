@@ -48,4 +48,10 @@ public interface CardService {
     boolean deleteCardById(Long cardId, Long userId);
 
     void addNewCard(CardUpdate card, Long userId);
+
+    List<Card> getCardByCardActivity(Long userId, CardActivity activity);
+
+    List<Card> getCardByRecallMode(Long userId, RecallMode mode);
+
+    List<Card> getCardByReminderDateTime(Long userId, LocalDateTime startTime, LocalDateTime endTime);
 }
