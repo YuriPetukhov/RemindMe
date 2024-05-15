@@ -54,4 +54,6 @@ public interface CardService {
     List<Card> getCardByRecallMode(Long userId, RecallMode mode);
 
     List<Card> getCardByReminderDateTime(Long userId, LocalDateTime startTime, LocalDateTime endTime);
+
+    List<Card> getCardsDuplicates(Long userId);
 }

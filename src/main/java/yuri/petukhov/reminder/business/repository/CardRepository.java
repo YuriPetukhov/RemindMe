@@ -24,23 +24,40 @@ public interface CardRepository extends JpaRepository<Card, Long> {
            "WHERE c.recallMode = 'RECALL' AND c.id IN " +
            "(SELECT MIN(c2.id) FROM cards c2 WHERE c2.recallMode = 'RECALL' GROUP BY c2.user.id)")
     List<Card> findDistinctRecallCardsByUser();
+
     Optional<Card> findFirstByUserIdAndRecallMode(Long userId, RecallMode recallMode);
 
     Page<Card> findAllByUserId(Long userId, Pageable pageable);
 
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.interval = :interval")
     Page<Card> findAllByUserIdAndReminderInterval(Long userId, ReminderInterval interval, Pageable pageable);
+
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.cardName = :cardName")
     List<Card> findAllByCardNameAndUserId(Long userId, String cardName);
+
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.id = :cardId")
     Optional<Card> findByIdAndUserId(Long cardId, Long userId);
+
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.id = :cardId")
     Optional<Card> findCardByUserId(Long userId, Long cardId);
+
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.activity = :activity")
     List<Card> findCardByCardActivity(Long userId, CardActivity activity);
+
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.recallMode = :mode")
     List<Card> findCardByRecallMode(Long userId, RecallMode mode);
+
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.reminderDateTime BETWEEN :startTime AND :endTime")
     List<Card> findCardByReminderDateTime(Long userId, LocalDateTime startTime, LocalDateTime endTime);
+
+    @Query("SELECT c FROM cards c " +
+           "WHERE c.user.id = :userId " +
+           "AND c.cardName IN (" +
+           "    SELECT c2.cardName FROM cards c2 " +
+           "    WHERE c2.user.id = :userId " +
+           "    GROUP BY c2.cardName " +
+           "    HAVING COUNT(c2.cardName) > 1" +
+           ")")
+    List<Card> findCardsDuplicates(Long userId);
 }
 

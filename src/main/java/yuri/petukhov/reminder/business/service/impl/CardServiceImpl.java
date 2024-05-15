@@ -140,7 +140,6 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    @Transactional
     public boolean deleteCardById(Long userId, Long cardId) {
         if (cardRepository.findCardByUserId(userId, cardId).isPresent()) {
             cardRepository.deleteById(cardId);
@@ -172,5 +171,10 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<Card> getCardByReminderDateTime(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         return cardRepository.findCardByReminderDateTime(userId, startTime, endTime);
+    }
+
+    @Override
+    public List<Card> getCardsDuplicates(Long userId) {
+        return cardRepository.findCardsDuplicates(userId);
     }
 }

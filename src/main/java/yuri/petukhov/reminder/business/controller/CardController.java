@@ -56,7 +56,7 @@ public class CardController {
     @Operation(summary = "Получить карточку пользователя по названию")
     public ResponseEntity<List<Card>> getCardByName(
             @PathVariable Long userId,
-            @RequestBody String cardName) {
+            @RequestParam String cardName) {
         return ResponseEntity.ok().body(cardService.getCardByName(userId, cardName));
     }
     @GetMapping("/{userId}/card-activity")
@@ -80,6 +80,12 @@ public class CardController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime startTime,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime) {
         return ResponseEntity.ok().body(cardService.getCardByReminderDateTime(userId, startTime, endTime));
+    }
+    @GetMapping("/{userId}/duplicates")
+    @Operation(summary = "Получить дубликаты карточек пользователя")
+    public ResponseEntity<List<Card>> getCardsDuplicates(
+            @PathVariable Long userId){
+        return ResponseEntity.ok().body(cardService.getCardsDuplicates(userId));
     }
     @PutMapping(value = "/{userId}/{cardId}")
     @Operation(summary = "Обновление карточки пользователя")
