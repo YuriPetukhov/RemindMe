@@ -81,11 +81,17 @@ public class CardController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime) {
         return ResponseEntity.ok().body(cardService.getCardByReminderDateTime(userId, startTime, endTime));
     }
-    @GetMapping("/{userId}/duplicates")
-    @Operation(summary = "Получить дубликаты карточек пользователя")
-    public ResponseEntity<List<Card>> getCardsDuplicates(
+    @GetMapping("/{userId}/names-duplicates")
+    @Operation(summary = "Получить дубликаты слов или ответов карточек пользователя")
+    public ResponseEntity<List<Card>> getCardNameDuplicates(
             @PathVariable Long userId){
-        return ResponseEntity.ok().body(cardService.getCardsDuplicates(userId));
+        return ResponseEntity.ok().body(cardService.getCardNameDuplicates(userId));
+    }
+    @GetMapping("/{userId}/meanings-duplicates")
+    @Operation(summary = "Получить дубликаты значений или вопросов карточек пользователя")
+    public ResponseEntity<List<Card>> getCardMeaningDuplicates(
+            @PathVariable Long userId){
+        return ResponseEntity.ok().body(cardService.getCardMeaningDuplicates(userId));
     }
     @PutMapping(value = "/{userId}/{cardId}")
     @Operation(summary = "Обновление карточки пользователя")

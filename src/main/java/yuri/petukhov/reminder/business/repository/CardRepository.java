@@ -3,7 +3,6 @@ package yuri.petukhov.reminder.business.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -58,6 +57,14 @@ public interface CardRepository extends JpaRepository<Card, Long> {
            "    GROUP BY c2.cardName " +
            "    HAVING COUNT(c2.cardName) > 1" +
            ")")
-    List<Card> findCardsDuplicates(Long userId);
+    List<Card> findCardNameDuplicates(Long userId);
+    @Query("SELECT c FROM cards c " +
+           "WHERE c.user.id = :userId " +
+           "AND c.cardMeaning IN (" +
+           "    SELECT c2.cardMeaning FROM cards c2 " +
+           "    WHERE c2.user.id = :userId " +
+           "    GROUP BY c2.cardMeaning " +
+           "    HAVING COUNT(c2.cardMeaning) > 1" +
+           ")")
+    List<Card> findCardMeaningDuplicates(Long userId);
 }
-

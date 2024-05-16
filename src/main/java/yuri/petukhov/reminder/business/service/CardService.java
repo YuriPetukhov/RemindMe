@@ -6,11 +6,9 @@ import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.User;
-import yuri.petukhov.reminder.handling.entity.CommandEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface CardService {
@@ -55,5 +53,7 @@ public interface CardService {
 
     List<Card> getCardByReminderDateTime(Long userId, LocalDateTime startTime, LocalDateTime endTime);
 
-    List<Card> getCardsDuplicates(Long userId);
+    List<Card> getCardNameDuplicates(Long userId);
+
+    List<Card> getCardMeaningDuplicates(Long userId);
 }
