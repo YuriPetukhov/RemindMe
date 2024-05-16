@@ -63,11 +63,13 @@ public class RecallServiceImpl implements RecallService {
             for (Card card : cards) {
                 User user = card.getUser();
                 Optional<Card> cartOpt = cardService.findActiveCardByUserId(user.getId());
-                if (cartOpt.isEmpty()) {
-                    userService.setCardInputState(user, UserCardInputState.ANSWER);
-                    cardService.setActivity(card, CardActivity.ACTIVE);
-                    menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning());
+                if (cartOpt.isPresent()) {
+                    Card activeCard = cartOpt.get();
+                    cardService.setActivity(activeCard, CardActivity.INACTIVE);
                 }
+                userService.setCardInputState(user, UserCardInputState.ANSWER);
+                cardService.setActivity(card, CardActivity.ACTIVE);
+                menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning());
             }
         }
     }

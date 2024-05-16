@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: liquibase/scripts/scripts.sql
+  - include:
+      file: liquibase/scripts/script_index.sql
