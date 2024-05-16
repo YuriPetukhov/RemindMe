@@ -134,7 +134,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Card updateCard(Long userId, Long cardId, CardUpdate updatedCard) {
         Card card = cardRepository.findByIdAndUserId(cardId, userId)
-                .orElseThrow(() -> new CardNotFoundException("Карточка с id " + cardId + " у пользователя " + userId + " не найдена"));
+                .orElseThrow(() -> new CardNotFoundException("Card with id " + cardId + " by user " + userId + " was not found"));
         return cardRepository.save(mapper.updateCard(card, updatedCard));
     }
 
@@ -143,7 +143,7 @@ public class CardServiceImpl implements CardService {
         if (cardRepository.findCardByUserId(userId, cardId).isPresent()) {
             cardRepository.deleteById(cardId);
         } else {
-            throw new CardNotFoundException("The card is not found");
+            throw new CardNotFoundException("Card with id " + cardId + " by user " + userId + " was not found");
         }
     }
 
