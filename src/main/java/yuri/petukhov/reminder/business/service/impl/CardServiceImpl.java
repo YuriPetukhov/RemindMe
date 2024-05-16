@@ -139,12 +139,11 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public boolean deleteCardById(Long userId, Long cardId) {
+    public void deleteCardById(Long userId, Long cardId) {
         if (cardRepository.findCardByUserId(userId, cardId).isPresent()) {
             cardRepository.deleteById(cardId);
-            return true;
         } else {
-            return false;
+            throw new CardNotFoundException("The card is not found");
         }
     }
 

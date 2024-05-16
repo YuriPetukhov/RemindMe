@@ -43,7 +43,7 @@ public interface CardService {
 
     Card updateCard(Long userId, Long cardId, CardUpdate updatedCard);
 
-    boolean deleteCardById(Long cardId, Long userId);
+    void deleteCardById(Long cardId, Long userId);
 
     void addNewCard(CardUpdate card, Long userId);
 

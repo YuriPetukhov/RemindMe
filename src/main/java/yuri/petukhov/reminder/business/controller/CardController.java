@@ -52,6 +52,7 @@ public class CardController {
             @RequestParam(value = "size") Integer pageSize) {
         return ResponseEntity.ok().body(cardService.getAllCardsByUserIdAndReminderInterval(userId, interval, pageNumber, pageSize));
     }
+
     @GetMapping("/{userId}/card-name")
     @Operation(summary = "Получить карточку пользователя по названию")
     public ResponseEntity<List<Card>> getCardByName(
@@ -59,6 +60,7 @@ public class CardController {
             @RequestParam String cardName) {
         return ResponseEntity.ok().body(cardService.getCardByName(userId, cardName));
     }
+
     @GetMapping("/{userId}/card-activity")
     @Operation(summary = "Получить карточки пользователя с выбранным режимом активности")
     public ResponseEntity<List<Card>> getCardByCardActivity(
@@ -66,6 +68,7 @@ public class CardController {
             @RequestParam CardActivity activity) {
         return ResponseEntity.ok().body(cardService.getCardByCardActivity(userId, activity));
     }
+
     @GetMapping("/{userId}/card-recall")
     @Operation(summary = "Получить карточки пользователя с выбранным режимом напоминания")
     public ResponseEntity<List<Card>> getCardByRecallMode(
@@ -73,6 +76,7 @@ public class CardController {
             @RequestParam RecallMode mode) {
         return ResponseEntity.ok().body(cardService.getCardByRecallMode(userId, mode));
     }
+
     @GetMapping("/{userId}/card-interval")
     @Operation(summary = "Получить карточки пользователя в выбранном интервале следующего активирования")
     public ResponseEntity<List<Card>> getCardByReminderDateTime(
@@ -81,18 +85,21 @@ public class CardController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime endTime) {
         return ResponseEntity.ok().body(cardService.getCardByReminderDateTime(userId, startTime, endTime));
     }
+
     @GetMapping("/{userId}/names-duplicates")
     @Operation(summary = "Получить дубликаты слов или ответов карточек пользователя")
     public ResponseEntity<List<Card>> getCardNameDuplicates(
-            @PathVariable Long userId){
+            @PathVariable Long userId) {
         return ResponseEntity.ok().body(cardService.getCardNameDuplicates(userId));
     }
+
     @GetMapping("/{userId}/meanings-duplicates")
     @Operation(summary = "Получить дубликаты значений или вопросов карточек пользователя")
     public ResponseEntity<List<Card>> getCardMeaningDuplicates(
-            @PathVariable Long userId){
+            @PathVariable Long userId) {
         return ResponseEntity.ok().body(cardService.getCardMeaningDuplicates(userId));
     }
+
     @PutMapping(value = "/{userId}/{cardId}")
     @Operation(summary = "Обновление карточки пользователя")
     public ResponseEntity<Card> updateCard(
@@ -107,8 +114,7 @@ public class CardController {
     public ResponseEntity<Void> deleteCard(
             @PathVariable Long userId,
             @PathVariable Long cardId) {
-        return cardService.deleteCardById(userId, cardId)?
-        ResponseEntity.status(HttpStatus.NO_CONTENT).build() :
-        ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        cardService.deleteCardById(userId, cardId);
+        return ResponseEntity.noContent().build();
     }
 }
