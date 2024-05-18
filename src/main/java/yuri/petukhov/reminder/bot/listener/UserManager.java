@@ -3,7 +3,6 @@ package yuri.petukhov.reminder.bot.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.DeleteMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,8 +10,6 @@ import yuri.petukhov.reminder.business.enums.UserCardInputState;
 import yuri.petukhov.reminder.business.enums.UserRole;
 import yuri.petukhov.reminder.business.service.UserService;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor

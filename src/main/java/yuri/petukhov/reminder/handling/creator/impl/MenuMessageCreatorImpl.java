@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.bot.executor.MessageExecutor;
 import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
-import yuri.petukhov.reminder.handling.entity.CommandEntity;
+import yuri.petukhov.reminder.business.dto.CommandEntity;
 
 @Service
 @RequiredArgsConstructor

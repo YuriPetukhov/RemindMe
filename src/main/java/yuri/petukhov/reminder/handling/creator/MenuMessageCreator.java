@@ -1,6 +1,6 @@
 package yuri.petukhov.reminder.handling.creator;
 
-import yuri.petukhov.reminder.handling.entity.CommandEntity;
+import yuri.petukhov.reminder.business.dto.CommandEntity;
 
 public interface MenuMessageCreator {
 

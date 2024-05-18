@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
 import yuri.petukhov.reminder.business.service.InputService;
 import yuri.petukhov.reminder.business.service.RecallService;
-import yuri.petukhov.reminder.handling.entity.CommandEntity;
+import yuri.petukhov.reminder.business.dto.CommandEntity;
 import yuri.petukhov.reminder.handling.handler.CommandHandler;
 
 import javax.annotation.PostConstruct;

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yuri.petukhov.reminder.business.dto.CardMonitoring;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -12,7 +13,7 @@ import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.User;
 import yuri.petukhov.reminder.business.service.*;
 import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
-import yuri.petukhov.reminder.handling.entity.CommandEntity;
+import yuri.petukhov.reminder.business.dto.CommandEntity;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,12 +38,15 @@ public class InputServiceImpl implements InputService {
         userService.setCardInputState(user, UserCardInputState.WORD);
         menuMessageCreator.createInputWordMessage(chatId);
     }
-
     @Override
-    public void processMessage(CommandEntity commandEntity) {
+    public CardMonitoring processMessage(CommandEntity commandEntity) {
         log.info("processMessage() is started");
         Card card = findActiveCard(commandEntity.getUserId());
         boolean result = wordValidationService.isMatch(card.getCardName(), commandEntity.getMessageText());
+        CardMonitoring cardMonitoring = new CardMonitoring();
+        cardMonitoring.setCardId(card.getId());
+        cardMonitoring.setResult(result);
+        cardMonitoring.setInterval(card.getInterval());
         defineNewReminderParameter(card, result);
         changeCardAndUserParameters(card);
         if (result) {
@@ -51,6 +55,7 @@ public class InputServiceImpl implements InputService {
             menuMessageCreator.createNoMessage(commandEntity.getChatId(), card.getCardName());
         }
         recallService.recallWordsForUser(commandEntity.getUserId());
+        return cardMonitoring;
     }
 
 
@@ -59,7 +64,6 @@ public class InputServiceImpl implements InputService {
         cardService.setActivity(card, CardActivity.INACTIVE);
         cardService.setRecallMode(card, RecallMode.NONE);
     }
-
     private void defineNewReminderParameter(Card card, boolean result) {
         log.info("defineNewReminderParameter() is started");
         ReminderInterval reminderInterval = card.getInterval();

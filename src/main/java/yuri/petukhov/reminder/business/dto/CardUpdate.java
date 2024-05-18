@@ -1,4 +1,4 @@
-package yuri.petukhov.reminder.business.DTO;
+package yuri.petukhov.reminder.business.dto;
 
 import lombok.Data;
 

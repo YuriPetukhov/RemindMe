@@ -3,3 +3,5 @@ databaseChangeLog:
       file: liquibase/scripts/scripts.sql
   - include:
       file: liquibase/scripts/script_index.sql
+  - include:
+      file: liquibase/scripts/script_results.sql

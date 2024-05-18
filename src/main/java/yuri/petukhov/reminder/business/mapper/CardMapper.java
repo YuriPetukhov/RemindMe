@@ -2,7 +2,7 @@ package yuri.petukhov.reminder.business.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import yuri.petukhov.reminder.business.DTO.CardUpdate;
+import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.model.Card;
 @Mapper(componentModel = "spring")
 public interface CardMapper {

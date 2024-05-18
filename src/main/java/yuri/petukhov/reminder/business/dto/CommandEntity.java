@@ -1,4 +1,4 @@
-package yuri.petukhov.reminder.handling.entity;
+package yuri.petukhov.reminder.business.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import yuri.petukhov.reminder.business.DTO.CardUpdate;
+import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;

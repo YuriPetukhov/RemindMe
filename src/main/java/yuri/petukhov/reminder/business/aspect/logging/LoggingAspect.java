@@ -1,4 +1,4 @@
-package yuri.petukhov.reminder.business.logging;
+package yuri.petukhov.reminder.business.aspect.logging;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;

@@ -1,6 +1,6 @@
 package yuri.petukhov.reminder.business.service;
 
-import yuri.petukhov.reminder.business.DTO.CardUpdate;
+import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -56,4 +56,6 @@ public interface CardService {
     List<Card> getCardNameDuplicates(Long userId);
 
     List<Card> getCardMeaningDuplicates(Long userId);
+
+    Optional<Card> findById(Long cardId);
 }

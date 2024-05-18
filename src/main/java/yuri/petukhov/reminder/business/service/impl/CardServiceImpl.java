@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import yuri.petukhov.reminder.business.DTO.CardUpdate;
+import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -179,5 +179,10 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<Card> getCardMeaningDuplicates(Long userId) {
         return cardRepository.findCardMeaningDuplicates(userId);
+    }
+
+    @Override
+    public Optional<Card> findById(Long cardId) {
+        return cardRepository.findById(cardId);
     }
 }

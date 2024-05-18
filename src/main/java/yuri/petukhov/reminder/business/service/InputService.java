@@ -1,6 +1,7 @@
 package yuri.petukhov.reminder.business.service;
 
-import yuri.petukhov.reminder.handling.entity.CommandEntity;
+import yuri.petukhov.reminder.business.dto.CardMonitoring;
+import yuri.petukhov.reminder.business.dto.CommandEntity;
 
 public interface InputService {
     void addNameToNewCard(CommandEntity commandEntity);
@@ -9,5 +10,5 @@ public interface InputService {
 
     void createInputWordMessage(CommandEntity commandEntity);
 
-    void processMessage(CommandEntity commandEntity);
+    CardMonitoring processMessage(CommandEntity commandEntity);
 }
