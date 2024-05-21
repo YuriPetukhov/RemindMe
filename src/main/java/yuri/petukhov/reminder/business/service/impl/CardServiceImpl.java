@@ -185,4 +185,13 @@ public class CardServiceImpl implements CardService {
     public Optional<Card> findById(Long cardId) {
         return cardRepository.findById(cardId);
     }
+
+    @Override
+    public void deactivateCard(Card card) {
+        card.setActivity(INACTIVE);
+        card.setInterval(ReminderInterval.FINISHED);
+        card.setReminderDateTime(null);
+        card.setRecallMode(RecallMode.NONE);
+        cardRepository.save(card);
+    }
 }

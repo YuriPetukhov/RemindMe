@@ -58,4 +58,6 @@ public interface CardService {
     List<Card> getCardMeaningDuplicates(Long userId);
 
     Optional<Card> findById(Long cardId);
+
+    void deactivateCard(Card card);
 }

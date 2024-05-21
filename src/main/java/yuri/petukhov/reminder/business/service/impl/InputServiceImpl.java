@@ -73,7 +73,7 @@ public class InputServiceImpl implements InputService {
             newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(reminderInterval.nextInterval().getSeconds());
             reminderInterval = reminderInterval.nextInterval();
         } else if (!result && reminderInterval.equals(ReminderInterval.DAYS_60)) {
-            cardService.deleteCard(card);
+            cardService.deactivateCard(card);
             return;
         } else {
             newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(ReminderInterval.MINUTES_20.getSeconds());
