@@ -83,7 +83,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public void setActivity(Card card, CardActivity cardActivity) {
-        log.info("setActivity() is started");
+        log.info("setActivity() {} is started", cardActivity);
         card.setActivity(cardActivity);
         cardRepository.save(card);
     }
@@ -179,19 +179,5 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<Card> getCardMeaningDuplicates(Long userId) {
         return cardRepository.findCardMeaningDuplicates(userId);
-    }
-
-    @Override
-    public Optional<Card> findById(Long cardId) {
-        return cardRepository.findById(cardId);
-    }
-
-    @Override
-    public void deactivateCard(Card card) {
-        card.setActivity(INACTIVE);
-        card.setInterval(ReminderInterval.FINISHED);
-        card.setReminderDateTime(null);
-        card.setRecallMode(RecallMode.NONE);
-        cardRepository.save(card);
     }
 }

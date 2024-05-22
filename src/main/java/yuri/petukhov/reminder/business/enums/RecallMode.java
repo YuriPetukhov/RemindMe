@@ -5,6 +5,5 @@ import lombok.Getter;
 @Getter
 public enum RecallMode {
     NONE,
-    RECALL,
-    WAIT;
+    RECALL;
 }

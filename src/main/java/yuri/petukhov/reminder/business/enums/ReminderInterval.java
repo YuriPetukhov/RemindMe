@@ -12,8 +12,7 @@ public enum ReminderInterval {
     HOURS_96(96 * 60 * 60),
     DAYS_14(14 * 24 * 60 * 60),
     DAYS_30(30 * 24 * 60 * 60),
-    DAYS_60(60 * 24 * 60 * 60),
-    FINISHED(0);
+    DAYS_60(60 * 24 * 60 * 60);
 
     private final int seconds;
 

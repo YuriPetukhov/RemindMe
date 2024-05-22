@@ -61,7 +61,11 @@ public class InputServiceImpl implements InputService {
 
     private void changeCardAndUserParameters(Card card) {
         log.info("changeCardAndUserParameters() is started");
-        cardService.setActivity(card, CardActivity.INACTIVE);
+        CardActivity activity = CardActivity.INACTIVE;
+        if(card.getActivity().equals(CardActivity.FINISHED)) {
+            activity = CardActivity.FINISHED;
+        }
+        cardService.setActivity(card, activity);
         cardService.setRecallMode(card, RecallMode.NONE);
     }
     private void defineNewReminderParameter(Card card, boolean result) {
@@ -72,8 +76,9 @@ public class InputServiceImpl implements InputService {
         if (result && !reminderInterval.equals(ReminderInterval.DAYS_60)) {
             newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(reminderInterval.nextInterval().getSeconds());
             reminderInterval = reminderInterval.nextInterval();
-        } else if (!result && reminderInterval.equals(ReminderInterval.DAYS_60)) {
-            cardService.deactivateCard(card);
+        } else if (result) {
+            log.info("closing the card");
+            cardService.setActivity(card, CardActivity.FINISHED);
             return;
         } else {
             newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(ReminderInterval.MINUTES_20.getSeconds());
