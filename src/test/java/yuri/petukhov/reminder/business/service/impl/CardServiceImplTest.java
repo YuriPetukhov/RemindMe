@@ -105,7 +105,7 @@ class CardServiceImplTest {
     @DisplayName("Test setting Recall Mode for a card - successful case")
     void setRecallMode() {
         Card card = new Card();
-        RecallMode recallMode = RecallMode.WAIT;
+        RecallMode recallMode = RecallMode.RECALL;
 
         Mockito.when(cardRepository.save(card)).thenReturn(card);
 

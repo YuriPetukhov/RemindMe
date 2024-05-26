@@ -36,9 +36,9 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
-    public void createNotificationToUser(Long chatId, String cardMeaning) {
+    public void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber) {
         log.info("Notification {} was sent for chatId = {}", cardMeaning, chatId);
-        messageExecutor.executeMessage(cardMeaning, chatId);
+        messageExecutor.executeMessage("Questions remain: " + wordsNumber + "\n" + cardMeaning, chatId);
     }
 
     @Override

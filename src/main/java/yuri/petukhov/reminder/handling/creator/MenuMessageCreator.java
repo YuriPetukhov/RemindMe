@@ -10,7 +10,7 @@ public interface MenuMessageCreator {
 
     void createCardSavedMessage(CommandEntity commandEntity);
 
-    void createNotificationToUser(Long chatId, String cardMeaning);
+    void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber);
 
     void createOkMessage(Long chatId);
 
