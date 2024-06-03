@@ -55,4 +55,11 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
         messageExecutor.executeMessage(message, chatId);
     }
 
+    @Override
+    public void createCompletedMessage(Long chatId) {
+        log.info("Completed Message was sent for chatId = {}", chatId);
+        message = "Bingo!";
+        messageExecutor.executeMessage(message, chatId);
+    }
+
 }

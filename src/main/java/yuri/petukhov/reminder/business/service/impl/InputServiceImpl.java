@@ -79,6 +79,7 @@ public class InputServiceImpl implements InputService {
         } else if (result) {
             log.info("closing the card");
             cardService.setActivity(card, CardActivity.FINISHED);
+            menuMessageCreator.createCompletedMessage(card.getUser().getChatId());
             return;
         } else {
             newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(ReminderInterval.MINUTES_20.getSeconds());

@@ -16,4 +16,5 @@ public interface MenuMessageCreator {
 
     void createNoMessage(Long chatId, String cardName);
 
+    void createCompletedMessage(Long chatId);
 }
