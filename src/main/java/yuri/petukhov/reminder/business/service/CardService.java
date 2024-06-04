@@ -57,4 +57,5 @@ public interface CardService {
 
     List<Card> getCardMeaningDuplicates(Long userId);
 
+    Integer getAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval);
 }

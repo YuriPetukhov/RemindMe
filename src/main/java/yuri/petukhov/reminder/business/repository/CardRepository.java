@@ -67,4 +67,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
            "    HAVING COUNT(c2.cardMeaning) > 1" +
            ")")
     List<Card> findCardMeaningDuplicates(Long userId);
+    @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.interval = :interval")
+    Integer findAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval);
 }

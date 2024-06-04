@@ -52,6 +52,13 @@ public class CardController {
             @RequestParam(value = "size") Integer pageSize) {
         return ResponseEntity.ok().body(cardService.getAllCardsByUserIdAndReminderInterval(userId, interval, pageNumber, pageSize));
     }
+    @GetMapping("/{userId}/{interval}/number")
+    @Operation(summary = "Получить количество карточек пользователя с определенным интервалом")
+    public ResponseEntity<Integer> getAllCardsNumberForInterval(
+            @PathVariable Long userId,
+            @PathVariable ReminderInterval interval) {
+        return ResponseEntity.ok().body(cardService.getAllCardsNumberByUserIdAndReminderInterval(userId, interval));
+    }
 
     @GetMapping("/{userId}/card-name")
     @Operation(summary = "Получить карточку пользователя по названию")

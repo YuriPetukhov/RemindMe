@@ -180,4 +180,9 @@ public class CardServiceImpl implements CardService {
     public List<Card> getCardMeaningDuplicates(Long userId) {
         return cardRepository.findCardMeaningDuplicates(userId);
     }
+
+    @Override
+    public Integer getAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval) {
+        return cardRepository.findAllCardsNumberByUserIdAndReminderInterval(userId, interval);
+    }
 }
