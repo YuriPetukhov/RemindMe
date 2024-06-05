@@ -1,6 +1,7 @@
 package yuri.petukhov.reminder.handling.creator;
 
 import yuri.petukhov.reminder.business.dto.CommandEntity;
+import yuri.petukhov.reminder.business.enums.ReminderInterval;
 
 public interface MenuMessageCreator {
 
@@ -10,7 +11,7 @@ public interface MenuMessageCreator {
 
     void createCardSavedMessage(CommandEntity commandEntity);
 
-    void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber);
+    void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber, ReminderInterval interval);
 
     void createOkMessage(Long chatId);
 

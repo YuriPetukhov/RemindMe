@@ -49,7 +49,7 @@ public class RecallServiceImpl implements RecallService {
             userService.setCardInputState(user, UserCardInputState.ANSWER);
             cardService.setActivity(card, CardActivity.ACTIVE);
             int wordsNumber = cardService.getCardByRecallMode(user.getId(), RecallMode.RECALL).size();
-            menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning(), wordsNumber);
+            menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning(), wordsNumber, card.getInterval());
         } else{
             userService.setCardInputState(user, UserCardInputState.NONE);
         }
@@ -68,7 +68,7 @@ public class RecallServiceImpl implements RecallService {
                     userService.setCardInputState(user, UserCardInputState.ANSWER);
                     cardService.setActivity(card, CardActivity.ACTIVE);
                     int wordsNumber = cardService.getCardByRecallMode(user.getId(), RecallMode.RECALL).size();
-                    menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning(), wordsNumber);
+                    menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning(), wordsNumber, card.getInterval());
                 }
             }
         }

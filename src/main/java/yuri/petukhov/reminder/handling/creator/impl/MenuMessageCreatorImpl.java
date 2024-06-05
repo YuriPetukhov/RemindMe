@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.bot.executor.MessageExecutor;
+import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
 import yuri.petukhov.reminder.business.dto.CommandEntity;
 
@@ -36,9 +37,9 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
-    public void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber) {
+    public void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber, ReminderInterval interval) {
         log.info("Notification {} was sent for chatId = {}", cardMeaning, chatId);
-        messageExecutor.executeMessage("Questions remain: " + wordsNumber + "\n" + cardMeaning, chatId);
+        messageExecutor.executeMessage("Questions remain: " + wordsNumber + "\n" + "Current interval: " + interval + "\n" + cardMeaning, chatId);
     }
 
     @Override
