@@ -39,7 +39,6 @@ public class RecallServiceImpl implements RecallService {
     }
 
     @Override
-    @Transactional
     public void recallWordsForUser(Long userId) {
         log.info("recallWordsForUser() is started");
         Optional<Card> cardOpt = cardService.findCardForRecallMode(userId);
@@ -56,7 +55,6 @@ public class RecallServiceImpl implements RecallService {
     }
 
     @Override
-    @Transactional
     public void recallWords() {
         log.info("recallWords() is started");
         List<Card> cards = cardService.findCardsForRecallMode();
