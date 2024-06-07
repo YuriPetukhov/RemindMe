@@ -7,8 +7,10 @@ import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.repository.MatchResultRepository;
 import yuri.petukhov.reminder.business.service.MatchResultService;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,10 +20,21 @@ public class MatchResultServiceImpl implements MatchResultService {
 
     @Override
     public List<ErrorsReportDTO> getCardsErrorsAndIntervalsReport(Long userId) {
+        List<ReminderInterval> allIntervals = Arrays.asList(ReminderInterval.values());
+
         List<Object[]> results = matchResultRepository.findErrorsGroupedByInterval(userId);
-        return results.stream()
-                .map(result -> new ErrorsReportDTO((ReminderInterval) result[0], (Long) result[1]))
+
+        Map<ReminderInterval, Long> errorsMap = results.stream()
+                .collect(Collectors.toMap(
+                        result -> (ReminderInterval) result[0],
+                        result -> (Long) result[1],
+                        (existing, replacement) -> existing
+                ));
+
+        return allIntervals.stream()
+                .map(interval -> new ErrorsReportDTO(interval, errorsMap.getOrDefault(interval, 0L)))
                 .sorted(Comparator.comparing(dto -> dto.getInterval().getSeconds()))
                 .collect(Collectors.toList());
     }
+
 }
