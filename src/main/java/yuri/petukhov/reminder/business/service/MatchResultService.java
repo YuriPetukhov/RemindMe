@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MatchResultService {
     List<ErrorsReportDTO> getCardsErrorsAndIntervalsReport(Long userId);
+
+    List<ErrorsReportDTO> getCardErrorsAndIntervalsReport(Long userId, Long cardId);
 }

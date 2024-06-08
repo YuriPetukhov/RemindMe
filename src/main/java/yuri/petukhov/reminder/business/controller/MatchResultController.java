@@ -25,4 +25,12 @@ public class MatchResultController {
             @PathVariable Long userId) {
         return ResponseEntity.ok().body(matchResultService.getCardsErrorsAndIntervalsReport(userId));
     }
+
+    @GetMapping("/{userId}/report/{cardId}")
+    @Operation(summary = "Получить отчет по выбранной карточке пользователя с сортировкой по интервалам напоминания")
+    public ResponseEntity<List<ErrorsReportDTO>> getCardErrorsAndIntervalsReport(
+            @PathVariable Long userId,
+            @PathVariable Long cardId) {
+        return ResponseEntity.ok().body(matchResultService.getCardErrorsAndIntervalsReport(userId, cardId));
+    }
 }

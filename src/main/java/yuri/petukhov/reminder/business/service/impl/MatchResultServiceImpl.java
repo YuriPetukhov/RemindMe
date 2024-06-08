@@ -37,4 +37,23 @@ public class MatchResultServiceImpl implements MatchResultService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ErrorsReportDTO> getCardErrorsAndIntervalsReport(Long userId, Long cardId) {
+        List<ReminderInterval> allIntervals = Arrays.asList(ReminderInterval.values());
+
+        List<Object[]> results = matchResultRepository.findErrorsByCardGroupedByInterval(cardId);
+
+        Map<ReminderInterval, Long> errorsMap = results.stream()
+                .collect(Collectors.toMap(
+                        result -> (ReminderInterval) result[0],
+                        result -> (Long) result[1],
+                        (existing, replacement) -> existing
+                ));
+
+        return allIntervals.stream()
+                .map(interval -> new ErrorsReportDTO(interval, errorsMap.getOrDefault(interval, 0L)))
+                .sorted(Comparator.comparing(dto -> dto.getInterval().getSeconds()))
+                .collect(Collectors.toList());
+    }
+
 }

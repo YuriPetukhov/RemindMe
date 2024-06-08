@@ -17,4 +17,14 @@ public interface MatchResultRepository extends JpaRepository<MatchResult, Long> 
            "ORDER BY mr.interval")
     List<Object[]> findErrorsGroupedByInterval(Long userId);
 
+    @Query("SELECT mr.interval, COUNT(mr) " +
+           "FROM results mr " +
+           "JOIN cards c ON mr.cardId = c.id " +
+           "WHERE mr.result = false AND c.id = :cardId " +
+           "GROUP BY mr.interval " +
+           "ORDER BY mr.interval")
+    List<Object[]> findErrorsByCardGroupedByInterval(Long cardId);
+
+
+
 }
