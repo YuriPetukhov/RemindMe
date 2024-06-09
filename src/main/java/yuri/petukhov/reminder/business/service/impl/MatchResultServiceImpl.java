@@ -3,6 +3,8 @@ package yuri.petukhov.reminder.business.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
+import yuri.petukhov.reminder.business.dto.UnRecallWordDTO;
+import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.repository.MatchResultRepository;
 import yuri.petukhov.reminder.business.service.MatchResultService;
@@ -53,6 +55,15 @@ public class MatchResultServiceImpl implements MatchResultService {
         return allIntervals.stream()
                 .map(interval -> new ErrorsReportDTO(interval, errorsMap.getOrDefault(interval, 0L)))
                 .sorted(Comparator.comparing(dto -> dto.getInterval().getSeconds()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UnRecallWordDTO> getWordsMeaningsForInterval(Long userId, ReminderInterval interval) {
+        List<Object[]> results = matchResultRepository.findWordsMeaningsForInterval(userId, interval);
+
+        return results.stream()
+                .map(result -> new UnRecallWordDTO((String) result[0], ((Number) result[1]).intValue()))
                 .collect(Collectors.toList());
     }
 

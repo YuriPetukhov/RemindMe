@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
+import yuri.petukhov.reminder.business.dto.UnRecallWordDTO;
 import yuri.petukhov.reminder.business.enums.CardActivity;
+import yuri.petukhov.reminder.business.enums.RecallMode;
+import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.service.MatchResultService;
 
@@ -32,5 +35,12 @@ public class MatchResultController {
             @PathVariable Long userId,
             @PathVariable Long cardId) {
         return ResponseEntity.ok().body(matchResultService.getCardErrorsAndIntervalsReport(userId, cardId));
+    }
+    @GetMapping("/{userId}/report/interval")
+    @Operation(summary = "Получить список значений слов, у которых были ошибки в заданном интервале напоминания")
+    public ResponseEntity<List<UnRecallWordDTO>> getWordsMeaningsForInterval(
+            @PathVariable Long userId,
+            @RequestParam ReminderInterval interval) {
+        return ResponseEntity.ok().body(matchResultService.getWordsMeaningsForInterval(userId, interval));
     }
 }
