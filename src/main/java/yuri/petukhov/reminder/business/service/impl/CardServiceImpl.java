@@ -185,4 +185,12 @@ public class CardServiceImpl implements CardService {
     public Integer getAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval) {
         return cardRepository.findAllCardsNumberByUserIdAndReminderInterval(userId, interval);
     }
+
+    @Override
+    public Card getUserCardById(Long userId, Long cardId) {
+        return cardRepository.findByIdAndUserId(cardId, userId).orElseThrow(() ->
+                new CardNotFoundException("Card with id " + cardId + " by user " + userId + " was not found"));
+
+    }
+
 }

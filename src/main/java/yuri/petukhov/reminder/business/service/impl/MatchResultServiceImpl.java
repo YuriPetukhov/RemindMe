@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
 import yuri.petukhov.reminder.business.dto.UnRecallWordDTO;
-import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.repository.MatchResultRepository;
 import yuri.petukhov.reminder.business.service.MatchResultService;

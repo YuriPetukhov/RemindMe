@@ -43,7 +43,7 @@ public class CardController {
         return ResponseEntity.ok().body(cardService.getAllCardsByUserId(userId, pageNumber, pageSize));
     }
 
-    @GetMapping("/{userId}/{interval}")
+    @GetMapping("/{userId}/for/{interval}")
     @Operation(summary = "Получить все карточки пользователя с определенным интервалом: указать количество и размер страницы")
     public ResponseEntity<List<Card>> getAllCardsForInterval(
             @PathVariable Long userId,
@@ -105,6 +105,14 @@ public class CardController {
     public ResponseEntity<List<Card>> getCardMeaningDuplicates(
             @PathVariable Long userId) {
         return ResponseEntity.ok().body(cardService.getCardMeaningDuplicates(userId));
+    }
+
+    @GetMapping("/{userId}/{cardId}")
+    @Operation(summary = "Получить карточку пользователя по id")
+    public ResponseEntity<Card> getUserCardById(
+            @PathVariable Long userId,
+            @PathVariable Long cardId) {
+        return ResponseEntity.ok().body(cardService.getUserCardById(userId, cardId));
     }
 
     @PutMapping(value = "/{userId}/{cardId}")
