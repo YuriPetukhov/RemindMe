@@ -2,6 +2,7 @@ package yuri.petukhov.reminder.business.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
 import yuri.petukhov.reminder.business.dto.UnRecallWordDTO;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -65,4 +66,8 @@ public interface MatchResultRepository extends JpaRepository<MatchResult, Long> 
            "      AND mr2.interval = :nextInterval " +
            "), '1970-01-01')")
     int countRemainingRecall(Long cardId, ReminderInterval interval, ReminderInterval nextInterval);
+    @Query(value = "SELECT timestamp, interval, result FROM results " +
+                   "WHERE card_id = :cardId " +
+                   "ORDER BY timestamp ASC", nativeQuery = true)
+    List<Object[]> generateCardRecord(@Param("cardId") Long cardId);
 }

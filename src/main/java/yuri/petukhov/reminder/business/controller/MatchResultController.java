@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import yuri.petukhov.reminder.business.dto.CardRecordDTO;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
 import yuri.petukhov.reminder.business.dto.UnRecallWordDTO;
 import yuri.petukhov.reminder.business.enums.CardActivity;
@@ -35,6 +36,13 @@ public class MatchResultController {
             @PathVariable Long userId,
             @PathVariable Long cardId) {
         return ResponseEntity.ok().body(matchResultService.getCardErrorsAndIntervalsReport(userId, cardId));
+    }
+    @GetMapping("/{userId}/records/{cardId}")
+    @Operation(summary = "Получить отчет по ответам для выбранной карточке пользователя")
+    public ResponseEntity<List<CardRecordDTO>> getCardRecord(
+            @PathVariable Long userId,
+            @PathVariable Long cardId) {
+        return ResponseEntity.ok().body(matchResultService.getCardRecord(cardId));
     }
     @GetMapping("/{userId}/report/interval")
     @Operation(summary = "Получить список значений слов, у которых были ошибки в заданном интервале напоминания")

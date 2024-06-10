@@ -2,16 +2,16 @@ package yuri.petukhov.reminder.business.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import yuri.petukhov.reminder.business.dto.CardRecordDTO;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
 import yuri.petukhov.reminder.business.dto.UnRecallWordDTO;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.repository.MatchResultRepository;
 import yuri.petukhov.reminder.business.service.MatchResultService;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,6 +74,29 @@ public class MatchResultServiceImpl implements MatchResultService {
     @Override
     public int countRemainingRecall(Long cardId, ReminderInterval interval) {
         return matchResultRepository.countRemainingRecall(cardId, interval, interval.nextInterval());
+    }
+
+    @Override
+    public List<CardRecordDTO> getCardRecord(Long cardId) {
+        List<Object[]> rawResults = matchResultRepository.generateCardRecord(cardId);
+        List<CardRecordDTO> cardRecordDTOs = new ArrayList<>();
+
+        for (Object[] row : rawResults) {
+            LocalDateTime timestamp = ((Timestamp) row[0]).toLocalDateTime();
+
+            ReminderInterval interval = ReminderInterval.valueOf((String) row[1]);
+
+            boolean result = (boolean) row[2];
+
+            CardRecordDTO dto = new CardRecordDTO();
+            dto.setTimestamp(timestamp);
+            dto.setInterval(interval);
+            dto.setResult(result);
+
+            cardRecordDTOs.add(dto);
+        }
+
+        return cardRecordDTOs;
     }
 
 }

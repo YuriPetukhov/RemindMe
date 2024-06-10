@@ -1,5 +1,6 @@
 package yuri.petukhov.reminder.business.service;
 
+import yuri.petukhov.reminder.business.dto.CardRecordDTO;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
 import yuri.petukhov.reminder.business.dto.UnRecallWordDTO;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -17,4 +18,6 @@ public interface MatchResultService {
     int countLastFalseAnswers(Long id, ReminderInterval reminderInterval);
 
     int countRemainingRecall(Long id, ReminderInterval interval);
+
+    List<CardRecordDTO> getCardRecord(Long cardId);
 }
