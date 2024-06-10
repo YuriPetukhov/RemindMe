@@ -38,7 +38,7 @@ public class MatchResultController {
         return ResponseEntity.ok().body(matchResultService.getCardErrorsAndIntervalsReport(userId, cardId));
     }
     @GetMapping("/{userId}/records/{cardId}")
-    @Operation(summary = "Получить отчет по ответам для выбранной карточке пользователя")
+    @Operation(summary = "Получить отчет по ответам для выбранной карточки пользователя")
     public ResponseEntity<List<CardRecordDTO>> getCardRecord(
             @PathVariable Long userId,
             @PathVariable Long cardId) {
