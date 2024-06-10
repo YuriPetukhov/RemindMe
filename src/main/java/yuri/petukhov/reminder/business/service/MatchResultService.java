@@ -13,4 +13,8 @@ public interface MatchResultService {
     List<ErrorsReportDTO> getCardErrorsAndIntervalsReport(Long userId, Long cardId);
 
     List<UnRecallWordDTO> getWordsMeaningsForInterval(Long userId, ReminderInterval interval);
+
+    int countLastFalseAnswers(Long id, ReminderInterval reminderInterval);
+
+    int countRemainingRecall(Long id, ReminderInterval interval);
 }

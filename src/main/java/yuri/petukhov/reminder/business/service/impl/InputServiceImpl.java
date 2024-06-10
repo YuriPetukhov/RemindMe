@@ -30,6 +30,7 @@ public class InputServiceImpl implements InputService {
     private final MenuMessageCreator menuMessageCreator;
     private final WordValidationService wordValidationService;
     private final RecallService recallService;
+    private final ReminderIntervalService reminderIntervalService;
 
     @Override
     public void createInputWordMessage(CommandEntity commandEntity) {
@@ -74,8 +75,8 @@ public class InputServiceImpl implements InputService {
         LocalDateTime time = LocalDateTime.now();
         LocalDateTime newTime;
         if (result && !reminderInterval.equals(ReminderInterval.DAYS_60)) {
-            newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(reminderInterval.nextInterval().getSeconds());
-            reminderInterval = reminderInterval.nextInterval();
+            reminderInterval = reminderIntervalService.updateCurrentReminderInterval(card);
+            newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(reminderInterval.getSeconds());
         } else if (result) {
             log.info("closing the card");
             cardService.setActivity(card, CardActivity.FINISHED);

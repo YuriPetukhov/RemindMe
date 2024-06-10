@@ -67,4 +67,14 @@ public class MatchResultServiceImpl implements MatchResultService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public int countLastFalseAnswers(Long cardId, ReminderInterval interval) {
+        return matchResultRepository.countLastFalseAnswers(cardId, interval);
+    }
+
+    @Override
+    public int countRemainingRecall(Long cardId, ReminderInterval interval) {
+        return matchResultRepository.countRemainingRecall(cardId, interval);
+    }
+
 }
