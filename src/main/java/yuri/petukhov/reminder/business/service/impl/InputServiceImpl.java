@@ -76,7 +76,8 @@ public class InputServiceImpl implements InputService {
         LocalDateTime newTime;
         if (result && !reminderInterval.equals(ReminderInterval.DAYS_60)) {
             reminderInterval = reminderIntervalService.updateCurrentReminderInterval(card);
-            newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(reminderInterval.getSeconds());
+            newTime = time.truncatedTo(ChronoUnit.SECONDS).plusSeconds(reminderInterval.nextInterval().getSeconds());
+//            reminderInterval = card.getInterval().nextInterval();
         } else if (result) {
             log.info("closing the card");
             cardService.setActivity(card, CardActivity.FINISHED);

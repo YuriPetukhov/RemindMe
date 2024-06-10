@@ -74,7 +74,7 @@ public class MatchResultServiceImpl implements MatchResultService {
 
     @Override
     public int countRemainingRecall(Long cardId, ReminderInterval interval) {
-        return matchResultRepository.countRemainingRecall(cardId, interval);
+        return matchResultRepository.countRemainingRecall(cardId, interval, interval.nextInterval());
     }
 
 }
