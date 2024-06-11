@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/monitoring")
 @Tag(name = "MONITORING")
-@PreAuthorize(value = "@userServiceImpl.isAuthorized(authentication.getName(), #userId)")
+@PreAuthorize(value = "hasRole('ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
 public class MatchResultController {
     private final MatchResultService matchResultService;
 
