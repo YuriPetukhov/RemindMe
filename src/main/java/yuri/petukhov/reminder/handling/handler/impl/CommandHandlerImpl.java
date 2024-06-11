@@ -32,7 +32,13 @@ public class CommandHandlerImpl implements CommandHandler {
     public void init() {
         commandMap.put(UserCardInputState.NONE, (commandEntity) -> {
             log.info("Received command from NONE user");
-            inputService.createInputWordMessage(commandEntity);
+            if (commandEntity.getMessageText().equals("/WEB")) {
+                inputService.sendWebInterfaceLink(commandEntity);
+            } else if (commandEntity.getMessageText().equals("/ADD")) {
+                inputService.createInputWordMessage(commandEntity);
+            } else {
+                inputService.sendMenuMessage(commandEntity);
+            }
         });
         commandMap.put(UserCardInputState.WORD, (commandEntity) -> {
             log.info("Received command from WORD user");

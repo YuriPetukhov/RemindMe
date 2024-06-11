@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.CardRecordDTO;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/monitoring")
 @Tag(name = "MONITORING")
+@PreAuthorize(value = "@userServiceImpl.isAuthorized(authentication.getName(), #userId)")
 public class MatchResultController {
     private final MatchResultService matchResultService;
 

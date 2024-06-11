@@ -11,4 +11,8 @@ public interface InputService {
     void createInputWordMessage(CommandEntity commandEntity);
 
     CardMonitoring processMessage(CommandEntity commandEntity);
+
+    void sendMenuMessage(CommandEntity commandEntity);
+
+    void sendWebInterfaceLink(CommandEntity commandEntity);
 }

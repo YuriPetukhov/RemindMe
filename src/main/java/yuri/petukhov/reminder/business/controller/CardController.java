@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
@@ -21,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/cards")
 @Tag(name = "CARDS")
+@PreAuthorize(value = "@userServiceImpl.isAuthorized(authentication.getName(), #userId)")
 public class CardController {
 
     private final CardService cardService;

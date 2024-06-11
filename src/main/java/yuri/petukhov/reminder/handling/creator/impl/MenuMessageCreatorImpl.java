@@ -1,18 +1,26 @@
 package yuri.petukhov.reminder.handling.creator.impl;
 
+import com.pengrad.telegrambot.model.Sticker;
+import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import yuri.petukhov.reminder.bot.configuration.RemindMeBotConfiguration;
 import yuri.petukhov.reminder.bot.executor.MessageExecutor;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
 import yuri.petukhov.reminder.business.dto.CommandEntity;
+
+import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MenuMessageCreatorImpl implements MenuMessageCreator {
     private final MessageExecutor messageExecutor;
+    private final RemindMeBotConfiguration configuration;
+
     private String message;
 
     @Override
@@ -62,5 +70,21 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
         message = "Bingo!";
         messageExecutor.executeMessage(message, chatId);
     }
+
+    @Override
+    public void createMenuMessage(Long chatId) {
+        SendMessage message = new SendMessage(String.valueOf(chatId), configuration.getMENU_MES()).parseMode(HTML);
+        messageExecutor.executeMessage(message);
+    }
+
+    @Override
+    public void createLinkMessage(Long chatId) {
+        String messageText = String.format(configuration.getWEB_LINK(), chatId);
+
+        SendMessage message = new SendMessage(String.valueOf(chatId), messageText).parseMode(HTML);
+
+        messageExecutor.executeMessage(message);
+    }
+
 
 }

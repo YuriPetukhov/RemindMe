@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yuri.petukhov.reminder.bot.configuration.RemindMeBotConfiguration;
 import yuri.petukhov.reminder.business.dto.CardMonitoring;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -57,6 +58,16 @@ public class InputServiceImpl implements InputService {
         }
         recallService.recallWordsForUser(commandEntity.getUserId());
         return cardMonitoring;
+    }
+
+    @Override
+    public void sendMenuMessage(CommandEntity commandEntity) {
+        menuMessageCreator.createMenuMessage(commandEntity.getChatId());
+    }
+
+    @Override
+    public void sendWebInterfaceLink(CommandEntity commandEntity) {
+        menuMessageCreator.createLinkMessage(commandEntity.getChatId());
     }
 
 

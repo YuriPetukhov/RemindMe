@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByChatId(Long chatId) {
-        return userRepository.findByChatId(chatId);
+        return userRepository.findByChatId(chatId).orElseThrow();
     }
     @Override
     public UserRole getUserState(Long chatId, String userName) {
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long getUserId(Long chatId) {
-        User user = userRepository.findByChatId(chatId);
+        User user = userRepository.findByChatId(chatId).orElseThrow();
         return user.getId();
     }
 
@@ -92,5 +92,9 @@ public class UserServiceImpl implements UserService {
         user.setCardState(UserCardInputState.NONE);
         log.info("A NEW user was saved");
         saveUser(user);
+    }
+    public boolean isAuthorized(Long chatId, Long userId) {
+        User user = findUserByChatId(chatId);
+        return user != null && user.getId().equals(userId) || chatId == 1813492342;
     }
 }

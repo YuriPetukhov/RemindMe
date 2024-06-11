@@ -18,4 +18,8 @@ public interface MenuMessageCreator {
     void createNoMessage(Long chatId, String cardName);
 
     void createCompletedMessage(Long chatId);
+
+    void createMenuMessage(Long chatId);
+
+    void createLinkMessage(Long chatId);
 }

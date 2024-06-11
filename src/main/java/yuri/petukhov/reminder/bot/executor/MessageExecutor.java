@@ -20,4 +20,8 @@ public class MessageExecutor {
         sendMessage = new SendMessage(chatId, message);
         telegramBot.execute(sendMessage);
     }
+
+    public void executeMessage(SendMessage message) {
+        telegramBot.execute(message);
+    }
 }
