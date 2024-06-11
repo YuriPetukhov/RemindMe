@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/cards")
 @Tag(name = "CARDS")
-@PreAuthorize(value = "@userServiceImpl.isAuthorized(authentication.getName(), #userId)")
+@PreAuthorize(value = "hasRole('ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
 public class CardController {
 
     private final CardService cardService;

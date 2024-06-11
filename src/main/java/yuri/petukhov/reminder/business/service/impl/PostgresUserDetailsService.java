@@ -22,7 +22,7 @@ public class PostgresUserDetailsService implements UserDetailsService {
                 .map(user -> User.builder()
                         .username(user.getChatId().toString())
                         .password(user.getChatId().toString())
-                        .roles("USER")
+                        .roles(user.getRole().name())
                         .build()
                 )
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));

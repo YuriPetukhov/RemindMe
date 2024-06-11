@@ -21,5 +21,5 @@ public interface MenuMessageCreator {
 
     void createMenuMessage(Long chatId);
 
-    void createLinkMessage(Long chatId);
+    void createLinkMessage(Long chatId, Long userId);
 }

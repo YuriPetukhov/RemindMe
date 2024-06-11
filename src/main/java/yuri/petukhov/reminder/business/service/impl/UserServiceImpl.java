@@ -95,6 +95,6 @@ public class UserServiceImpl implements UserService {
     }
     public boolean isAuthorized(Long chatId, Long userId) {
         User user = findUserByChatId(chatId);
-        return user != null && user.getId().equals(userId) || chatId == 1813492342;
+        return user != null && user.getId().equals(userId);
     }
 }
