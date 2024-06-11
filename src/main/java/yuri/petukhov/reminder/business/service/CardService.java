@@ -60,4 +60,6 @@ public interface CardService {
     Integer getAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval);
 
     Card getUserCardById(Long userId, Long cardId);
+
+    void activateCard(Card card, Long userId);
 }

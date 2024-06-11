@@ -16,7 +16,6 @@ import yuri.petukhov.reminder.business.service.CardService;
 public class MatchResultAspect {
 
     private final MatchResultRepository matchResultRepository;
-    private final CardService cardService;
 
     @Pointcut("execution(* yuri.petukhov.reminder.business.service.impl.InputServiceImpl.processMessage(..))")
     public void processMessageMethod() {}

@@ -20,6 +20,7 @@ import yuri.petukhov.reminder.business.service.UserService;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static yuri.petukhov.reminder.business.enums.CardActivity.ACTIVE;
 import static yuri.petukhov.reminder.business.enums.CardActivity.INACTIVE;
 
 @Service
@@ -191,6 +192,15 @@ public class CardServiceImpl implements CardService {
         return cardRepository.findByIdAndUserId(cardId, userId).orElseThrow(() ->
                 new CardNotFoundException("Card with id " + cardId + " by user " + userId + " was not found"));
 
+    }
+
+    @Override
+    public void activateCard(Card card, Long userId) {
+        Optional<Card> activeCard = findActiveCardByUserId(userId);
+        if (activeCard.isPresent()) {
+            return;
+        }
+        setActivity(card, ACTIVE);
     }
 
 }

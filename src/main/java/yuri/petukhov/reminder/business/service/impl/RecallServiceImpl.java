@@ -46,7 +46,7 @@ public class RecallServiceImpl implements RecallService {
         if (cardOpt.isPresent()) {
             Card card = cardOpt.get();
             userService.setCardInputState(user, UserCardInputState.ANSWER);
-            cardService.setActivity(card, CardActivity.ACTIVE);
+            cardService.activateCard(card, userId);
             int wordsNumber = cardService.getCardByRecallMode(user.getId(), RecallMode.RECALL).size();
             menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning(), wordsNumber, card.getInterval());
         } else{
@@ -64,7 +64,7 @@ public class RecallServiceImpl implements RecallService {
                 Optional<Card> cartOpt = cardService.findActiveCardByUserId(user.getId());
                 if (cartOpt.isEmpty()) {
                     userService.setCardInputState(user, UserCardInputState.ANSWER);
-                    cardService.setActivity(card, CardActivity.ACTIVE);
+                    cardService.activateCard(card, user.getId());
                     int wordsNumber = cardService.getCardByRecallMode(user.getId(), RecallMode.RECALL).size();
                     menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning(), wordsNumber, card.getInterval());
                 }
