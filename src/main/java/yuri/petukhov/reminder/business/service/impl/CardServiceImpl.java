@@ -198,6 +198,7 @@ public class CardServiceImpl implements CardService {
     public void activateCard(Card card, Long userId) {
         Optional<Card> activeCard = findActiveCardByUserId(userId);
         if (activeCard.isPresent()) {
+            log.info("Attempt to activate a second card");
             return;
         }
         setActivity(card, ACTIVE);
