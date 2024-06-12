@@ -29,3 +29,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 /src/main/resources/
+
+/docker-compose.yaml
+/Dockerfile
+/mvnw
+/mvnw.cmd
