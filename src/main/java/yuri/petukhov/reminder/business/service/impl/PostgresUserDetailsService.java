@@ -2,10 +2,13 @@ package yuri.petukhov.reminder.business.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.repository.UserRepository;
 
@@ -21,11 +24,16 @@ public class PostgresUserDetailsService implements UserDetailsService {
         return userRepository.findByChatId(Long.parseLong(username))
                 .map(user -> User.builder()
                         .username(user.getChatId().toString())
-                        .password(user.getChatId().toString())
+                        .password(passwordEncoder().encode(user.getChatId().toString()))
                         .roles(user.getRole().name())
                         .build()
                 )
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
 
