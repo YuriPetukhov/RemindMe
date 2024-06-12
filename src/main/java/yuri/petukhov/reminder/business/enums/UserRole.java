@@ -4,10 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum UserRole {
-    NEW,
-    FREE,
-    RESTRICTED,
+    USER,
     BLOCKED,
-    PAID,
     ADMIN;
 }

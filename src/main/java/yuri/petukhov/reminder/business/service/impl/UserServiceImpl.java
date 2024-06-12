@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserRole getUserState(Long chatId, String userName) {
-        UserRole userRole = UserRole.NEW;
+        UserRole userRole = UserRole.USER;
         User user = findUserByChatId(chatId);
         if(user != null) {
             log.info("User state was detected");
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setChatId(chatId);
         user.setUserName(userName);
-        user.setRole(UserRole.NEW);
+        user.setRole(UserRole.USER);
         user.setCardState(UserCardInputState.NONE);
         log.info("A NEW user was saved");
         saveUser(user);

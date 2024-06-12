@@ -79,12 +79,9 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
 
     @Override
     public void createLinkMessage(Long chatId, Long userId) {
-        String messageText = String.format(configuration.getWEB_LINK());
-
+        String messageText = String.format(configuration.getWEB_LINK(), chatId);
         SendMessage message = new SendMessage(String.valueOf(chatId), messageText).parseMode(HTML);
-
         messageExecutor.executeMessage(message);
     }
-
 
 }
