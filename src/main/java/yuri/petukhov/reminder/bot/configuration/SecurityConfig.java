@@ -9,8 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -30,8 +29,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration implements
             "/swagger-resources/**",
             "/swagger-ui/",
             "/v3/api-docs",
-            "/webjars/**",
-            "/register"
+            "/auto-login/"
     };
 
     @Bean
@@ -44,8 +42,10 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration implements
                         .requestMatchers("/cards/**", "/monitoring/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults())
-        ;
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                )
+                .httpBasic(withDefaults());
 
         return http.build();
     }

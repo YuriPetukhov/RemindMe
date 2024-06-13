@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -20,8 +21,7 @@ import yuri.petukhov.reminder.business.service.UserService;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static yuri.petukhov.reminder.business.enums.CardActivity.ACTIVE;
-import static yuri.petukhov.reminder.business.enums.CardActivity.INACTIVE;
+import static yuri.petukhov.reminder.business.enums.CardActivity.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +55,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<Card> findCardsInReminderInterval(LocalDateTime now, LocalDateTime end) {
         log.info("findCardsInReminderInterval() is started");
-        return cardRepository.findAllByReminderDateTimeBetween(now, end);
+        return cardRepository.findAllByReminderDateTimeBetweenAndActivityNot(now, end, FINISHED);
 
     }
 
@@ -203,5 +203,13 @@ public class CardServiceImpl implements CardService {
         }
         setActivity(card, ACTIVE);
     }
+
+//    @Override
+//    public List<CardDTO> getAllCardsDTOByUserId(Long userId) {
+//        List<Card> cards = cardRepository.findUserCards(userId);
+//        return cards.stream()
+//                .map(mapper::toCardDTO)
+//                .toList();
+//    }
 
 }

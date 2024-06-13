@@ -21,9 +21,9 @@ public class PostgresUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByChatId(Long.parseLong(username))
+        return userRepository.findById(Long.parseLong(username))
                 .map(user -> User.builder()
-                        .username(user.getChatId().toString())
+                        .username(user.getId().toString())
                         .password(passwordEncoder().encode(user.getChatId().toString()))
                         .roles(user.getRole().name())
                         .build()

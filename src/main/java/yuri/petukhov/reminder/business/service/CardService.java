@@ -1,5 +1,6 @@
 package yuri.petukhov.reminder.business.service;
 
+import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -62,4 +63,6 @@ public interface CardService {
     Card getUserCardById(Long userId, Long cardId);
 
     void activateCard(Card card, Long userId);
+
+//    List<CardDTO> getAllCardsDTOByUserId(Long userId);
 }

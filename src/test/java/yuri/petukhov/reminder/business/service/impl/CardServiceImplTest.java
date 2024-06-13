@@ -21,6 +21,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static yuri.petukhov.reminder.business.enums.CardActivity.FINISHED;
+
 @ExtendWith(SpringExtension.class)
 class CardServiceImplTest {
     @Mock
@@ -74,13 +76,13 @@ class CardServiceImplTest {
         java.time.LocalDateTime now = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now().plusMinutes(20);
 
-        Mockito.when(cardRepository.findAllByReminderDateTimeBetween(now, end))
+        Mockito.when(cardRepository.findAllByReminderDateTimeBetweenAndActivityNot(now, end, FINISHED))
                 .thenReturn(expectedCards);
 
         List<Card> actualCards = cardService.findCardsInReminderInterval(now, end);
 
         assertIterableEquals(expectedCards, actualCards);
-        verify(cardRepository).findAllByReminderDateTimeBetween(now, end);
+        verify(cardRepository).findAllByReminderDateTimeBetweenAndActivityNot(now, end, FINISHED);
     }
 
     @Test

@@ -17,7 +17,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.activity = 'ACTIVE'")
     Optional<Card> findActiveCardByUserId(Long userId);
 
-    List<Card> findAllByReminderDateTimeBetween(LocalDateTime start, LocalDateTime end);
+    List<Card> findAllByReminderDateTimeBetweenAndActivityNot(LocalDateTime start, LocalDateTime end, CardActivity FINISHED);
 
     @Query("SELECT c FROM cards c " +
            "WHERE c.recallMode = 'RECALL' AND c.id IN " +
@@ -69,4 +69,7 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findCardMeaningDuplicates(Long userId);
     @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.interval = :interval")
     Integer findAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval);
+
+    @Query("SELECT c FROM cards c WHERE c.user.id = :userId")
+    List<Card> findUserCards(Long userId);
 }
