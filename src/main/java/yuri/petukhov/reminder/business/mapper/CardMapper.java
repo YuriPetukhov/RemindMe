@@ -11,7 +11,7 @@ public interface CardMapper {
     @Mapping(source = "updatedCard.cardMeaning", target = "cardMeaning")
     Card updateCard(Card card, CardUpdate updatedCard);
 
-//    @Mapping(source = "cardName", target = "title")
-//    @Mapping(source = "cardMeaning", target = "content")
-//    CardDTO toCardDTO(Card card);
+    @Mapping(source = "cardName", target = "title")
+    @Mapping(source = "cardMeaning", target = "content")
+    CardDTO toCardDTO(Card card);
 }

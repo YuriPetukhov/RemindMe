@@ -36,9 +36,9 @@ public interface CardService {
 
     void deleteCard(Card card);
 
-    List<Card> getAllCardsByUserId(Long userId, Integer pageNumber, Integer pageSize);
+    List<CardDTO> getAllCardsByUserId(Long userId, Integer pageNumber, Integer pageSize);
 
-    List<Card> getAllCardsByUserIdAndReminderInterval(Long userId, ReminderInterval interval, Integer pageNumber, Integer pageSize);
+    List<CardDTO> getAllCardsByUserIdAndReminderInterval(Long userId, ReminderInterval interval, Integer pageNumber, Integer pageSize);
 
     List<Card> getCardByName(Long userId, String cardName);
 

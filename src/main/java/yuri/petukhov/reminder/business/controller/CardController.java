@@ -7,8 +7,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -39,7 +39,7 @@ public class CardController {
 
     @GetMapping("/{userId}/all")
     @Operation(summary = "Получить все карточки пользователя: указать количество и размер страницы")
-    public ResponseEntity<List<Card>> getAllCards(
+    public ResponseEntity<List<CardDTO>> getAllCards(
             @PathVariable Long userId,
             @RequestParam(value = "page") Integer pageNumber,
             @RequestParam(value = "size") Integer pageSize) {
@@ -48,7 +48,7 @@ public class CardController {
 
     @GetMapping("/{userId}/for/{interval}")
     @Operation(summary = "Получить все карточки пользователя с определенным интервалом: указать количество и размер страницы")
-    public ResponseEntity<List<Card>> getAllCardsForInterval(
+    public ResponseEntity<List<CardDTO>> getAllCardsForInterval(
             @PathVariable Long userId,
             @PathVariable ReminderInterval interval,
             @RequestParam(value = "page") Integer pageNumber,

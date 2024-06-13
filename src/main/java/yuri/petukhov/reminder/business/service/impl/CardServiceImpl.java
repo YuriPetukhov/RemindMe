@@ -115,16 +115,22 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<Card> getAllCardsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
+    public List<CardDTO> getAllCardsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        return cardRepository.findAllByUserId(userId, pageable).getContent();
+        List<Card> cards = cardRepository.findAllByUserId(userId, pageable).getContent();
+        return cards.stream()
+                .map(mapper::toCardDTO)
+                .toList();
     }
 
 
     @Override
-    public List<Card> getAllCardsByUserIdAndReminderInterval(Long userId, ReminderInterval interval, Integer pageNumber, Integer pageSize) {
+    public List<CardDTO> getAllCardsByUserIdAndReminderInterval(Long userId, ReminderInterval interval, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        return cardRepository.findAllByUserIdAndReminderInterval(userId, interval, pageable).getContent();
+        List<Card> cards = cardRepository.findAllByUserIdAndReminderInterval(userId, interval, pageable).getContent();
+        return cards.stream()
+                .map(mapper::toCardDTO)
+                .toList();
     }
 
     @Override
