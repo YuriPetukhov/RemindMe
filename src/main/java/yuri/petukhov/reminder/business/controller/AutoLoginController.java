@@ -29,7 +29,6 @@ public class AutoLoginController {
     @GetMapping
     public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
 
@@ -43,20 +42,18 @@ public class AutoLoginController {
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
-//    @GetMapping
-//    public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId) {
-//
-//            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-//
-//            Authentication auth = new UsernamePasswordAuthenticationToken(
-//                    userDetails, null, userDetails.getAuthorities());
-//
-//            SecurityContextHolder.getContext().setAuthentication(auth);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setLocation(UriComponentsBuilder.fromPath("/swagger-ui.html").build().toUri());
-//
-//            return new ResponseEntity<>(headers, HttpStatus.FOUND);
-//    }
+    @GetMapping("/admin")
+    public ResponseEntity<?> autoLoginAdmin(@RequestParam("userId") String userId) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+            Authentication auth = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(UriComponentsBuilder.fromPath("/swagger-ui.html").build().toUri());
+
+            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+    }
 
 }

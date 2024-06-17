@@ -2,6 +2,7 @@ package yuri.petukhov.reminder.handling.creator;
 
 import yuri.petukhov.reminder.business.dto.CommandEntity;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
+import yuri.petukhov.reminder.business.enums.UserRole;
 
 public interface MenuMessageCreator {
 
@@ -21,5 +22,5 @@ public interface MenuMessageCreator {
 
     void createMenuMessage(Long chatId);
 
-    void createLinkMessage(Long chatId, Long userId);
+    void createLinkMessage(Long chatId, Long userId, UserRole role);
 }

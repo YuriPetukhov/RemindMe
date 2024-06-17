@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.bot.configuration.RemindMeBotConfiguration;
 import yuri.petukhov.reminder.bot.executor.MessageExecutor;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
+import yuri.petukhov.reminder.business.enums.UserRole;
 import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
 import yuri.petukhov.reminder.business.dto.CommandEntity;
 
@@ -78,9 +79,14 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
-    public void createLinkMessage(Long chatId, Long userId) {
+    public void createLinkMessage(Long chatId, Long userId, UserRole role) {
         String messageText = String.format(configuration.getWEB_LINK(), userId);
         SendMessage message = new SendMessage(String.valueOf(chatId), messageText).parseMode(HTML);
+        if(role.equals(UserRole.ADMIN)) {
+            String messageTextAdmin = String.format(configuration.getWEB_LINK_ADMIN(), userId);
+            SendMessage messageAdmin = new SendMessage(String.valueOf(chatId), messageTextAdmin).parseMode(HTML);
+            messageExecutor.executeMessage(messageAdmin);
+        }
         messageExecutor.executeMessage(message);
     }
 

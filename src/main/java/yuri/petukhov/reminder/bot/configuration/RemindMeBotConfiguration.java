@@ -20,6 +20,8 @@ public class RemindMeBotConfiguration {
     private String MENU_MES;
     @Value("${WEB_LINK}")
     private String WEB_LINK;
+    @Value("${WEB_LINK_ADMIN}")
+    private String WEB_LINK_ADMIN;
 
     @Bean
     public TelegramBot telegramBot() {

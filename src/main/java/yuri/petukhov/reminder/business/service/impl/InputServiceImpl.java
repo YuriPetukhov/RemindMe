@@ -67,7 +67,7 @@ public class InputServiceImpl implements InputService {
 
     @Override
     public void sendWebInterfaceLink(CommandEntity commandEntity) {
-        menuMessageCreator.createLinkMessage(commandEntity.getChatId(), commandEntity.getUserId());
+        menuMessageCreator.createLinkMessage(commandEntity.getChatId(), commandEntity.getUserId(), commandEntity.getUserRole());
     }
 
 
