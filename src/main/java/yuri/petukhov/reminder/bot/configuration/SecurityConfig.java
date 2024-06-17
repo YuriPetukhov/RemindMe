@@ -29,6 +29,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration implements
             "/swagger-resources/**",
             "/swagger-ui/",
             "/v3/api-docs",
+            "/test/index.html",
             "/auto-login/"
     };
 
@@ -39,7 +40,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration implements
                 .cors(withDefaults())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers("/cards/**", "/monitoring/**").authenticated()
+                        .requestMatchers("/test/", "/cards/**", "/monitoring/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

@@ -26,37 +26,37 @@ public class AutoLoginController {
 
     private final PostgresUserDetailsService userDetailsService;
 
-//    @GetMapping
-//    public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId) {
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-//
-//        Authentication auth = new UsernamePasswordAuthenticationToken(
-//                userDetails, null, userDetails.getAuthorities());
-//
-//        SecurityContextHolder.getContext().setAuthentication(auth);
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setLocation(UriComponentsBuilder.fromPath("/test")
-//                .queryParam("userId", userDetails.getUsername())
-//                .build().toUri());
-//
-//        return new ResponseEntity<>(headers, HttpStatus.FOUND);
-//    }
-
     @GetMapping
     public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
 
-            Authentication auth = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(UriComponentsBuilder.fromPath("/test")
+                .queryParam("userId", userDetails.getUsername())
+                .build().toUri());
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(UriComponentsBuilder.fromPath("/swagger-ui.html").build().toUri());
-
-            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
+
+//    @GetMapping
+//    public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId) {
+//
+//            UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+//
+//            Authentication auth = new UsernamePasswordAuthenticationToken(
+//                    userDetails, null, userDetails.getAuthorities());
+//
+//            SecurityContextHolder.getContext().setAuthentication(auth);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setLocation(UriComponentsBuilder.fromPath("/swagger-ui.html").build().toUri());
+//
+//            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+//    }
 
 }

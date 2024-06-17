@@ -210,12 +210,12 @@ public class CardServiceImpl implements CardService {
         setActivity(card, ACTIVE);
     }
 
-//    @Override
-//    public List<CardDTO> getAllCardsDTOByUserId(Long userId) {
-//        List<Card> cards = cardRepository.findUserCards(userId);
-//        return cards.stream()
-//                .map(mapper::toCardDTO)
-//                .toList();
-//    }
+    @Override
+    public List<CardDTO> getAllCardsDTOByUserId(Long userId) {
+        List<Card> cards = cardRepository.findUserCards(userId);
+        return cards.stream()
+                .map(mapper::toCardDTO)
+                .toList();
+    }
 
 }

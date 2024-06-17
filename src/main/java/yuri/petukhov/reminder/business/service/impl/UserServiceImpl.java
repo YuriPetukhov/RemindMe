@@ -43,16 +43,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByChatId(Long chatId) {
-        return userRepository.findByChatId(chatId).orElseThrow();
+    public Optional<User> findUserByChatId(Long chatId) {
+        return userRepository.findByChatId(chatId);
     }
     @Override
     public UserRole getUserState(Long chatId, String userName) {
         UserRole userRole = UserRole.USER;
-        User user = findUserByChatId(chatId);
-        if(user != null) {
+        Optional<User> optUser = findUserByChatId(chatId);
+        if(optUser.isPresent()) {
             log.info("User state was detected");
-            userRole = user.getRole();
+            userRole = optUser.get().getRole();
         } else {
             createNewUser(chatId, userName);
         }
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void setUserRole(Long chatId, UserRole state) {
-        User user = findUserByChatId(chatId);
+        User user = findUserByChatId(chatId).orElseThrow();
         user.setRole(state);
         saveUser(user);
     }
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserCardInputState getUserCardState(Long chatId) {
-        User user = findUserByChatId(chatId);
+        User user = findUserByChatId(chatId).orElseThrow();
         return user.getCardState();
     }
 
@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
         saveUser(user);
     }
     public boolean isAuthorized(Long chatId, Long userId) {
-        User user = findUserByChatId(chatId);
-        return user != null && user.getId().equals(userId);
+        Optional<User> user = findUserByChatId(chatId);
+        return user.isPresent() && user.get().getId().equals(userId);
     }
 }

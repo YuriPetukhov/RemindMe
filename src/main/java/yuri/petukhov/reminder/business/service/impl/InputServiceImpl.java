@@ -36,7 +36,7 @@ public class InputServiceImpl implements InputService {
     @Override
     public void createInputWordMessage(CommandEntity commandEntity) {
         Long chatId = commandEntity.getChatId();
-        User user = userService.findUserByChatId(commandEntity.getChatId());
+        User user = userService.findUserByChatId(commandEntity.getChatId()).orElseThrow();
         userService.setCardInputState(user, UserCardInputState.WORD);
         menuMessageCreator.createInputWordMessage(chatId);
     }
@@ -123,7 +123,7 @@ public class InputServiceImpl implements InputService {
     public void addNameToNewCard(CommandEntity commandEntity) {
         log.info("addNameToNewCard() is started");
         String word = commandEntity.getMessageText();
-        User user = userService.findUserByChatId(commandEntity.getChatId());
+        User user = userService.findUserByChatId(commandEntity.getChatId()).orElseThrow();
         cardService.createNewCard(word, user);
         userService.setCardInputState(user, UserCardInputState.MEANING);
         menuMessageCreator.createInputMeaningMessage(commandEntity);
@@ -136,7 +136,7 @@ public class InputServiceImpl implements InputService {
         Card card = findActiveCard(commandEntity.getUserId());
         cardService.setActivity(card, CardActivity.INACTIVE);
         cardService.addMeaningToNewCard(card, commandEntity.getMessageText());
-        User user = userService.findUserByChatId(commandEntity.getChatId());
+        User user = userService.findUserByChatId(commandEntity.getChatId()).orElseThrow();
         userService.setCardInputState(user, UserCardInputState.NONE);
         menuMessageCreator.createCardSavedMessage(commandEntity);
     }
