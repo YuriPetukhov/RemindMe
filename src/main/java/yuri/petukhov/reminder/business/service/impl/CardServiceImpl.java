@@ -212,10 +212,6 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public List<CardDTO> getAllCardsDTOByUserId(Long userId) {
-        List<Card> cards = cardRepository.findUserCards(userId);
-        return cards.stream()
-                .map(mapper::toCardDTO)
-                .toList();
+        return getAllCardsByUserId(userId, 1, 60);
     }
-
 }

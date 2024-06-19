@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -26,7 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig extends GlobalMethodSecurityConfiguration implements WebMvcConfigurer {
 
     private static final String[] AUTH_WHITELIST = {
-            "/auto-login/"
+//            "/auto-login/"
     };
 
     @Bean
@@ -36,11 +37,16 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration implements
                 .cors(withDefaults())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers("/test/", "/cards/**", "/monitoring/**").authenticated()
+                        .requestMatchers("/cards/**", "/monitoring/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                )
+                .logout(logout -> logout
+                        .permitAll()
+                        .deleteCookies("JSESSIONID")
+                        .invalidateHttpSession(true)
                 )
                 .httpBasic(withDefaults());
 

@@ -2,9 +2,18 @@
     margin: 0;
     padding: 0;
     text-decoration: none;
+    box-sizing: border-box;
+}
+body{
+overflow-y: hidden;
+}
+.main__content {
+    display: flex;
 }
 .menu__panel {
     width: 200px;
+    overflow-y: hidden;
+    flex-shrink: 0;
 }
 .menu__list {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -20,7 +29,7 @@
     color: #ecf0f1;
     padding: 10px;
     display: block;
-    transition: background-color 0.3s, transform 0.3s; /* Для плавности эффектов */
+    transition: background-color 0.3s, transform 0.3s;
 }
 .menu__list a:hover {
     background-color: #2980b9;
@@ -28,3 +37,41 @@
     transform: translateY(-2px);
     border-radius: 12px;
 }
+.cards {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 10px;
+    padding-top: 5px;
+    padding-left: 5px;
+    background-color: #34495e;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.card {
+    border: 1px solid black;
+    border: 1px solid #bdc3c7;
+    border-radius: 12px;
+    background-color: #ecf0f1;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: transform 0.3s;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card h2 {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+}
+

@@ -93,8 +93,7 @@ public class UserServiceImpl implements UserService {
         log.info("A NEW user was saved");
         saveUser(user);
     }
-    public boolean isAuthorized(Long chatId, Long userId) {
-        Optional<User> user = findUserByChatId(chatId);
-        return user.isPresent() && user.get().getId().equals(userId);
+    public boolean isAuthorized(Long authId, Long userId) {
+        return authId.equals(userId);
     }
 }
