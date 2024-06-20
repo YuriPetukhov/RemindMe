@@ -212,6 +212,9 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public List<CardDTO> getAllCardsDTOByUserId(Long userId) {
-        return getAllCardsByUserId(userId, 1, 60);
+        List<Card> cards = cardRepository.findRandomCardsByUserId(userId, 60);
+        return cards.stream()
+                .map(mapper::toCardDTO)
+                .toList();
     }
 }
