@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
 import yuri.petukhov.reminder.business.model.Card;
@@ -55,7 +54,7 @@ public class RecallServiceImpl implements RecallService {
     @Override
     public void recallWords() {
         log.info("recallWords() is started");
-        List<User> usersWithRecallCards = cardService.findCardsForRecallMode();
+        List<User> usersWithRecallCards = cardService.findUsersForRecallMode();
         for (User user : usersWithRecallCards) {
             recallWordsForUser(user.getId());
         }

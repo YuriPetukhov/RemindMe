@@ -56,18 +56,33 @@ class CardServiceImplTest {
     }
 
     @Test
-    @DisplayName("Test getting a list of cards for recall mode - successful case")
-    void findCardsForRecallMode() {
-        List<Card> expectedCards = Arrays.asList(new Card(), new Card(), new Card());
+    @DisplayName("Test getting a list of users for recall mode - successful case")
+    void findUsersForRecallMode() {
+        User user1 = new User();
+        User user2 = new User();
+        User user3 = new User();
+
+        List<User> expectedUsers = Arrays.asList(user1, user2, user3);
+
+        Card card1 = Card.createCard("Word1", user1);
+        Card card2 = Card.createCard("Word2", user2);
+        Card card3 = Card.createCard("Word3", user3);
+
+        List<Card> expectedCards = Arrays.asList(card1, card2, card3);
 
         Mockito.when(cardRepository.findDistinctRecallCardsByUser())
                 .thenReturn(expectedCards);
 
-        List<User> actualCards = cardService.findCardsForRecallMode();
+        Mockito.when(cardRepository.findDistinctRecallCardsByUser())
+                .thenReturn(expectedCards);
 
-        assertIterableEquals(expectedCards, actualCards);
+        List<User> actualUsers = cardService.findUsersForRecallMode();
+
+        assertIterableEquals(expectedUsers, actualUsers);
+
         verify(cardRepository).findDistinctRecallCardsByUser();
     }
+
 
     @Test
     @DisplayName("Test getting a list of cards in reminder interval - successful case")

@@ -17,7 +17,7 @@ public interface CardService {
 
     void addMeaningToNewCard(Card card, String meaning);
 
-    List<User> findCardsForRecallMode();
+    List<User> findUsersForRecallMode();
 
     List<Card> findCardsInReminderInterval(LocalDateTime recallTime);
 
