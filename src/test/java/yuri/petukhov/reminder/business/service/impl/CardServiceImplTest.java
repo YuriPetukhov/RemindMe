@@ -146,9 +146,13 @@ class CardServiceImplTest {
 
         when(cardRepository.findActiveCardByUserId(user.getId())).thenReturn(Optional.of(card));
 
-        Optional<Card> result = cardService.findActiveCardByUserId(user.getId());
+        Optional<Card> optResult = cardService.findActiveCardByUserId(user.getId());
+        Card result = null;
+        if (optResult.isPresent()) {
+            result = optResult.get();
+        }
 
-        assertEquals(card, result.get());
+        assertEquals(card, result);
     }
 
     @Test
@@ -190,18 +194,23 @@ class CardServiceImplTest {
     @DisplayName("Test finding a card for Recall Mode - successful case")
     void findCardForRecallMode() {
         User user = new User();
-        user.setId(1L);
+        user.setId(4L);
         Card card = new Card();
-        card.setId(1L);
+        card.setId(4L);
         card.setUser(user);
         card.setRecallMode(RecallMode.RECALL);
 
-        when(cardRepository.findFirstByUserIdAndRecallMode(user.getId(), RecallMode.RECALL)).thenReturn(Optional.of(card));
+        when(cardRepository.findFirstByUserIdAndRecallMode(user.getId(), RecallMode.RECALL))
+                .thenReturn(Optional.of(card));
 
-        Optional<Card> result = cardService.findCardForRecallMode(user.getId());
+        Optional<Card> foundCard = cardService.findCardForRecallMode(user.getId());
+
+        assertTrue(foundCard.isPresent());
+        assertEquals(card, foundCard.get());
 
         verify(cardRepository).findFirstByUserIdAndRecallMode(user.getId(), RecallMode.RECALL);
     }
+
 
     @Test
     @DisplayName("Test deleting a card - successful case")
