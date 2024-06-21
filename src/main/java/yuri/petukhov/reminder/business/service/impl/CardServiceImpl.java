@@ -51,7 +51,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<User> findUsersForRecallMode() {
         log.info("findUsersForRecallMode() is started");
-        List<Card> cards = cardRepository.findDistinctRecallCardsByUser();
+        List<Card> cards = cardRepository.findDistinctRecallCardsByUserExcludingAnswer();
         return cards.stream()
                 .map(Card::getUser)
                 .collect(Collectors.toList());

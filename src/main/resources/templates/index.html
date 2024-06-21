@@ -5,26 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RemindMe</title>
     <link rel="stylesheet" href="../style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-    <body>
-        <div class="main__content">
-            <div class="menu__panel">
-                <ul>
-                    <li class="menu__list"><a href="#" class="menu__link">Add new Card</a></li>
-                    <li class="menu__list"><a href="#" class="menu__link">View Statistics</a></li>
-                    <li class="menu__list"><a href="#" class="menu__link">Practise</a></li>
-                    <li class="menu__list"><a href="#" class="menu__link">INFO</a></li>
-                    <li class="menu__list"><a href="#" class="menu__link">Settings</a></li>
-                </ul>
-            </div>
-            <div class="cards">
-                <div th:each="card : ${cards}">
-                    <div class="card">
-                        <h2 th:text="${card.title}">Заголовок карточки</h2>
-                        <p th:text="${card.content}">Описание карточки</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
+<body>
+<div class="main__content">
+    <div class="menu__panel">
+        <ul>
+            <li class="menu__list"><a href="/new-card" class="menu__link ajax-link">Add new Card</a></li>
+            <li class="menu__list"><a href="/view-stats" class="menu__link ajax-link">View Statistics</a></li>
+            <li class="menu__list"><a href="/practise" class="menu__link ajax-link">Practise</a></li>
+            <li class="menu__list"><a href="/info" class="menu__link ajax-link">INFO</a></li>
+            <li class="menu__list"><a href="/settings" class="menu__link ajax-link">Settings</a></li>
+        </ul>
+    </div>
+    <div class="cards" id="content">
+        <!-- Содержимое будет загружаться сюда -->
+    </div>
+</div>
+</body>
+<script src="../static/script.js" defer></script>
 </html>

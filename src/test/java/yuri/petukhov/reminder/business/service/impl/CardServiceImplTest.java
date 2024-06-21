@@ -70,17 +70,17 @@ class CardServiceImplTest {
 
         List<Card> expectedCards = Arrays.asList(card1, card2, card3);
 
-        Mockito.when(cardRepository.findDistinctRecallCardsByUser())
+        Mockito.when(cardRepository.findDistinctRecallCardsByUserExcludingAnswer())
                 .thenReturn(expectedCards);
 
-        Mockito.when(cardRepository.findDistinctRecallCardsByUser())
+        Mockito.when(cardRepository.findDistinctRecallCardsByUserExcludingAnswer())
                 .thenReturn(expectedCards);
 
         List<User> actualUsers = cardService.findUsersForRecallMode();
 
         assertIterableEquals(expectedUsers, actualUsers);
 
-        verify(cardRepository).findDistinctRecallCardsByUser();
+        verify(cardRepository).findDistinctRecallCardsByUserExcludingAnswer();
     }
 
 

@@ -21,9 +21,14 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             LocalDateTime dateTime, CardActivity activity, RecallMode recallMode);
 
     @Query("SELECT c FROM cards c " +
-           "WHERE c.recallMode = 'RECALL' AND c.id IN " +
-           "(SELECT MIN(c2.id) FROM cards c2 WHERE c2.recallMode = 'RECALL' GROUP BY c2.user.id)")
-    List<Card> findDistinctRecallCardsByUser();
+           "WHERE c.recallMode = 'RECALL' " +
+           "AND c.user.cardState <> 'ANSWER' " +
+           "AND c.id IN (SELECT MIN(c2.id) " +
+           "FROM cards c2 " +
+           "WHERE c2.recallMode = 'RECALL' " +
+           "GROUP BY c2.user.id)")
+    List<Card> findDistinctRecallCardsByUserExcludingAnswer();
+
 
     Optional<Card> findFirstByUserIdAndRecallMode(Long userId, RecallMode recallMode);
 
