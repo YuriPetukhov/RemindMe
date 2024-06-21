@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CardUpdate {
-    String cardName;
-    String cardMeaning;
+    String title;
+    String content;
 }

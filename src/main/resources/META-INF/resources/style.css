@@ -5,10 +5,12 @@
     box-sizing: border-box;
 }
 body{
-overflow-y: hidden;
+    overflow-y: hidden;
+    width: 100%;
 }
 .main__content {
     display: flex;
+    flex-direction: row;
 }
 .menu__panel {
     width: 200px;
@@ -39,13 +41,14 @@ overflow-y: hidden;
 }
 .cards {
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 10px;
-    padding-top: 5px;
-    padding-left: 5px;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: minmax(min-content, max-content);
+    gap: 5px;
+    padding: 5px;
     background-color: #34495e;
+    overflow-y: scroll;
     max-height: 100vh;
-    overflow-y: auto;
+    flex-grow: 1;
 }
 
 .card {
@@ -53,8 +56,6 @@ overflow-y: hidden;
     border: 1px solid #bdc3c7;
     border-radius: 12px;
     background-color: #ecf0f1;
-    padding: 10px;
-    margin-bottom: 10px;
     transition: transform 0.3s;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -67,6 +68,7 @@ overflow-y: hidden;
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
+    justify-item: center;
 }
 
 .card p {
@@ -74,4 +76,49 @@ overflow-y: hidden;
     color: #666;
     line-height: 1.6;
 }
+
+/* Стили для формы */
+.form {
+    padding: 5px;
+    background-color: #34495e;
+    height: 100%;
+    width: 100vh;
+}
+
+.form-style {
+  background-color: #f3f3f3;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.form-style label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.form-style input[type="text"],
+.form-style textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-style button {
+  background-color: #008cba;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form-style button:hover {
+  background-color: #005f73;
+}
+
+
 

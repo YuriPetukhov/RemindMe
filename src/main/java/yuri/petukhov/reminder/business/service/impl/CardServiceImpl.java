@@ -161,9 +161,9 @@ public class CardServiceImpl implements CardService {
     @Override
     public void addNewCard(CardUpdate card, Long userId) {
         User user = userService.findUserById(userId);
-        Card newCard = Card.createCard(card.getCardName(), user);
+        Card newCard = Card.createCard(card.getTitle(), user);
         newCard.setActivity(INACTIVE);
-        newCard.setCardMeaning(card.getCardMeaning());
+        newCard.setCardMeaning(card.getContent());
         cardRepository.save(mapper.updateCard(newCard, card));
     }
 
