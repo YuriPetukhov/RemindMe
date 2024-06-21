@@ -7,6 +7,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
@@ -134,6 +136,13 @@ public class CardController {
             @PathVariable Long cardId) {
         cardService.deleteCardById(userId, cardId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{userId}/random-set")
+    @Operation(summary = "Получение набора 60 случайных карточек")
+    public ResponseEntity<List<CardDTO>> getCards(@PathVariable("userId") Long userId) {
+        List<CardDTO> cards = cardService.getAllCardsDTOByUserId(userId);
+        return ResponseEntity.ok(cards);
     }
 
 }
