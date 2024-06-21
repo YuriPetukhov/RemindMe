@@ -20,6 +20,7 @@ import yuri.petukhov.reminder.business.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static yuri.petukhov.reminder.business.enums.CardActivity.*;
 
@@ -30,6 +31,7 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final CardMapper mapper;
     private final UserService userService;
+    private final Object lock = new Object();
 
     @Override
     public void createNewCard(String word, User user) {
@@ -47,16 +49,18 @@ public class CardServiceImpl implements CardService {
 
 
     @Override
-    public List<Card> findCardsForRecallMode() {
+    public List<User> findCardsForRecallMode() {
         log.info("findCardsForRecallMode() is started");
-        return cardRepository.findDistinctRecallCardsByUser();
+        List<Card> cards = cardRepository.findDistinctRecallCardsByUser();
+        return cards.stream()
+                .map(Card::getUser)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Card> findCardsInReminderInterval(LocalDateTime now, LocalDateTime end) {
+    public List<Card> findCardsInReminderInterval(LocalDateTime recallTime) {
         log.info("findCardsInReminderInterval() is started");
-        return cardRepository.findAllByReminderDateTimeBetweenAndActivityNot(now, end, FINISHED);
-
+        return cardRepository.findAllByReminderDateTimeBeforeAndActivityNotAndRecallMode(recallTime, FINISHED, RecallMode.NONE);
     }
 
     @Override
@@ -202,12 +206,14 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public void activateCard(Card card, Long userId) {
-        Optional<Card> activeCard = findActiveCardByUserId(userId);
-        if (activeCard.isPresent()) {
-            log.info("Attempt to activate a second card");
-            return;
+        synchronized(lock) {
+            Optional<Card> activeCard = findActiveCardByUserId(userId);
+            if (activeCard.isPresent()) {
+                log.info("Attempt to activate a second card for user: " + userId);
+                return;
+            }
+            setActivity(card, ACTIVE);
         }
-        setActivity(card, ACTIVE);
     }
 
     @Override

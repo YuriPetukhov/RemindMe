@@ -30,14 +30,12 @@ public class RecallServiceImpl implements RecallService {
     @Transactional
     public void activateRecallMode() {
         log.info("activateRecallMode() is started");
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime end = LocalDateTime.now().plusMinutes(20);
-        List<Card> cards = cardService.findCardsInReminderInterval(now, end);
+        LocalDateTime recallTime = LocalDateTime.now().plusMinutes(5);
+        List<Card> cards = cardService.findCardsInReminderInterval(recallTime);
         if (!cards.isEmpty()) {
             cardService.setRecallMode(cards, RecallMode.RECALL);
         }
     }
-
     @Override
     public void recallWordsForUser(Long userId) {
         log.info("recallWordsForUser() is started");
@@ -57,18 +55,10 @@ public class RecallServiceImpl implements RecallService {
     @Override
     public void recallWords() {
         log.info("recallWords() is started");
-        List<Card> cards = cardService.findCardsForRecallMode();
-        if (!cards.isEmpty()) {
-            for (Card card : cards) {
-                User user = card.getUser();
-                Optional<Card> cartOpt = cardService.findActiveCardByUserId(user.getId());
-                if (cartOpt.isEmpty()) {
-                    userService.setCardInputState(user, UserCardInputState.ANSWER);
-                    cardService.activateCard(card, user.getId());
-                    int wordsNumber = cardService.getCardByRecallMode(user.getId(), RecallMode.RECALL).size();
-                    menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning(), wordsNumber, card.getInterval());
-                }
-            }
+        List<User> usersWithRecallCards = cardService.findCardsForRecallMode();
+        for (User user : usersWithRecallCards) {
+            recallWordsForUser(user.getId());
         }
+        log.info("recallWords() is completed");
     }
 }

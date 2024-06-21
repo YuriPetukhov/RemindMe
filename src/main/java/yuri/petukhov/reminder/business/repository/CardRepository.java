@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -18,7 +17,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.activity = 'ACTIVE'")
     Optional<Card> findActiveCardByUserId(Long userId);
 
-    List<Card> findAllByReminderDateTimeBetweenAndActivityNot(LocalDateTime start, LocalDateTime end, CardActivity FINISHED);
+    List<Card> findAllByReminderDateTimeBeforeAndActivityNotAndRecallMode(
+            LocalDateTime dateTime, CardActivity activity, RecallMode recallMode);
 
     @Query("SELECT c FROM cards c " +
            "WHERE c.recallMode = 'RECALL' AND c.id IN " +

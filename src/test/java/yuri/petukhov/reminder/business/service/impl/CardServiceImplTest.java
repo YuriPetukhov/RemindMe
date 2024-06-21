@@ -63,7 +63,7 @@ class CardServiceImplTest {
         Mockito.when(cardRepository.findDistinctRecallCardsByUser())
                 .thenReturn(expectedCards);
 
-        List<Card> actualCards = cardService.findCardsForRecallMode();
+        List<User> actualCards = cardService.findCardsForRecallMode();
 
         assertIterableEquals(expectedCards, actualCards);
         verify(cardRepository).findDistinctRecallCardsByUser();
@@ -73,16 +73,15 @@ class CardServiceImplTest {
     @DisplayName("Test getting a list of cards in reminder interval - successful case")
     void findCardsInReminderInterval() {
         List<Card> expectedCards = Arrays.asList(new Card(), new Card(), new Card());
-        java.time.LocalDateTime now = LocalDateTime.now();
-        LocalDateTime end = LocalDateTime.now().plusMinutes(20);
+        LocalDateTime recallTime = LocalDateTime.now().plusMinutes(5);
 
-        Mockito.when(cardRepository.findAllByReminderDateTimeBetweenAndActivityNot(now, end, FINISHED))
+        Mockito.when(cardRepository.findAllByReminderDateTimeBeforeAndActivityNotAndRecallMode(recallTime, FINISHED, RecallMode.NONE))
                 .thenReturn(expectedCards);
 
-        List<Card> actualCards = cardService.findCardsInReminderInterval(now, end);
+        List<Card> actualCards = cardService.findCardsInReminderInterval(recallTime);
 
         assertIterableEquals(expectedCards, actualCards);
-        verify(cardRepository).findAllByReminderDateTimeBetweenAndActivityNot(now, end, FINISHED);
+        verify(cardRepository).findAllByReminderDateTimeBeforeAndActivityNotAndRecallMode(recallTime, FINISHED, RecallMode.NONE);
     }
 
     @Test
