@@ -52,6 +52,7 @@ $(document).ready(function() {
                 $('#addWordFormContainer').hide();
                 loadCards();
                 $('#cardsContainer').show();
+                document.getElementById('addWordForm').reset();
             },
             error: function(error) {
                 console.error('Ошибка при добавлении карточки:', error);
