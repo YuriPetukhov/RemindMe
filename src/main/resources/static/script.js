@@ -1,6 +1,6 @@
 $(document).ready(function() {
-        var urlParams = new URLSearchParams(window.location.search);
-        var userId = urlParams.get('userId');
+    var urlParams = new URLSearchParams(window.location.search);
+    var userId = urlParams.get('userId');
 
     function loadCards() {
         $.ajax({
@@ -11,9 +11,9 @@ $(document).ready(function() {
                 var cardsHtml = '';
                 cards.forEach(function(card) {
                     cardsHtml += '<div class="card">' +
-                                      '<h2>' + card.content + '</h2>' +
-                                      '<p>' + card.title + '</p>' +
-                                      '</div>';
+                                  '<h2>' + card.content + '</h2>' +
+                                  '<p>' + card.title + '</p>' +
+                                  '</div>';
                 });
                 $('#cardsContainer').html(cardsHtml);
             },
@@ -25,7 +25,7 @@ $(document).ready(function() {
 
     function showAddCardForm() {
         $('#cardsContainer').hide();
-        $('#addCardFormContainer').show();
+        $('#addWordFormContainer').show();
     }
 
     $('.menu__link').click(function(e) {
@@ -33,24 +33,23 @@ $(document).ready(function() {
         var target = $(this).attr('href');
         if (target === '/cards') {
             showAddCardForm();
-        } else {
-
         }
     });
 
-    $('#addCardForm').submit(function(e) {
+    $('#addWordForm').submit(function(e) {
         e.preventDefault();
         var cardData = {
             title: $('#cardTitle').val(),
             content: $('#cardContent').val()
         };
+
         $.ajax({
-             url: '/cards/' + userId,
+            url: '/cards/' + userId,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(cardData),
             success: function(response) {
-                $('#addCardFormContainer').hide();
+                $('#addWordFormContainer').hide();
                 loadCards();
                 $('#cardsContainer').show();
             },

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>RemindMe</title>
         <link rel="stylesheet" href="../style.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -20,11 +20,13 @@
             </div>
             <div id="content">
                 <div class="cards" id="cardsContainer"></div>
-                <div class="form" id="addCardFormContainer" style="display:none;">
-                    <form id="addCardForm">
-                        <input type="text" id="cardTitle" placeholder="Card name" required />
-                        <textarea id="cardContent" placeholder="Card meaning" required></textarea>
-                        <button type="submit">Добавить карточку</button>
+                <div id="addWordFormContainer" class="form-style">
+                    <form id="addWordForm">
+                        <label for="cardTitle">Новое слово:</label>
+                        <input type="text" id="cardTitle" name="title" required>
+                        <label for="cardContent">Значение:</label>
+                        <textarea id="cardContent" name="content" required></textarea>
+                        <button type="submit">Добавить слово</button>
                     </form>
                 </div>
             </div>

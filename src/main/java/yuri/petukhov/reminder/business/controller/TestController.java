@@ -1,15 +1,18 @@
 package yuri.petukhov.reminder.business.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.CardDTO;
+import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.service.CardService;
 
 import java.util.List;

@@ -78,47 +78,49 @@ body{
 }
 
 /* Стили для формы */
-.form {
-    padding: 5px;
-    background-color: #34495e;
-    height: 100%;
-    width: 100vh;
-}
+
 
 .form-style {
-  background-color: #f3f3f3;
+  background-color: #ecf0f1;
   padding: 20px;
-  margin: 20px 0;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #bdc3c7;
 }
 
 .form-style label {
-  display: block;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; /* Шрифт, как в меню */
+  font-size: 16px;
+  color: #333;
   margin-bottom: 10px;
 }
 
 .form-style input[type="text"],
 .form-style textarea {
-  width: 100%;
+  width: calc(100% - 20px);
   padding: 10px;
   margin-bottom: 20px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 16px;
+  font-size: 14px;
+  color: #666;
 }
 
 .form-style button {
-  background-color: #008cba;
+  background-color: #2980b9;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .form-style button:hover {
-  background-color: #005f73;
+  background-color: #3498db;
 }
 
 
-
+#content {
+width: 100%;
+}

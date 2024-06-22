@@ -26,7 +26,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig extends GlobalMethodSecurityConfiguration implements WebMvcConfigurer {
 
     private static final String[] AUTH_WHITELIST = {
-//            "/auto-login/"
+            "/auto-login/"
     };
 
     @Bean
