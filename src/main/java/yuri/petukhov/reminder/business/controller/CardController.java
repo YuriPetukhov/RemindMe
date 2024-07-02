@@ -19,6 +19,7 @@ import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.service.CardService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -143,6 +144,12 @@ public class CardController {
     public ResponseEntity<List<CardDTO>> getCards(@PathVariable("userId") Long userId) {
         List<CardDTO> cards = cardService.getAllCardsDTOByUserId(userId);
         return ResponseEntity.ok(cards);
+    }
+
+    @GetMapping("/{userId}/intervals/stats")
+    @Operation(summary = "Получить статистику карточек пользователя для всех интервалов")
+    public ResponseEntity<List<Integer>> getStatsForAllIntervals(@PathVariable Long userId) {
+        return ResponseEntity.ok().body(cardService.getStatsForAllIntervals(userId));
     }
 
 }

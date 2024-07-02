@@ -8,5 +8,6 @@ import yuri.petukhov.reminder.business.enums.ReminderInterval;
 @AllArgsConstructor
 public class ErrorsReportDTO {
     private ReminderInterval interval;
-    private long errorCount;
+    private Long attemptsCount;
+    private Long errorCount;
 }

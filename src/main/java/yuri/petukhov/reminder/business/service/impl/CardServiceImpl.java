@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
@@ -222,5 +223,20 @@ public class CardServiceImpl implements CardService {
         return cards.stream()
                 .map(mapper::toCardDTO)
                 .toList();
+    }
+
+    @Override
+    public List<Integer> getStatsForAllIntervals(Long userId) {
+        List<Integer> stats = new ArrayList<>();
+        for (ReminderInterval interval : ReminderInterval.values()) {
+            int cardsNumber = getAllCardsNumberByUserIdAndReminderInterval(userId, interval);
+            stats.add(cardsNumber);
+        }
+        int allCardsNumber = cardRepository.getAllCardsNumber(userId);
+        int finishedCardsNumber = cardRepository.getFinishedCardsNumber(userId, FINISHED);
+        stats.add(allCardsNumber);
+        stats.add(finishedCardsNumber);
+
+        return stats;
     }
 }

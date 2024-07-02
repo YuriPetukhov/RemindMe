@@ -14,21 +14,37 @@ import java.util.Objects;
 
 public interface MatchResultRepository extends JpaRepository<MatchResult, Long> {
 
-    @Query("SELECT mr.interval, COUNT(mr) " +
-           "FROM results mr " +
-           "JOIN cards c ON mr.cardId = c.id " +
-           "WHERE mr.result = false AND c.user.id = :userId " +
-           "GROUP BY mr.interval " +
-           "ORDER BY mr.interval")
-    List<Object[]> findErrorsGroupedByInterval(Long userId);
+//    @Query("SELECT mr.interval, COUNT(mr) " +
+//           "FROM results mr " +
+//           "JOIN cards c ON mr.cardId = c.id " +
+//           "WHERE mr.result = false AND c.user.id = :userId " +
+//           "GROUP BY mr.interval " +
+//           "ORDER BY mr.interval")
+//    List<Object[]> findErrorsGroupedByInterval(Long userId);
+//
+//    @Query("SELECT mr.interval, COUNT(mr) " +
+//           "FROM results mr " +
+//           "JOIN cards c ON mr.cardId = c.id " +
+//           "WHERE mr.result = false AND c.id = :cardId " +
+//           "GROUP BY mr.interval " +
+//           "ORDER BY mr.interval")
+//    List<Object[]> findErrorsByCardGroupedByInterval(Long cardId);
 
-    @Query("SELECT mr.interval, COUNT(mr) " +
+    @Query("SELECT mr.interval, COUNT(mr), SUM(CASE WHEN mr.result = false THEN 1 ELSE 0 END) " +
            "FROM results mr " +
            "JOIN cards c ON mr.cardId = c.id " +
-           "WHERE mr.result = false AND c.id = :cardId " +
+           "WHERE c.user.id = :userId " +
            "GROUP BY mr.interval " +
            "ORDER BY mr.interval")
-    List<Object[]> findErrorsByCardGroupedByInterval(Long cardId);
+    List<Object[]> findAttemptsAndErrorsGroupedByInterval(Long userId);
+
+    @Query("SELECT mr.interval, COUNT(mr), SUM(CASE WHEN mr.result = false THEN 1 ELSE 0 END) " +
+           "FROM results mr " +
+           "JOIN cards c ON mr.cardId = c.id " +
+           "WHERE c.id = :cardId " +
+           "GROUP BY mr.interval " +
+           "ORDER BY mr.interval")
+    List<Object[]> findAttemptsAndErrorsByCardGroupedByInterval(Long cardId);
 
     @Query("SELECT c.cardMeaning, COUNT(mr) " +
            "FROM results mr JOIN cards c ON mr.cardId = c.id " +

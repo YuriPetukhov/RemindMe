@@ -23,17 +23,19 @@ public class MatchResultServiceImpl implements MatchResultService {
     public List<ErrorsReportDTO> getCardsErrorsAndIntervalsReport(Long userId) {
         List<ReminderInterval> allIntervals = Arrays.asList(ReminderInterval.values());
 
-        List<Object[]> results = matchResultRepository.findErrorsGroupedByInterval(userId);
+        List<Object[]> results = matchResultRepository.findAttemptsAndErrorsGroupedByInterval(userId);
 
-        Map<ReminderInterval, Long> errorsMap = results.stream()
-                .collect(Collectors.toMap(
-                        result -> (ReminderInterval) result[0],
-                        result -> (Long) result[1],
-                        (existing, replacement) -> existing
-                ));
+        Map<ReminderInterval, ErrorsReportDTO> reportMap = new HashMap<>();
+
+        for (Object[] result : results) {
+            ReminderInterval interval = (ReminderInterval) result[0];
+            Long attemptsCount = (Long) result[1];
+            Long errorsCount = (Long) result[2];
+            reportMap.put(interval, new ErrorsReportDTO(interval, attemptsCount, errorsCount));
+        }
 
         return allIntervals.stream()
-                .map(interval -> new ErrorsReportDTO(interval, errorsMap.getOrDefault(interval, 0L)))
+                .map(interval -> reportMap.getOrDefault(interval, new ErrorsReportDTO(interval, 0L, 0L)))
                 .sorted(Comparator.comparing(dto -> dto.getInterval().getSeconds()))
                 .collect(Collectors.toList());
     }
@@ -42,20 +44,23 @@ public class MatchResultServiceImpl implements MatchResultService {
     public List<ErrorsReportDTO> getCardErrorsAndIntervalsReport(Long userId, Long cardId) {
         List<ReminderInterval> allIntervals = Arrays.asList(ReminderInterval.values());
 
-        List<Object[]> results = matchResultRepository.findErrorsByCardGroupedByInterval(cardId);
+        List<Object[]> results = matchResultRepository.findAttemptsAndErrorsByCardGroupedByInterval(cardId);
 
-        Map<ReminderInterval, Long> errorsMap = results.stream()
-                .collect(Collectors.toMap(
-                        result -> (ReminderInterval) result[0],
-                        result -> (Long) result[1],
-                        (existing, replacement) -> existing
-                ));
+        Map<ReminderInterval, ErrorsReportDTO> reportMap = new HashMap<>();
+
+        for (Object[] result : results) {
+            ReminderInterval interval = (ReminderInterval) result[0];
+            Long attemptsCount = (Long) result[1];
+            Long errorsCount = (Long) result[2];
+            reportMap.put(interval, new ErrorsReportDTO(interval, attemptsCount, errorsCount));
+        }
 
         return allIntervals.stream()
-                .map(interval -> new ErrorsReportDTO(interval, errorsMap.getOrDefault(interval, 0L)))
+                .map(interval -> reportMap.getOrDefault(interval, new ErrorsReportDTO(interval, 0L, 0L)))
                 .sorted(Comparator.comparing(dto -> dto.getInterval().getSeconds()))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<UnRecallWordDTO> getWordsMeaningsForInterval(Long userId, ReminderInterval interval) {

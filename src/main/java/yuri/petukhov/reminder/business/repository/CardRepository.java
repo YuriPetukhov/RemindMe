@@ -81,5 +81,8 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId ORDER BY RANDOM() LIMIT :limit")
     List<Card> findRandomCardsByUserId(Long userId, int limit);
-
+    @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.activity != 'FINISHED'")
+    int getAllCardsNumber(Long userId);
+    @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.activity = :activity")
+    int getFinishedCardsNumber(Long userId, CardActivity activity);
 }

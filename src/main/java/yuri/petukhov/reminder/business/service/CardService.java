@@ -65,4 +65,6 @@ public interface CardService {
     void activateCard(Card card, Long userId);
 
     List<CardDTO> getAllCardsDTOByUserId(Long userId);
+
+    List<Integer> getStatsForAllIntervals(Long userId);
 }
