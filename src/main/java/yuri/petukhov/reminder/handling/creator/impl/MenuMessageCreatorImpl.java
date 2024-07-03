@@ -1,7 +1,5 @@
 package yuri.petukhov.reminder.handling.creator.impl;
 
-import com.pengrad.telegrambot.model.Sticker;
-import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,10 +78,10 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
 
     @Override
     public void createLinkMessage(Long chatId, Long userId, UserRole role) {
-        String messageText = String.format(configuration.getWEB_LINK(), userId);
+        String messageText = String.format(configuration.getWEB_LINK(), userId, userId, chatId);
         SendMessage message = new SendMessage(String.valueOf(chatId), messageText).parseMode(HTML);
         if(role.equals(UserRole.ADMIN)) {
-            String messageTextAdmin = String.format(configuration.getWEB_LINK_ADMIN(), userId);
+            String messageTextAdmin = String.format(configuration.getWEB_LINK_ADMIN(), userId, userId, chatId);
             SendMessage messageAdmin = new SendMessage(String.valueOf(chatId), messageTextAdmin).parseMode(HTML);
             messageExecutor.executeMessage(messageAdmin);
         }

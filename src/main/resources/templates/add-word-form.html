@@ -8,16 +8,16 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     </head>
     <body>
-        <div id="addWordFormContainer" class="form-style">
+    <div th:fragment="addWordForm">
+        <div id="addWordFormContainer" style="display:none;" class="form-style">
             <form id="addWordForm">
-                <label for="newWord">Новое слово:</label>
-                <input type="text" id="newWord" name="newWord" required>
-
-                <label for="wordMeaning">Значение:</label>
-                <textarea id="wordMeaning" name="wordMeaning" required></textarea>
-
-                <button type="submit">Добавить слово</button>
+                <label for="cardTitle">New word:</label>
+                <input type="text" id="cardTitle" name="title" required>
+                <label for="cardContent">Meaning:</label>
+                <textarea id="cardContent" name="content" required></textarea>
+                <button type="submit">Add word</button>
             </form>
         </div>
+    </div>
     </body>
 </html>
