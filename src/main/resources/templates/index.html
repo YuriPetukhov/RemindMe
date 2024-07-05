@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>RemindMe</title>
-        <link rel="stylesheet" href="../style.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    </head>
-    <body>
-        <div class="main__content">
-            <div class="menu__panel">
-                <ul>
-                    <li class="menu__list"><a href="/cards" class="menu__link ajax-link">Add new Card</a></li>
-                    <li class="menu__list"><a href="/stats" class="menu__link ajax-link">View Statistics</a></li>
-                    <li class="menu__list"><a href="/practise" class="menu__link ajax-link">Practise</a></li>
-                    <li class="menu__list"><a href="/info" class="menu__link ajax-link">INFO</a></li>
-                    <li class="menu__list"><a href="/settings" class="menu__link ajax-link">Settings</a></li>
-                </ul>
-            </div>
-            <div id="content">
-                <div class="cards" id="cardsContainer"></div>
-                <div th:replace="add-word-form.html :: addWordForm"></div>
-                <div th:replace="view-statistics.html :: viewStatistics"></div>
-            </div>
-        </div>
-        <script src="../script.js" defer></script>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RemindMe</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<div class="main__content">
+    <div class="menu__panel">
+        <ul>
+            <li class="menu__list"><a href="/cards" class="menu__link">Your Cards</a></li>
+            <li class="menu__list"><a href="/view-statistics" class="menu__link">View Statistics</a></li>
+            <li class="menu__list"><a href="/practise" class="menu__link">Practise</a></li>
+            <li class="menu__list"><a href="/info" class="menu__link">INFO</a></li>
+            <li class="menu__list"><a href="/settings" class="menu__link">Settings</a></li>
+        </ul>
+    </div>
+    <div id="content">
+        <div class="cards" id="cardsContainer"></div>
+        <div th:replace="cards.html :: manageCards"></div>
+        <div th:replace="view-statistics.html :: viewStatistics"></div>
+    </div>
+</div>
+<script src="../script.js" defer></script>
+</body>
 </html>

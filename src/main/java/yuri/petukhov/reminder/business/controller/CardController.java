@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
+import yuri.petukhov.reminder.business.dto.FindCardDTO;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -68,7 +69,7 @@ public class CardController {
 
     @GetMapping("/{userId}/card-name")
     @Operation(summary = "Получить карточку пользователя по названию")
-    public ResponseEntity<List<Card>> getCardByName(
+    public ResponseEntity<List<FindCardDTO>> getCardByName(
             @PathVariable Long userId,
             @RequestParam String cardName) {
         return ResponseEntity.ok().body(cardService.getCardByName(userId, cardName));

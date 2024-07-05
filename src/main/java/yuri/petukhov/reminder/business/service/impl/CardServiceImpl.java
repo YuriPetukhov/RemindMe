@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
+import yuri.petukhov.reminder.business.dto.FindCardDTO;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -139,8 +140,11 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<Card> getCardByName(Long userId, String cardName) {
-        return cardRepository.findAllByCardNameAndUserId(userId, cardName);
+    public List<FindCardDTO> getCardByName(Long userId, String cardName) {
+        List<Card> results = cardRepository.findAllByCardNameAndUserId(userId, cardName);
+        return results.stream()
+                .map(mapper:: toFindCardDTO)
+                .toList();
     }
 
     @Override
