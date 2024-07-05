@@ -2,6 +2,11 @@ $(document).ready(function() {
     var urlParams = new URLSearchParams(window.location.search);
     var userId = urlParams.get('userId');
 
+    if (!userId) {
+        alert('userId is missing in URL. Please provide a valid userId.');
+        return;
+    }
+
     function loadCards() {
         $.ajax({
             url: '/cards/' + userId + '/random-set',
@@ -50,31 +55,27 @@ $(document).ready(function() {
     }
 
     $('.menu__link').click(function(e) {
-        e.preventDefault();
-        var target = $(this).attr('href');
-        $('#cardsContainer').hide();
-        $('#manageCardsContainer').hide();
-        $('#statsContainer').hide();
-        if (target === '/cards') {
-            $('#addWordFormContainer').hide();
-            $('#manageCardsContainer').show();
-        }
-        if (target === '#add') {
-            $('#addWordFormContainer').show();
-        } else if (target === '/view-statistics') {
-            $('#addWordFormContainer').hide();
-            $('#statsContainer').show();
-            loadStatistics();
-        } else if (target === '#update') {
-            $('#updateWordFormContainer').show();
-            $('#foundCardsContainer').hide();
-            $('#editCardContainer').hide();
-        }
-    });
+    e.preventDefault();
+    closeAllContainers();
+
+    var target = $(this).attr('href');
+    if (target === '/cards') {
+        $('#manageCardsContainer').show();
+    } else if (target === '#add') {
+        $('#addWordFormContainer').show();
+    } else if (target === '/view-statistics') {
+        $('#statsContainer').show();
+        loadStatistics();
+    } else if (target === '#update') {
+        $('#updateWordFormContainer').show();
+    } else if (target === '#delete') {
+        $('#deleteWordFormContainer').show();
+    }
+});
 
     $('.tablinks').click(function(e) {
         e.preventDefault();
-        var tabName = $(this).attr('href').substring(1); // Убираем '#' из href
+        var tabName = $(this).attr('href').substring(1);
         $('.tabcontent').hide();
         $('#' + tabName).show();
     });
@@ -101,53 +102,86 @@ $(document).ready(function() {
         });
     });
 
-    $('#updateWordForm').submit(function(e) {
-        e.preventDefault();
-        var cardName = $('#cardTitleToFind').val().trim();
+    $('#findWordFormUpdate').submit(function(e) {
+    e.preventDefault();
+    var cardName = $('#cardTitleToFindUpdate').val().trim();
 
-        $.ajax({
-            url: '/cards/' + userId + '/card-name',
-            type: 'GET',
-            data: { cardName: cardName },
-            success: function(cards) {
-                if (cards.length > 0) {
-                    var foundCardsHtml = '';
-                    cards.forEach(function(card) {
-                        foundCardsHtml += '<div class="card found-card" data-id="' + card.id + '">' +
-                                          '<h2>' + card.title + '</h2>' +
-                                          '<p>' + card.content + '</p>' +
-                                          '</div>';
-                    });
-                    $('#foundCardsList').html(foundCardsHtml);
-                    $('#foundCardsContainer').show();
+    $.ajax({
+        url: '/cards/' + userId + '/card-name',
+        type: 'GET',
+        data: { cardName: cardName },
+        success: function(cards) {
+            if (cards.length > 0) {
+                var foundCardsHtml = '';
+                cards.forEach(function(card) {
+                    foundCardsHtml += '<div class="card found-card" data-id="' + card.id + '">' +
+                                      '<h2>' + card.title + '</h2>' +
+                                      '<p>' + card.content + '</p>' +
+                                      '</div>';
+                });
+                $('#foundCardsListUpdate').html(foundCardsHtml);
+                $('#foundCardsContainerUpdate').show();
 
-                    console.log('Found cards:', cards);
+                $('.found-card').click(function() {
+                    var cardId = $(this).data('id');
+                    var card = cards.find(c => c.id == cardId);
 
-                        // Обработчик клика по найденной карточке
-                        $('#foundCardsList').on('click', '.found-card', function() {
-                            var cardId = $(this).data('id');
-                            var card = cards.find(c => c.id == cardId);
-
-                            $('#cardId').val(card.id);
-                            $('#editCardTitle').val(card.title);
-                            $('#editCardContent').val(card.content);
-                            $('#editCardContainer').show();
-                        });
-
-                } else {
-                    alert('Card not found');
-                }
-            },
-            error: function(error) {
-                console.error('Error finding card:', error);
+                    $('#editCardForm #cardIdUpdate').val(cardId);
+                    $('#editCardForm #editCardTitle').val(card.title);
+                    $('#editCardForm #editCardContent').val(card.content);
+                    $('#editCardContainer').show();
+                });
+            } else {
+                alert('Card not found');
             }
-        });
+        },
+        error: function(error) {
+            console.error('Error finding card:', error);
+        }
     });
+});
 
+    $('#findWordFormDelete').submit(function(e) {
+    e.preventDefault();
+    var cardName = $('#cardTitleToFindDelete').val().trim();
+
+    $.ajax({
+        url: '/cards/' + userId + '/card-name',
+        type: 'GET',
+        data: { cardName: cardName },
+        success: function(cards) {
+            if (cards.length > 0) {
+                var foundCardsHtml = '';
+                cards.forEach(function(card) {
+                    foundCardsHtml += '<div class="card found-card" data-id="' + card.id + '">' +
+                                      '<h2>' + card.title + '</h2>' +
+                                      '<p>' + card.content + '</p>' +
+                                      '</div>';
+                });
+                $('#foundCardsListDelete').html(foundCardsHtml);
+                $('#foundCardsContainerDelete').show();
+
+                $('.found-card').click(function() {
+                    var cardId = $(this).data('id');
+                    var card = cards.find(c => c.id == cardId);
+
+                    $('#deleteCardForm #cardIdDelete').val(cardId);
+                    $('#deleteCardForm #deleteCardTitle').val(card.title);
+                    $('#deleteCardContainer').show();
+                });
+            } else {
+                alert('Card not found');
+            }
+        },
+        error: function(error) {
+            console.error('Error finding card:', error);
+        }
+    });
+});
 
     $('#editCardForm').submit(function(e) {
         e.preventDefault();
-        var cardId = $('#cardId').val();
+        var cardId = $('#cardIdUpdate').val();
         var updatedCard = {
             title: $('#editCardTitle').val(),
             content: $('#editCardContent').val()
@@ -159,11 +193,32 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(updatedCard),
             success: function(response) {
-                $('#editCardContainer').hide();
-                $('#updateWordForm')[0].reset();
+                alert('Card updated successfully');
+                $('#editCardForm')[0].reset();
+                $('#editCardContainerUpdate').hide();
+                $('#foundCardsContainerUpdate').hide();
             },
             error: function(error) {
                 console.error('Error updating card:', error);
+            }
+        });
+    });
+
+    $('#deleteCardForm').submit(function(e) {
+        e.preventDefault();
+        var cardId = $('#cardIdDelete').val();
+
+        $.ajax({
+            url: '/cards/' + userId + '/' + cardId,
+            type: 'DELETE',
+            success: function(response) {
+                alert('Card deleted successfully');
+                $('#deleteCardForm')[0].reset();
+                $('#deleteCardContainer').hide();
+                $('#foundCardsContainer').hide();
+            },
+            error: function(error) {
+                console.error('Error deleting card:', error);
             }
         });
     });
@@ -288,4 +343,17 @@ function getErrorIndicatorColor(errorPercentage) {
     } else {
         return 'red';
     }
+}
+
+function closeAllContainers() {
+    $('#cardsContainer').hide();
+    $('#manageCardsContainer').hide();
+    $('#statsContainer').hide();
+    $('#addWordFormContainer').hide();
+    $('#updateWordFormContainer').hide();
+    $('#deleteWordFormContainer').hide();
+    $('#foundCardsContainerUpdate').hide();
+    $('#editCardContainer').hide();
+    $('#foundCardsContainerDelete').hide();
+    $('#deleteCardContainer').hide();
 }
