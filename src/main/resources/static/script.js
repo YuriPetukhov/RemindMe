@@ -94,6 +94,8 @@ $(document).ready(function() {
         $('#deleteWordFormContainer').show();
     } else if (target === '/practise') {
         $('#practiseContainer').show();
+    } else if (target === '/info') {
+        $('#infoContainer').show();
     }
 });
 
@@ -398,4 +400,5 @@ function closeAllContainers() {
     $('#foundCardsContainerDelete').hide();
     $('#deleteCardContainer').hide();
     $('#practiseContainer').hide();
+    $('#infoContainer').hide();
 }
