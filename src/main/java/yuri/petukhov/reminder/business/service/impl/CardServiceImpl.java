@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.dto.FindCardDTO;
@@ -17,6 +18,7 @@ import yuri.petukhov.reminder.business.mapper.CardMapper;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.User;
 import yuri.petukhov.reminder.business.repository.CardRepository;
+import yuri.petukhov.reminder.business.repository.MatchResultRepository;
 import yuri.petukhov.reminder.business.service.CardService;
 import yuri.petukhov.reminder.business.service.UserService;
 
@@ -33,6 +35,7 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final CardMapper mapper;
     private final UserService userService;
+    private final MatchResultRepository resultRepository;
     private final Object lock = new Object();
 
     @Override
@@ -154,9 +157,11 @@ public class CardServiceImpl implements CardService {
         return cardRepository.save(mapper.updateCard(card, updatedCard));
     }
 
+    @Transactional
     @Override
     public void deleteCardById(Long userId, Long cardId) {
         if (cardRepository.findCardByUserId(userId, cardId).isPresent()) {
+            resultRepository.deleteByCardId(cardId);
             cardRepository.deleteById(cardId);
         } else {
             throw new CardNotFoundException("Card with id " + cardId + " by user " + userId + " was not found");

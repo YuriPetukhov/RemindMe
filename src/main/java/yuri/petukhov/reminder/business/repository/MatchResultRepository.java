@@ -86,4 +86,6 @@ public interface MatchResultRepository extends JpaRepository<MatchResult, Long> 
                    "WHERE card_id = :cardId " +
                    "ORDER BY timestamp ASC", nativeQuery = true)
     List<Object[]> generateCardRecord(@Param("cardId") Long cardId);
+
+    void deleteByCardId(Long cardId);
 }
