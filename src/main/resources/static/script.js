@@ -96,6 +96,8 @@ $(document).ready(function() {
         $('#practiseContainer').show();
     } else if (target === '/info') {
         $('#infoContainer').show();
+    } else if (target === '/settings') {
+        $('#settingsContainer').show();
     }
 });
 
@@ -263,6 +265,26 @@ $(document).ready(function() {
     $('#nextCardButton').click(function() {
         loadRandomCard();
     });
+    function changeTheme(theme) {
+        localStorage.setItem('theme', theme);
+        applyTheme();
+    }
+
+    function applyTheme() {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+            $('body').attr('data-theme', 'dark');
+        } else {
+            $('body').attr('data-theme', 'light');
+        }
+    }
+
+    applyTheme();
+
+    $(document).on('click', '.theme-button', function() {
+        var theme = $(this).data('theme');
+        changeTheme(theme);
+    });
 
     loadRandomCard();
 
@@ -401,4 +423,5 @@ function closeAllContainers() {
     $('#deleteCardContainer').hide();
     $('#practiseContainer').hide();
     $('#infoContainer').hide();
+    $('#settingsContainer').hide();
 }

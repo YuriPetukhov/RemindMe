@@ -1,3 +1,51 @@
+:root {
+    --background-color: #ecf0f1;
+    --text-color: #333;
+    --menu-bg-color: #2c3e50;
+    --menu-text-color: #ecf0f1;
+    --menu-hover-bg-color: #2980b9;
+    --menu-hover-border-color: #3498db;
+    --card-bg-color: #ecf0f1;
+    --card-text-color: #666;
+    --form-bg-color: #ecf0f1;
+    --form-text-color: #666;
+    --form-button-bg-color: #2c3e50;
+    --form-button-text-color: #ecf0f1;
+    --form-button-hover-bg-color: #3498db;
+    --stats-table-bg-color: #ffffff;
+    --stats-table-text-color: #333333;
+    --stats-table-alt-bg-color: #f2f2f2;
+    --stats-table-hover-bg-color: #dddddd;
+    --stats-table-header-bg-color: #34495e;
+    --stats-table-header-text-color: #ecf0f1;
+    --info-bg-color: #2c3e50;
+    --info-text-color: #ecf0f1;
+}
+
+[data-theme="dark"] {
+    --background-color: #34495e;
+    --text-color: #ecf0f1;
+    --menu-bg-color: #ecf0f1;
+    --menu-text-color: #2c3e50;
+    --menu-hover-bg-color: #3498db;
+    --menu-hover-border-color: #2980b9;
+    --card-bg-color: #2c3e50;
+    --card-text-color: #ecf0f1;
+    --form-bg-color: #2c3e50;
+    --form-text-color: #ecf0f1;
+    --form-button-bg-color: #ecf0f1;
+    --form-button-text-color: #2c3e50;
+    --form-button-hover-bg-color: #2980b9;
+    --stats-table-bg-color: #2c3e50;
+    --stats-table-text-color: #ecf0f1;
+    --stats-table-alt-bg-color: #3b4b5b;
+    --stats-table-hover-bg-color: #4a5a6a;
+    --stats-table-header-bg-color: #ecf0f1;
+    --stats-table-header-text-color: #2c3e50;
+    --info-bg-color: #ecf0f1;
+    --info-text-color: #2c3e50;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -7,6 +55,8 @@
 }
 
 body {
+    background-color: var(--background-color);
+    color: var(--text-color);
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 16px;
     font-weight: 500;
@@ -15,36 +65,36 @@ body {
     width: 100%;
 }
 
+.menu__panel {
+    background-color: var(--menu-bg-color);
+    overflow-y: hidden;
+    width: 200px;
+    height: 100vh;
+}
+
 .main__content {
     display: flex;
     flex-direction: row;
 }
 
-.menu__panel {
-    overflow-y: hidden;
-    width: 200px;
-    background-color: #ecf0f1;
-}
-
 .menu__list {
     font-weight: 500;
     padding: 2px;
-
 }
 
 .menu__list a {
-    background-color: #2c3e50;
-    border: 3px solid #2980b9;
+    background-color: var(--menu-bg-color);
+    border: 3px solid var(--menu-hover-bg-color);
     border-radius: 12px;
-    color: #ecf0f1;
+    color: var(--menu-text-color);
     padding: 10px;
     display: block;
     transition: background-color 0.3s, transform 0.3s;
 }
 
 .menu__list a:hover {
-    background-color: #2980b9;
-    border: 3px solid #3498db;
+    background-color: var(--menu-hover-bg-color);
+    border: 3px solid var(--menu-hover-border-color);
     transform: translateY(-2px);
     border-radius: 12px;
 }
@@ -55,16 +105,15 @@ body {
     grid-auto-rows: minmax(min-content, max-content);
     gap: 5px;
     padding: 5px;
-    background-color: #34495e;
+    background-color: var(--background-color);
     overflow-y: scroll;
     height: 100vh;
 }
 
 .card {
-    border: 1px solid black;
-    border: 1px solid #bdc3c7;
+    border: 1px solid var(--stats-table-text-color);
     border-radius: 12px;
-    background-color: #ecf0f1;
+    background-color: var(--card-bg-color);
     transition: transform 0.3s;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -76,30 +125,29 @@ body {
 
 .card h2 {
     font-weight: bold;
-    color: #333;
+    color: var(--text-color);
     margin-bottom: 10px;
     justify-items: center;
 }
 
 .card p {
     font-size: 14px;
-    color: #666;
+    color: var(--card-text-color);
     line-height: 1.6;
 }
 
 /* Стили для формы */
 
-
 .form-style {
-    background-color: #ecf0f1;
+    background-color: var(--form-bg-color);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border: 1px solid #bdc3c7;
+    border: 1px solid var(--stats-table-text-color);
 }
 
 .form-style label {
-    color: #333;
+    color: var(--text-color);
     margin-bottom: 10px;
 }
 
@@ -108,18 +156,18 @@ body {
     width: calc(100% - 20px);
     padding: 10px;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--form-text-color);
     border-radius: 16px;
     font-size: 14px;
-    color: #666;
+    color: var(--form-text-color);
 }
 
 .form-style button {
-    background-color: #2c3e50;
-    border: 3px solid #2980b9;
+    background-color: var(--form-button-bg-color);
+    border: 3px solid var(--menu-hover-bg-color);
     border-radius: 12px;
     width: 150px;
-    color: #ecf0f1;
+    color: var(--form-button-text-color);
     padding: 10px;
     margin-top: 20px;
     display: block;
@@ -127,9 +175,8 @@ body {
 }
 
 .form-style button:hover {
-    background-color: #3498db;
+    background-color: var(--form-button-hover-bg-color);
 }
-
 
 #content {
     width: 100%;
@@ -149,7 +196,7 @@ body {
 .stats-table {
     width: 1fr;
     border-collapse: collapse;
-    background-color: #ecf0f1;
+    background-color: var(--stats-table-bg-color);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
 }
@@ -158,29 +205,29 @@ body {
 .stats-table td {
     padding: 10px;
     text-align: left;
-    border: 1px solid #bdc3c7;
+    border: 1px solid var(--stats-table-text-color);
     white-space: nowrap;
 }
 
 .stats-table th {
     min-height: 40px;
-    background-color: #34495e;
-    color: #ecf0f1;
+    background-color: var(--stats-table-header-bg-color);
+    color: var(--stats-table-header-text-color);
 }
 
 .stats-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: var(--stats-table-alt-bg-color);
 }
 
 .stats-table tr:hover {
-    background-color: #ddd;
+    background-color: var(--stats-table-hover-bg-color);
 }
 
 /* Стиль для заголовка таблицы */
 .stats-table-title {
     text-align: center;
     font-weight: bold;
-    color: #333;
+    color: var(--text-color);
     margin-bottom: 10px;
 }
 
@@ -194,25 +241,23 @@ body {
     height: 100vh;
 }
 
-/* Стили для заголовков */
 #infoContainer h3 {
-    background-color: #2c3e50;
-    border: 3px solid #2980b9;
+    background-color: var(--info-bg-color);
+    border: 3px solid var(--menu-hover-bg-color);
     border-radius: 12px;
     padding: 10px;
     width: 300px;
-    color: #ecf0f1;
+    color: var(--info-text-color);
     display: block;
     transition: background-color 0.3s, transform 0.3s;
 }
 
 /* Стили для параграфов */
 #infoContainer p {
-    color: #333;
+    color: var(--text-color);
     line-height: 1.6;
     margin-bottom: 20px;
 }
-
 
 @media (max-width: 1080px) {
     .cards {
@@ -228,7 +273,6 @@ body {
     .stat-container {
         grid-template-columns: 1fr;
     }
-
 }
 
 @media (max-width: 680px) {
@@ -238,7 +282,6 @@ body {
 }
 
 @media (max-width: 610px) {
-
     body {
         font-size: 10px;
     }
@@ -254,7 +297,6 @@ body {
 
     .menu__list {
         height: 50px;
-
     }
 
     .menu__panel {
@@ -265,21 +307,18 @@ body {
     ul {
         display: flex;
         flex-wrap: wrap;
-
     }
     .stat-container,
     .cards {
-       height: 100vh;
-       padding-bottom: 102px;
+        height: 100vh;
+        padding-bottom: 102px;
     }
 
+    #infoContainer h3 {
+        font-size: 12px;
+    }
 
-        #infoContainer h3 {
-            font-size: 12px;
-        }
-
-        #infoContainer p {
-            font-size: 10px;
-        }
-
+    #infoContainer p {
+        font-size: 10px;
+    }
 }
