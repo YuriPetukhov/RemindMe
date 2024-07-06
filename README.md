@@ -11,13 +11,14 @@ The RemindMe is a Java-based application designed to help users learn new words 
 
 ## Screenshots
 ### Web Interface
-![RemindMe Web Interface](img.png)
+<img src="img.png" alt="RemindMe Web Interface" width="500"/>
 
 *The web interface of RemindMe showing the dashboard where users can track their progress.*
 
 ### Telegram Bot Interface
-![RemindMe Telegram Bot](img_1.png)
-![RemindMe Telegram Bot](img_2.png)
+
+<img src="img_1.png" alt="RemindMe Telegram Bot" width="250"/>
+<img src="img_2.png" alt="The Telegram bot interface of RemindMe where users can interact and learn words or information" width="250"/>
 
 *The Telegram bot interface of RemindMe where users can interact and learn words or information.*
 
