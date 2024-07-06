@@ -37,24 +37,24 @@ To start using the RemindMe Bot, simply follow this link and join the bot on Tel
 ## Installation
 
 ### Clone the repository
-\```bash
+```bash
 git clone https://github.com/YuriPetukhov/RemindMe
 cd kanji-reminder
-\```
+```
 
 ### Configure PostgreSQL
 Ensure you have PostgreSQL installed and running. Create a new database and update the `application.properties` file with your database credentials.
 
 ### Build the project
-\```bash
+```bash
 mvn clean install
-\```
+```
 
 ### Running the application
 Execute the following command to run the application:
-\```bash
+```bash
 java -jar target/reminder-0.0.1-SNAPSHOT.jar
-\```
+```
 
 ## Dependencies
 The project uses the following dependencies:
