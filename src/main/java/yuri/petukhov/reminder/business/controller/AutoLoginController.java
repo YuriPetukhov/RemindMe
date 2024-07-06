@@ -11,13 +11,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriComponentsBuilder;
 import yuri.petukhov.reminder.business.service.impl.PostgresUserDetailsService;
 
+/**
+ * Controller responsible for facilitating automatic login functionality.
+ * This controller handles the auto-login process by authenticating a user with a given user ID.
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/auto-login")
@@ -26,6 +29,12 @@ import yuri.petukhov.reminder.business.service.impl.PostgresUserDetailsService;
 public class AutoLoginController {
 
     private final PostgresUserDetailsService userDetailsService;
+
+    /**
+     * Automatically logs in a user and redirects to the test page.
+     * @param userId The ID of the user to be logged in.
+     * @return A ResponseEntity with the location header set to the test page URL.
+     */
 
     @GetMapping
     public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId) {
@@ -42,6 +51,12 @@ public class AutoLoginController {
 
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
+
+    /**
+     * Automatically logs in an admin user and redirects to the Swagger UI page.
+     * @param userId The ID of the admin user to be logged in.
+     * @return A ResponseEntity with the location header set to the Swagger UI page URL.
+     */
 
     @GetMapping("/admin")
     public ResponseEntity<?> autoLoginAdmin(@RequestParam("userId") String userId) {

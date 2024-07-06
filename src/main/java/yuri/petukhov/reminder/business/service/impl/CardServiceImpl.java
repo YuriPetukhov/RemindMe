@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuri.petukhov.reminder.business.dto.CardDTO;
@@ -28,6 +27,10 @@ import java.util.stream.Collectors;
 
 import static yuri.petukhov.reminder.business.enums.CardActivity.*;
 
+/**
+ * Service implementation for managing card-related operations.
+ * This class provides methods to create, update, delete, and retrieve card information.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,12 +41,24 @@ public class CardServiceImpl implements CardService {
     private final MatchResultRepository resultRepository;
     private final Object lock = new Object();
 
+    /**
+     * Creates a new card with the given word and associates it with the provided user.
+     * @param word The word to create a card for.
+     * @param user The user to associate the card with.
+     */
+
     @Override
     public void createNewCard(String word, User user) {
         log.info("Starting the creation of a new card for {}", word);
         Card card = Card.createCard(word, user);
         cardRepository.save(card);
     }
+
+    /**
+     * Adds a meaning to a newly created card.
+     * @param card The card to add the meaning to.
+     * @param meaning The meaning to add to the card.
+     */
 
     @Override
     public void addMeaningToNewCard(Card card, String meaning) {
@@ -52,6 +67,10 @@ public class CardServiceImpl implements CardService {
         cardRepository.save(card);
     }
 
+    /**
+     * Retrieves a list of users who are eligible for recall mode based on their cards.
+     * @return A list of users for recall mode.
+     */
 
     @Override
     public List<User> findUsersForRecallMode() {
@@ -62,11 +81,23 @@ public class CardServiceImpl implements CardService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Finds cards that are within the reminder interval up to the specified recall time.
+     * @param recallTime The time before which cards should be recalled.
+     * @return A list of cards within the reminder interval.
+     */
+
     @Override
     public List<Card> findCardsInReminderInterval(LocalDateTime recallTime) {
         log.info("findCardsInReminderInterval() is started");
         return cardRepository.findAllByReminderDateTimeBeforeAndActivityNotAndRecallMode(recallTime, FINISHED, RecallMode.NONE);
     }
+
+    /**
+     * Sets the recall mode for a list of cards.
+     * @param cards The list of cards to set the recall mode for.
+     * @param recallMode The recall mode to set.
+     */
 
     @Override
     public void setRecallMode(List<Card> cards, RecallMode recallMode) {
@@ -77,6 +108,12 @@ public class CardServiceImpl implements CardService {
         cardRepository.saveAll(cards);
     }
 
+    /**
+     * Sets the recall mode for a single card.
+     * @param card The card to set the recall mode for.
+     * @param recallMode The recall mode to be applied to the card.
+     */
+
     @Override
     public void setRecallMode(Card card, RecallMode recallMode) {
         log.info("setRecallMode() is started");
@@ -85,11 +122,23 @@ public class CardServiceImpl implements CardService {
 
     }
 
+    /**
+     * Finds the active card associated with a given user ID.
+     * @param userId The ID of the user to find the active card for.
+     * @return An Optional containing the active card if found.
+     */
+
     @Override
     public Optional<Card> findActiveCardByUserId(Long userId) {
         log.info("findActiveCardByUserId() is started");
         return cardRepository.findActiveCardByUserId(userId);
     }
+
+    /**
+     * Sets the activity status of a card.
+     * @param card The card to set the activity for.
+     * @param cardActivity The activity status to be set for the card.
+     */
 
     @Override
     public void setActivity(Card card, CardActivity cardActivity) {
@@ -98,11 +147,23 @@ public class CardServiceImpl implements CardService {
         cardRepository.save(card);
     }
 
+    /**
+     * Saves the card information to the repository.
+     * @param card The card to be saved.
+     */
+
     @Override
     public void save(Card card) {
         log.info("save() is started");
         cardRepository.save(card);
     }
+
+    /**
+     * Sets the reminder interval and time for a card.
+     * @param card The card to set the reminder for.
+     * @param time The time to set for the reminder.
+     * @param interval The interval to set for the reminder.
+     */
 
     @Override
     public void setReminderInterval(Card card, LocalDateTime time, ReminderInterval interval) {
@@ -112,16 +173,35 @@ public class CardServiceImpl implements CardService {
         cardRepository.save(card);
     }
 
+    /**
+     * Finds the first card in recall mode for a given user ID.
+     * @param userId The ID of the user to find the card for.
+     * @return An Optional containing the card if found.
+     */
+
     @Override
     public Optional<Card> findCardForRecallMode(Long userId) {
         log.info("findCardForRecallMode() is started");
         return cardRepository.findFirstByUserIdAndRecallMode(userId, RecallMode.RECALL);
     }
 
+    /**
+     * Deletes a card from the repository.
+     * @param card The card to be deleted.
+     */
+
     @Override
     public void deleteCard(Card card) {
         cardRepository.delete(card);
     }
+
+    /**
+     * Retrieves all cards for a user based on page number and size.
+     * @param userId The ID of the user whose cards are to be retrieved.
+     * @param pageNumber The page number for pagination.
+     * @param pageSize The size of the page for pagination.
+     * @return A list of CardDTOs for the specified page.
+     */
 
     @Override
     public List<CardDTO> getAllCardsByUserId(Long userId, Integer pageNumber, Integer pageSize) {
@@ -132,6 +212,14 @@ public class CardServiceImpl implements CardService {
                 .toList();
     }
 
+    /**
+     * Retrieves all cards for a user within a specific reminder interval.
+     * @param userId The ID of the user whose cards are to be retrieved.
+     * @param interval The reminder interval to filter the cards.
+     * @param pageNumber The page number for pagination.
+     * @param pageSize The size of the page for pagination.
+     * @return A list of CardDTOs within the specified reminder interval.
+     */
 
     @Override
     public List<CardDTO> getAllCardsByUserIdAndReminderInterval(Long userId, ReminderInterval interval, Integer pageNumber, Integer pageSize) {
@@ -142,6 +230,13 @@ public class CardServiceImpl implements CardService {
                 .toList();
     }
 
+    /**
+     * Retrieves a list of cards by name for a given user.
+     * @param userId The ID of the user to search for cards.
+     * @param cardName The name of the card to search for.
+     * @return A list of FindCardDTOs matching the card name.
+     */
+
     @Override
     public List<FindCardDTO> getCardByName(Long userId, String cardName) {
         List<Card> results = cardRepository.findAllByCardNameAndUserId(userId, cardName);
@@ -150,12 +245,26 @@ public class CardServiceImpl implements CardService {
                 .toList();
     }
 
+    /**
+     * Updates a card's information based on the provided update data.
+     * @param userId The ID of the user who owns the card.
+     * @param cardId The ID of the card to be updated.
+     * @param updatedCard The updated card information.
+     * @return The updated Card object.
+     */
+
     @Override
     public Card updateCard(Long userId, Long cardId, CardUpdate updatedCard) {
         Card card = cardRepository.findByIdAndUserId(cardId, userId)
                 .orElseThrow(() -> new CardNotFoundException("Card with id " + cardId + " by user " + userId + " was not found"));
         return cardRepository.save(mapper.updateCard(card, updatedCard));
     }
+
+    /**
+     * Deletes a card by its ID, ensuring it belongs to the specified user.
+     * @param userId The ID of the user who owns the card.
+     * @param cardId The ID of the card to be deleted.
+     */
 
     @Transactional
     @Override
@@ -168,6 +277,12 @@ public class CardServiceImpl implements CardService {
         }
     }
 
+    /**
+     * Adds a new card with the provided information for a user.
+     * @param card The information for the new card.
+     * @param userId The ID of the user to add the new card for.
+     */
+
     @Override
     public void addNewCard(CardUpdate card, Long userId) {
         User user = userService.findUserById(userId);
@@ -177,35 +292,81 @@ public class CardServiceImpl implements CardService {
         cardRepository.save(mapper.updateCard(newCard, card));
     }
 
+    /**
+     * Retrieves a list of cards for a user based on card activity status.
+     * @param userId The ID of the user to retrieve cards for.
+     * @param activity The activity status to filter the cards.
+     * @return A list of Cards with the specified activity status.
+     */
+
     @Override
     public List<Card> getCardByCardActivity(Long userId, CardActivity activity) {
         return cardRepository.findCardByCardActivity(userId, activity);
     }
+
+    /**
+     * Retrieves a list of cards for a user based on recall mode.
+     * @param userId The ID of the user to retrieve cards for.
+     * @param mode The recall mode to filter the cards.
+     * @return A list of Cards in the specified recall mode.
+     */
 
     @Override
     public List<Card> getCardByRecallMode(Long userId, RecallMode mode) {
         return cardRepository.findCardByRecallMode(userId, mode);
     }
 
+    /**
+     * Retrieves a list of cards for a user within a specific time range.
+     * @param userId The ID of the user to retrieve cards for.
+     * @param startTime The start time of the range.
+     * @param endTime The end time of the range.
+     * @return A list of Cards within the specified time range.
+     */
+
     @Override
     public List<Card> getCardByReminderDateTime(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         return cardRepository.findCardByReminderDateTime(userId, startTime, endTime);
     }
+
+    /**
+     * Finds duplicate card names for a given user.
+     * @param userId The ID of the user to check for duplicate card names.
+     * @return A list of Cards with duplicate names.
+     */
 
     @Override
     public List<Card> getCardNameDuplicates(Long userId) {
         return cardRepository.findCardNameDuplicates(userId);
     }
 
+    /**
+     * Finds duplicate card meanings for a given user.
+     * @param userId The ID of the user to check for duplicate card meanings.
+     * @return A list of Cards with duplicate meanings.
+     */
     @Override
     public List<Card> getCardMeaningDuplicates(Long userId) {
         return cardRepository.findCardMeaningDuplicates(userId);
     }
 
+    /**
+     * Counts all cards for a user within a specific reminder interval.
+     * @param userId The ID of the user to count cards for.
+     * @param interval The reminder interval to filter the cards.
+     * @return The number of cards within the specified interval.
+     */
     @Override
     public Integer getAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval) {
         return cardRepository.findAllCardsNumberByUserIdAndReminderInterval(userId, interval);
     }
+
+    /**
+     * Retrieves a specific card for a user by card ID.
+     * @param userId The ID of the user to retrieve the card for.
+     * @param cardId The ID of the card to retrieve.
+     * @return The requested Card object.
+     */
 
     @Override
     public Card getUserCardById(Long userId, Long cardId) {
@@ -213,6 +374,12 @@ public class CardServiceImpl implements CardService {
                 new CardNotFoundException("Card with id " + cardId + " by user " + userId + " was not found"));
 
     }
+
+    /**
+     * Activates a card for a user, ensuring that only one card is active at a time.
+     * @param card The card to activate.
+     * @param userId The ID of the user for whom the card is to be activated.
+     */
 
     @Override
     public void activateCard(Card card, Long userId) {
@@ -226,6 +393,12 @@ public class CardServiceImpl implements CardService {
         }
     }
 
+    /**
+     * Retrieves a list of card data transfer objects (DTOs) for a user.
+     * @param userId The ID of the user whose cards are to be retrieved.
+     * @return A list of CardDTOs for the user.
+     */
+
     @Override
     public List<CardDTO> getAllCardsDTOByUserId(Long userId) {
         List<Card> cards = cardRepository.findRandomCardsByUserId(userId, 60);
@@ -233,6 +406,12 @@ public class CardServiceImpl implements CardService {
                 .map(mapper::toCardDTO)
                 .toList();
     }
+
+    /**
+     * Gathers statistics for all reminder intervals for a user.
+     * @param userId The ID of the user whose statistics are to be gathered.
+     * @return A list of integers representing the statistics for all intervals.
+     */
 
     @Override
     public List<Integer> getStatsForAllIntervals(Long userId) {
@@ -248,6 +427,12 @@ public class CardServiceImpl implements CardService {
 
         return stats;
     }
+
+    /**
+     * Retrieves a random card DTO for a user.
+     * @param userId The ID of the user to retrieve a random card for.
+     * @return A CardDTO representing the random card.
+     */
 
     @Override
     public CardDTO getRandomCardsDTOByUserId(Long userId) {

@@ -1,28 +1,30 @@
 package yuri.petukhov.reminder.business.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import yuri.petukhov.reminder.business.dto.CardDTO;
-import yuri.petukhov.reminder.business.dto.CardUpdate;
-import yuri.petukhov.reminder.business.service.CardService;
 
-import java.util.List;
-
+/**
+ * Controller dedicated to handling test page requests.
+ * This controller is responsible for displaying the test page to users with proper authorization.
+ */
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class TestController {
 
-    private final CardService cardService;
+    /**
+     * Displays the test page to the user.
+     * This method checks if the user has the 'ADMIN' role or is authorized by the userServiceImpl before granting access to the test page.
+     * @param userId The ID of the user requesting access to the test page.
+     * @param model The model object to pass attributes to the view.
+     * @param authentication The authentication object containing the user's security context.
+     * @return The name of the HTML file to be displayed (index.html).
+     */
 
     @GetMapping("/test")
     @PreAuthorize(value = "hasRole('ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")

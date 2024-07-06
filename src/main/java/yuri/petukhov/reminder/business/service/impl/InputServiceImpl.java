@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import yuri.petukhov.reminder.bot.configuration.RemindMeBotConfiguration;
 import yuri.petukhov.reminder.business.dto.CardMonitoring;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -22,6 +21,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+/**
+ * Service implementation for handling user input related to card management.
+ * This class provides methods to process user commands and manage card input states.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,6 +36,11 @@ public class InputServiceImpl implements InputService {
     private final RecallService recallService;
     private final ReminderIntervalService reminderIntervalService;
 
+    /**
+     * Initiates the process for a user to input a new word for card creation.
+     * @param commandEntity The command entity containing the chat ID and user information.
+     */
+
     @Override
     public void createInputWordMessage(CommandEntity commandEntity) {
         Long chatId = commandEntity.getChatId();
@@ -40,6 +48,12 @@ public class InputServiceImpl implements InputService {
         userService.setCardInputState(user, UserCardInputState.WORD);
         menuMessageCreator.createInputWordMessage(chatId);
     }
+
+    /**
+     * Processes a user's message, validates it against the active card, and updates card monitoring.
+     * @param commandEntity The command entity containing the message and user information.
+     * @return CardMonitoring object containing the result of the validation and updated interval.
+     */
     @Override
     public CardMonitoring processMessage(CommandEntity commandEntity) {
         log.info("processMessage() is started");
@@ -60,10 +74,20 @@ public class InputServiceImpl implements InputService {
         return cardMonitoring;
     }
 
+    /**
+     * Sends the main menu message to the user.
+     * @param commandEntity The command entity containing the chat ID.
+     */
+
     @Override
     public void sendMenuMessage(CommandEntity commandEntity) {
         menuMessageCreator.createMenuMessage(commandEntity.getChatId());
     }
+
+    /**
+     * Sends a link to the web interface to the user.
+     * @param commandEntity The command entity containing the chat ID, user ID, and user role.
+     */
 
     @Override
     public void sendWebInterfaceLink(CommandEntity commandEntity) {
@@ -118,6 +142,11 @@ public class InputServiceImpl implements InputService {
         return cardOpt.get();
     }
 
+    /**
+     * Adds a name to a new card and updates the user's card input state to MEANING.
+     * @param commandEntity The command entity containing the message text and user information.
+     */
+
     @Override
     @Transactional
     public void addNameToNewCard(CommandEntity commandEntity) {
@@ -128,6 +157,11 @@ public class InputServiceImpl implements InputService {
         userService.setCardInputState(user, UserCardInputState.MEANING);
         menuMessageCreator.createInputMeaningMessage(commandEntity);
     }
+
+    /**
+     * Adds a meaning to a new card, sets the card's activity to INACTIVE, and updates the user's card input state to NONE.
+     * @param commandEntity The command entity containing the message text and user information.
+     */
 
     @Override
     @Transactional

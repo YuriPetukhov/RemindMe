@@ -8,11 +8,22 @@ import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.service.MatchResultService;
 import yuri.petukhov.reminder.business.service.ReminderIntervalService;
 
+/**
+ * Service implementation for managing reminder intervals for cards.
+ * This class provides methods to update the current reminder interval based on the user's recall performance.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ReminderIntervalServiceImpl implements ReminderIntervalService {
     private final MatchResultService matchResultService;
+
+    /**
+     * Updates the current reminder interval for a given card.
+     * This method calculates the next interval based on the number of incorrect answers and remaining recalls.
+     * @param card The card for which to update the interval.
+     * @return The updated ReminderInterval.
+     */
 
     @Override
     public ReminderInterval updateCurrentReminderInterval(Card card) {

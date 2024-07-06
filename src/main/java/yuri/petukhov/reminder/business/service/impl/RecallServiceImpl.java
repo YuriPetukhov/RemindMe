@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Service implementation for managing recall operations on cards.
+ * This class provides methods to activate recall mode, recall words for a specific user, and recall words for all users.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -25,6 +29,10 @@ public class RecallServiceImpl implements RecallService {
     private final UserService userService;
     private final MenuMessageCreator menuMessageCreator;
 
+    /**
+     * Activates recall mode for cards that are due for review.
+     * This method finds cards within the reminder interval and sets them to recall mode.
+     */
     @Override
     @Transactional
     public void activateRecallMode() {
@@ -35,6 +43,12 @@ public class RecallServiceImpl implements RecallService {
             cardService.setRecallMode(cards, RecallMode.RECALL);
         }
     }
+
+    /**
+     * Initiates the recall process for a specific user's cards.
+     * This method finds a card for recall, updates the user's input state, and sends a notification to the user.
+     * @param userId The ID of the user to recall words for.
+     */
     @Override
     public void recallWordsForUser(Long userId) {
         log.info("recallWordsForUser() is started");
@@ -50,6 +64,11 @@ public class RecallServiceImpl implements RecallService {
             userService.setCardInputState(user, UserCardInputState.NONE);
         }
     }
+
+    /**
+     * Initiates the recall process for all users with cards in recall mode.
+     * This method iterates through all users with recall cards and calls recallWordsForUser for each.
+     */
 
     @Override
     public void recallWords() {

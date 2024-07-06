@@ -12,12 +12,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.repository.UserRepository;
 
+/**
+ * Custom UserDetailsService implementation that retrieves user details from a PostgreSQL database.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostgresUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
+    /**
+     * Loads the user by their username (in this case, the user ID) and returns user details.
+     * If the user is not found, throws UsernameNotFoundException.
+     * @param username The username (user ID) of the user to load.
+     * @return UserDetails object containing the user's information.
+     * @throws UsernameNotFoundException if the user is not found in the database.
+     */
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -30,6 +41,11 @@ public class PostgresUserDetailsService implements UserDetailsService {
                 )
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
+
+    /**
+     * Bean definition for the password encoder to be used in the application.
+     * @return A BCryptPasswordEncoder instance.
+     */
 
     @Bean
     public PasswordEncoder passwordEncoder() {
