@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practise Word</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<div th:fragment="info">
+    <div id="infoContainer" style="display:none;">
+        <h3>Application Purpose:</h3>
+        <p>The primary goal of this application is to assist users in effectively memorizing information. Users input the data they need to remember, along with its meaning, and these details are sent to their Telegram account at scheduled intervals.</p>
+        <h3>Reminder Intervals:</h3>
+        <p>The reminder intervals double after each successful recall. If the user responds incorrectly, the intervals reset, and the repetition starts from the beginning. An incorrect response at any stage prompts a repeat of the previous interval in the next cycle. There are 10 repetition intervals in total, ranging from 20 minutes to 60 days.</p>
+        <h3>Statistics Interface:</h3>
+        <p>The web interface provides statistics that allow users to track the distribution of cards across the reminder intervals, as well as the count and percentage of incorrect responses for each interval.</p>
+        <h3>Practice Tab:</h3>
+        <p>The Practice tab offers users the chance to practice their memorization skills, with words selected randomly for review.</p>
+        <h3>Main Interface Page:</h3>
+        <p>The main interface page displays 60 randomly selected user cards.</p>
+        <h3>Continuous Improvement:</h3>
+        <p>The application is continuously refined and expanded with new features to enhance both the user experience and the effectiveness of the memorization process.</p>
+    </div>
+</div>
+<script src="../script.js"></script>
+</body>
+</html>

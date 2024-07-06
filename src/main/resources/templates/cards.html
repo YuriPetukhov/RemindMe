@@ -1,0 +1,31 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cards</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<div th:fragment="manageCards">
+    <div id="manageCardsContainer" class="form-style">
+        <ul>
+            <li class="menu__list"><a href="#add" class="menu__link tablinks">Add word</a></li>
+            <li class="menu__list"><a href="#update" class="menu__link tablinks">Update word</a></li>
+            <li class="menu__list"><a href="#delete" class="menu__link tablinks">Delete word</a></li>
+        </ul>
+    </div>
+
+    <div id="add" class="tabcontent" style="display:none;">
+        <div th:replace="add-form.html :: addWordForm"></div>
+    </div>
+    <div id="update" class="tabcontent" style="display:none;">
+        <div th:replace="update-form.html :: updateWordForm"></div>
+    </div>
+    <div id="delete" class="tabcontent" style="display:none;">
+        <div th:replace="delete-form.html :: deleteWordForm"></div>
+    </div>
+</div>
+</body>
+</html>
