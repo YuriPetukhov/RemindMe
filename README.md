@@ -30,7 +30,7 @@ The RemindMe is a Java-based application designed to help users learn new words 
 
 To start using the RemindMe Bot, simply follow this link and join the bot on Telegram:
 
-![Join YuriHomeworkReminderBot](https://t.me/yurihomeworkreminderbot) 
+[Join YuriHomeworkReminderBot](https://t.me/yurihomeworkreminderbot) 
 
 This bot will assist you in learning and practicing words or information, tracking your progress, and much more!
 
