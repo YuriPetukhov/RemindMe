@@ -243,4 +243,10 @@ public class CardServiceImpl implements CardService {
 
         return stats;
     }
+
+    @Override
+    public CardDTO getRandomCardsDTOByUserId(Long userId) {
+        List<Card> cards = cardRepository.findRandomCardsByUserId(userId, 1);
+        return mapper.toCardDTO(cards.get(0));
+    }
 }

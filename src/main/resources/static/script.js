@@ -1,6 +1,7 @@
 $(document).ready(function() {
     var urlParams = new URLSearchParams(window.location.search);
     var userId = urlParams.get('userId');
+    var currentCard;
 
     if (!userId) {
         alert('userId is missing in URL. Please provide a valid userId.');
@@ -54,6 +55,27 @@ $(document).ready(function() {
         });
     }
 
+    function loadRandomCard() {
+            $.ajax({
+                url: '/cards/' + userId + '/random-card',
+                type: 'GET',
+                dataType: 'json',
+                success: function(card) {
+                    if (card) {
+                        currentCard = card;
+                        $('#randomCardContent').text(currentCard.content);
+                        $('#resultMessage').html('');
+                        $('#userAnswer').val('');
+                    } else {
+                        $('#randomCardContent').text('No cards available.');
+                    }
+                },
+                error: function(error) {
+                    console.error('Error loading card:', error);
+                }
+            });
+        }
+
     $('.menu__link').click(function(e) {
     e.preventDefault();
     closeAllContainers();
@@ -70,6 +92,8 @@ $(document).ready(function() {
         $('#updateWordFormContainer').show();
     } else if (target === '#delete') {
         $('#deleteWordFormContainer').show();
+    } else if (target === '/practise') {
+        $('#practiseContainer').show();
     }
 });
 
@@ -223,6 +247,23 @@ $(document).ready(function() {
         });
     });
 
+    $('#practiseForm').submit(function(e) {
+        e.preventDefault();
+        var userAnswer = $('#userAnswer').val().trim();
+
+        if (userAnswer.toLowerCase() === currentCard.title.toLowerCase()) {
+            $('#resultMessage').html('<p style="color: green;">Correct!</p>');
+        } else {
+            $('#resultMessage').html('<p style="color: red;">Incorrect! The correct answer is: ' + currentCard.title + '</p>');
+        }
+    });
+
+    $('#nextCardButton').click(function() {
+        loadRandomCard();
+    });
+
+    loadRandomCard();
+
     loadCards();
 });
 
@@ -356,4 +397,5 @@ function closeAllContainers() {
     $('#editCardContainer').hide();
     $('#foundCardsContainerDelete').hide();
     $('#deleteCardContainer').hide();
+    $('#practiseContainer').hide();
 }

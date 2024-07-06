@@ -145,6 +145,12 @@ public class CardController {
         return ResponseEntity.ok(cards);
     }
 
+    @GetMapping("/{userId}/random-card")
+    @Operation(summary = "Получение случайной карточки")
+    public ResponseEntity<CardDTO> getRandomCard(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(cardService.getRandomCardsDTOByUserId(userId));
+    }
+
     @GetMapping("/{userId}/intervals/stats")
     @Operation(summary = "Получить статистику карточек пользователя для всех интервалов")
     public ResponseEntity<List<Integer>> getStatsForAllIntervals(@PathVariable Long userId) {
