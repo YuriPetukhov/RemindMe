@@ -266,25 +266,35 @@ $(document).ready(function() {
         loadRandomCard();
     });
     function changeTheme(theme) {
-        localStorage.setItem('theme', theme);
-        applyTheme();
-    }
+    localStorage.setItem('theme', theme);
+    applyTheme();
+}
 
     function applyTheme() {
-        var theme = localStorage.getItem('theme');
-        if (theme === 'dark') {
-            $('body').attr('data-theme', 'dark');
+    var theme = localStorage.getItem('theme') || 'light'; // Устанавливаем 'light' по умолчанию
+    document.body.setAttribute('data-theme', theme);
+    updateButtonState(theme);
+}
+
+    function updateButtonState(theme) {
+    var buttons = document.querySelectorAll('.theme-button');
+    buttons.forEach(button => {
+        if (button.getAttribute('data-theme') === theme) {
+            button.classList.add('active');
         } else {
-            $('body').attr('data-theme', 'light');
+            button.classList.remove('active');
         }
-    }
+    });
+}
 
     applyTheme();
 
-    $(document).on('click', '.theme-button', function() {
-        var theme = $(this).data('theme');
+    document.querySelectorAll('.theme-button').forEach(button => {
+    button.addEventListener('click', function() {
+        var theme = this.getAttribute('data-theme');
         changeTheme(theme);
     });
+});
 
     loadRandomCard();
 
