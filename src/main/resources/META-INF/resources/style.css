@@ -178,6 +178,29 @@ body {
     background-color: var(--form-button-hover-bg-color);
 }
 
+/* Стили для кнопок выбора темы */
+.theme-button {
+    background-color: transparent;
+    border: 2px solid var(--menu-hover-bg-color);
+    color: var(--text-color);
+    border-radius: 12px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.theme-button.active {
+    background-color: var(--menu-hover-bg-color);
+    color: var(--menu-text-color);
+}
+
+/* Стили для состояний hover и active */
+.theme-button:hover,
+.theme-button.active:hover {
+    background-color: var(--menu-hover-border-color);
+    color: var(--menu-bg-color);
+}
+
 #content {
     width: 100%;
 }
