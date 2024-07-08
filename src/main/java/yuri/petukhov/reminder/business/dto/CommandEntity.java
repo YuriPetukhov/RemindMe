@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
-import yuri.petukhov.reminder.business.enums.UserRole;
+import yuri.petukhov.reminder.business.enums.RoleName;
+import yuri.petukhov.reminder.business.model.Role;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +17,6 @@ public class CommandEntity {
     String messageText;
     Long chatId;
     Long userId;
-    UserRole userRole;
+    List<String> roles;
     UserCardInputState cardState;
 }

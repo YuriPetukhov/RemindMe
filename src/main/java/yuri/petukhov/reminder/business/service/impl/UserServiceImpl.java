@@ -3,13 +3,21 @@ package yuri.petukhov.reminder.business.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import yuri.petukhov.reminder.business.enums.UserRole;
+import org.springframework.transaction.annotation.Transactional;
+import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
+import yuri.petukhov.reminder.business.model.Role;
 import yuri.petukhov.reminder.business.model.User;
 import yuri.petukhov.reminder.business.repository.UserRepository;
 import yuri.petukhov.reminder.business.service.UserService;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static yuri.petukhov.reminder.business.enums.RoleName.ROLE_ADMIN;
 
 /**
  * Service implementation for managing user-related operations.
@@ -78,24 +86,34 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Gets the state of a user by their chat ID and username.
-     * If the user is not found, a new user is created.
+     * Retrieves the role state of a user by their chat ID and username.
+     * If the user is not found, a new user is created with the USER role.
+     * This method checks for the ADMIN role first and returns it if present.
+     * Otherwise, it defaults to the USER role.
      * @param chatId The chat ID of the user.
      * @param userName The username of the user.
-     * @return The UserRole state of the user.
+     * @return The RoleName state of the user.
      */
+    @Transactional
     @Override
-    public UserRole getUserState(Long chatId, String userName) {
-        UserRole userRole = UserRole.USER;
+    public List<String> getUserRoles(Long chatId, String userName) {
         Optional<User> optUser = findUserByChatId(chatId);
-        if(optUser.isPresent()) {
-            log.info("User state was detected");
-            userRole = optUser.get().getRole();
+        if (optUser.isPresent()) {
+            User user = optUser.get();
+            List<Role> roles = user.getRoles();
+            List<String> roleNames = roles.stream()
+                    .map(role -> role.getRoleName().name())
+                    .collect(Collectors.toList());
+            log.info("User roles were detected: " + roleNames);
+            return roleNames;
         } else {
             createNewUser(chatId, userName);
+            return Collections.singletonList(RoleName.ROLE_USER.name());
         }
-        return userRole;
     }
+
+
+
 
     /**
      * Sets the role of a user by their chat ID.
@@ -104,11 +122,27 @@ public class UserServiceImpl implements UserService {
      */
 
     @Override
-    public void setUserRole(Long chatId, UserRole state) {
+    public void setUserRole(Long chatId, RoleName state) {
         User user = findUserByChatId(chatId).orElseThrow();
-        user.setRole(state);
+        List<Role> roles = user.getRoles() != null ? user.getRoles() : new ArrayList<>();
+
+        if (state.equals(ROLE_ADMIN)) {
+            roles.clear();
+            roles.add(new Role(ROLE_ADMIN));
+        } else {
+            if (roles.isEmpty()) {
+                roles.add(new Role(RoleName.ROLE_USER));
+            }
+            else if (!roles.contains(new Role(ROLE_ADMIN))) {
+                roles.add(new Role(state));
+            }
+        }
+
+        user.setRoles(roles);
         saveUser(user);
     }
+
+
 
     /**
      * Sets the card input state of a user.
@@ -156,11 +190,16 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setChatId(chatId);
         user.setUserName(userName);
-        user.setRole(UserRole.USER);
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(new Role(RoleName.ROLE_USER));
+        user.setRoles(roles);
+
         user.setCardState(UserCardInputState.NONE);
         log.info("A NEW user was saved");
         saveUser(user);
     }
+
 
     /**
      * Checks if a user is authorized by comparing authentication ID and user ID.

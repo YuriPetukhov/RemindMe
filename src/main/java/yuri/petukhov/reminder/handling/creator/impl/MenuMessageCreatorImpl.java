@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.bot.configuration.RemindMeBotConfiguration;
 import yuri.petukhov.reminder.bot.executor.MessageExecutor;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
-import yuri.petukhov.reminder.business.enums.UserRole;
+import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
 import yuri.petukhov.reminder.business.dto.CommandEntity;
+
+import java.util.List;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
@@ -77,15 +79,17 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
-    public void createLinkMessage(Long chatId, Long userId, UserRole role) {
+    public void createLinkMessage(Long chatId, Long userId, List<String> roles) {
         String messageText = String.format(configuration.getWEB_LINK(), userId, userId, chatId);
         SendMessage message = new SendMessage(String.valueOf(chatId), messageText).parseMode(HTML);
-        if(role.equals(UserRole.ADMIN)) {
+
+        if(roles.contains(RoleName.ROLE_ADMIN.name())) {
             String messageTextAdmin = String.format(configuration.getWEB_LINK_ADMIN(), userId, userId, chatId);
             SendMessage messageAdmin = new SendMessage(String.valueOf(chatId), messageTextAdmin).parseMode(HTML);
             messageExecutor.executeMessage(messageAdmin);
         }
-        messageExecutor.executeMessage(message);
+            messageExecutor.executeMessage(message);
     }
+
 
 }

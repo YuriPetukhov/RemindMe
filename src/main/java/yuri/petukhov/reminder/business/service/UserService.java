@@ -1,9 +1,10 @@
 package yuri.petukhov.reminder.business.service;
 
+import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
-import yuri.petukhov.reminder.business.enums.UserRole;
 import yuri.petukhov.reminder.business.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -15,8 +16,8 @@ public interface UserService {
 
     Optional<User> findUserByChatId(Long chatId);
 
-    UserRole getUserState(Long chatId, String userName);
-    void setUserRole(Long chatId, UserRole state);
+    List<String> getUserRoles(Long chatId, String userName);
+    void setUserRole(Long chatId, RoleName state);
 
     void setCardInputState(User user, UserCardInputState userCardInputState);
 

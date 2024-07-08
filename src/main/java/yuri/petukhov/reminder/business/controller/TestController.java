@@ -27,7 +27,7 @@ public class TestController {
      */
 
     @GetMapping("/test")
-    @PreAuthorize(value = "hasRole('ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
     public String showTestPage(@RequestParam("userId") Long userId, Model model, Authentication authentication) {
         model.addAttribute("userId", userId);
         return "index.html";

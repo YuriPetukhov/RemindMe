@@ -2,15 +2,17 @@ package yuri.petukhov.reminder.business.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.repository.UserRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Custom UserDetailsService implementation that retrieves user details from a PostgreSQL database.
@@ -21,6 +23,7 @@ import yuri.petukhov.reminder.business.repository.UserRepository;
 public class PostgresUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Loads the user by their username (in this case, the user ID) and returns user details.
@@ -33,23 +36,20 @@ public class PostgresUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findById(Long.parseLong(username))
-                .map(user -> User.builder()
-                        .username(user.getId().toString())
-                        .password(passwordEncoder().encode(user.getChatId().toString()))
-                        .roles(user.getRole().name())
-                        .build()
-                )
+                .map(user -> {
+                    List<GrantedAuthority> authorities = user.getRoles().stream()
+                            .map(role -> {
+                                String authority = role.getAuthority();
+                                return new SimpleGrantedAuthority(authority);
+                            })
+                            .collect(Collectors.toList());
+
+                    return new org.springframework.security.core.userdetails.User(
+                            user.getId().toString(),
+                            passwordEncoder.encode(user.getChatId().toString()),
+                            authorities);
+                })
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-    }
-
-    /**
-     * Bean definition for the password encoder to be used in the application.
-     * @return A BCryptPasswordEncoder instance.
-     */
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
 

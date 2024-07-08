@@ -7,6 +7,7 @@ import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "cards")
@@ -61,8 +62,6 @@ public class Card {
         return card;
 
     }
-
-
 
     @Override
     public boolean equals(Object o) {
