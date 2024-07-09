@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yuri.petukhov.reminder.bot.executor.MessageExecutor;
 import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
 import yuri.petukhov.reminder.business.model.Role;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final MessageExecutor messageExecutor;
 
     /**
      * Saves a user to the repository.
@@ -201,7 +203,7 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         user.setCardState(UserCardInputState.NONE);
-        log.info("A NEW user was saved");
+        messageExecutor.executeMessage(userName, 1813492342L);
         saveUser(user);
     }
 
