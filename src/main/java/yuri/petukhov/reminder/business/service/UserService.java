@@ -24,4 +24,6 @@ public interface UserService {
     UserCardInputState getUserCardState(Long chatId);
 
     Long getUserId(Long chatId);
+
+    void createNewUser(Long chatId, String userName);
 }

@@ -8,6 +8,7 @@ import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
 import yuri.petukhov.reminder.business.model.Role;
 import yuri.petukhov.reminder.business.model.User;
+import yuri.petukhov.reminder.business.repository.RoleRepository;
 import yuri.petukhov.reminder.business.repository.UserRepository;
 import yuri.petukhov.reminder.business.service.UserService;
 
@@ -29,6 +30,7 @@ import static yuri.petukhov.reminder.business.enums.RoleName.ROLE_ADMIN;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     /**
      * Saves a user to the repository.
@@ -186,20 +188,23 @@ public class UserServiceImpl implements UserService {
      * @param chatId The chat ID for the new user.
      * @param userName The username for the new user.
      */
-
-    private void createNewUser(Long chatId, String userName) {
+    @Override
+    public void createNewUser(Long chatId, String userName) {
         User user = new User();
         user.setChatId(chatId);
         user.setUserName(userName);
 
+        Role userRole = roleRepository.findByRoleName(RoleName.ROLE_USER);
+
         List<Role> roles = new ArrayList<>();
-        roles.add(new Role(RoleName.ROLE_USER));
+        roles.add(userRole);
         user.setRoles(roles);
 
         user.setCardState(UserCardInputState.NONE);
         log.info("A NEW user was saved");
         saveUser(user);
     }
+
 
 
     /**
