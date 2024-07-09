@@ -11,6 +11,7 @@ import yuri.petukhov.reminder.business.model.Role;
 import yuri.petukhov.reminder.business.model.User;
 import yuri.petukhov.reminder.business.repository.RoleRepository;
 import yuri.petukhov.reminder.business.repository.UserRepository;
+import yuri.petukhov.reminder.business.service.AdminService;
 import yuri.petukhov.reminder.business.service.UserService;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final MessageExecutor messageExecutor;
+    private final AdminService adminService;
 
     /**
      * Saves a user to the repository.
@@ -203,7 +204,7 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         user.setCardState(UserCardInputState.NONE);
-        messageExecutor.executeMessage(userName, 1813492342L);
+        adminService.adminNotificate(userName, chatId);
         saveUser(user);
     }
 

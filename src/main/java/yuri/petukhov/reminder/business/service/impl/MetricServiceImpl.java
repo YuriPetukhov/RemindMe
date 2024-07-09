@@ -11,10 +11,10 @@ public class MetricServiceImpl implements MetricService {
 
     private final MetricRepository metricRepository;
     @Override
-    public void saveMetric(String message, Long chatId) {
+    public void saveMetric(String userName, Long userChatId, Long adminChatId) {
         Metric metric = new Metric();
-        metric.setMessage(message);
-        metric.setChatId(chatId);
+        metric.setMessage("New user: " + userName + ", chatId: " + userChatId);
+        metric.setChatId(adminChatId);
         metricRepository.save(metric);
     }
 }

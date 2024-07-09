@@ -25,4 +25,6 @@ public interface MenuMessageCreator {
     void createMenuMessage(Long chatId);
 
     void createLinkMessage(Long chatId, Long userId, List<String> roles);
+
+    void createAdminNewUserNotifyMessage(String userName, Long chatId, Long chatId1);
 }

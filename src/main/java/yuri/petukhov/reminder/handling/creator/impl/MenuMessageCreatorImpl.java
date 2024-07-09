@@ -91,5 +91,11 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
             messageExecutor.executeMessage(message);
     }
 
+    @Override
+    public void createAdminNewUserNotifyMessage(String userName, Long userChatId, Long adminChatId) {
+        message = "New user: " + userName + ", chatId: " + userChatId;
+        messageExecutor.executeMessage(message, adminChatId);
+    }
+
 
 }
