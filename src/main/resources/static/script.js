@@ -17,8 +17,8 @@ $(document).ready(function() {
                 let cardsHtml = '';
                 cards.forEach(function(card) {
                     cardsHtml += '<div class="card">' +
-                                  '<h2>' + card.title + '</h2>' +
-                                  '<p>' + card.content + '</p>' +
+                                  '<h2>' + card.content + '</h2>' +
+                                  '<p>' + card.title + '</p>' +
                                   '</div>';
                 });
                 $('#cardsContainer').html(cardsHtml).show();
