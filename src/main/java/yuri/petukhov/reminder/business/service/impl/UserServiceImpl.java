@@ -86,14 +86,15 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Retrieves the role state of a user by their chat ID and username.
-     * If the user is not found, a new user is created with the USER role.
-     * This method checks for the ADMIN role first and returns it if present.
-     * Otherwise, it defaults to the USER role.
+     * Retrieves the list of role names of a user by their chat ID.
+     * If the user is found, returns a list of their role names.
+     * If the user is not found, a new user is created with the USER role
+     * and a list containing only the USER role name is returned.
      * @param chatId The chat ID of the user.
      * @param userName The username of the user.
-     * @return The RoleName state of the user.
+     * @return The list of RoleName states of the user.
      */
+
     @Transactional
     @Override
     public List<String> getUserRoles(Long chatId, String userName) {
