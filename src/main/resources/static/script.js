@@ -1,7 +1,7 @@
 $(document).ready(function() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var userId = urlParams.get('userId');
-    var currentCard;
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    let currentCard;
 
     if (!userId) {
         alert('userId is missing in URL. Please provide a valid userId.');
@@ -14,7 +14,7 @@ $(document).ready(function() {
             type: 'GET',
             dataType: 'json',
             success: function(cards) {
-                var cardsHtml = '';
+                let cardsHtml = '';
                 cards.forEach(function(card) {
                     cardsHtml += '<div class="card">' +
                                   '<h2>' + card.title + '</h2>' +
@@ -80,7 +80,7 @@ $(document).ready(function() {
     e.preventDefault();
     closeAllContainers();
 
-    var target = $(this).attr('href');
+    let target = $(this).attr('href');
     if (target === '/cards') {
         $('#manageCardsContainer').show();
     } else if (target === '#add') {
@@ -103,14 +103,14 @@ $(document).ready(function() {
 
     $('.tablinks').click(function(e) {
         e.preventDefault();
-        var tabName = $(this).attr('href').substring(1);
+        let tabName = $(this).attr('href').substring(1);
         $('.tabcontent').hide();
         $('#' + tabName).show();
     });
 
     $('#addWordForm').submit(function(e) {
         e.preventDefault();
-        var cardData = {
+        let cardData = {
             title: $('#cardTitleAdd').val(),
             content: $('#cardContentAdd').val()
         };
@@ -132,7 +132,7 @@ $(document).ready(function() {
 
     $('#findWordFormUpdate').submit(function(e) {
     e.preventDefault();
-    var cardName = $('#cardTitleToFindUpdate').val().trim();
+    let cardName = $('#cardTitleToFindUpdate').val().trim();
 
     $.ajax({
         url: '/cards/' + userId + '/card-name',
@@ -140,7 +140,7 @@ $(document).ready(function() {
         data: { cardName: cardName },
         success: function(cards) {
             if (cards.length > 0) {
-                var foundCardsHtml = '';
+                let foundCardsHtml = '';
                 cards.forEach(function(card) {
                     foundCardsHtml += '<div class="card found-card" data-id="' + card.id + '">' +
                                       '<h2>' + card.title + '</h2>' +
@@ -151,8 +151,8 @@ $(document).ready(function() {
                 $('#foundCardsContainerUpdate').show();
 
                 $('.found-card').click(function() {
-                    var cardId = $(this).data('id');
-                    var card = cards.find(c => c.id == cardId);
+                    let cardId = $(this).data('id');
+                    let card = cards.find(c => c.id == cardId);
 
                     $('#editCardForm #cardIdUpdate').val(cardId);
                     $('#editCardForm #editCardTitle').val(card.title);
@@ -171,7 +171,7 @@ $(document).ready(function() {
 
     $('#findWordFormDelete').submit(function(e) {
     e.preventDefault();
-    var cardName = $('#cardTitleToFindDelete').val().trim();
+    let cardName = $('#cardTitleToFindDelete').val().trim();
 
     $.ajax({
         url: '/cards/' + userId + '/card-name',
@@ -179,7 +179,7 @@ $(document).ready(function() {
         data: { cardName: cardName },
         success: function(cards) {
             if (cards.length > 0) {
-                var foundCardsHtml = '';
+                let foundCardsHtml = '';
                 cards.forEach(function(card) {
                     foundCardsHtml += '<div class="card found-card" data-id="' + card.id + '">' +
                                       '<h2>' + card.title + '</h2>' +
@@ -190,8 +190,8 @@ $(document).ready(function() {
                 $('#foundCardsContainerDelete').show();
 
                 $('.found-card').click(function() {
-                    var cardId = $(this).data('id');
-                    var card = cards.find(c => c.id == cardId);
+                    let cardId = $(this).data('id');
+                    let card = cards.find(c => c.id == cardId);
 
                     $('#deleteCardForm #cardIdDelete').val(cardId);
                     $('#deleteCardForm #deleteCardTitle').val(card.title);
@@ -209,8 +209,8 @@ $(document).ready(function() {
 
     $('#editCardForm').submit(function(e) {
         e.preventDefault();
-        var cardId = $('#cardIdUpdate').val();
-        var updatedCard = {
+        let cardId = $('#cardIdUpdate').val();
+        let updatedCard = {
             title: $('#editCardTitle').val(),
             content: $('#editCardContent').val()
         };
@@ -234,7 +234,7 @@ $(document).ready(function() {
 
     $('#deleteCardForm').submit(function(e) {
         e.preventDefault();
-        var cardId = $('#cardIdDelete').val();
+        let cardId = $('#cardIdDelete').val();
 
         $.ajax({
             url: '/cards/' + userId + '/' + cardId,
@@ -253,7 +253,7 @@ $(document).ready(function() {
 
     $('#practiseForm').submit(function(e) {
         e.preventDefault();
-        var userAnswer = $('#userAnswer').val().trim();
+        let userAnswer = $('#userAnswer').val().trim();
 
         if (userAnswer.toLowerCase() === currentCard.title.toLowerCase()) {
             $('#resultMessage').html('<p style="color: green;">Correct!</p>');
@@ -271,13 +271,13 @@ $(document).ready(function() {
 }
 
     function applyTheme() {
-    var theme = localStorage.getItem('theme') || 'light'; // Устанавливаем 'light' по умолчанию
+    let theme = localStorage.getItem('theme') || 'light'; // Устанавливаем 'light' по умолчанию
     document.body.setAttribute('data-theme', theme);
     updateButtonState(theme);
 }
 
     function updateButtonState(theme) {
-    var buttons = document.querySelectorAll('.theme-button');
+    let buttons = document.querySelectorAll('.theme-button');
     buttons.forEach(button => {
         if (button.getAttribute('data-theme') === theme) {
             button.classList.add('active');
@@ -291,7 +291,7 @@ $(document).ready(function() {
 
     document.querySelectorAll('.theme-button').forEach(button => {
     button.addEventListener('click', function() {
-        var theme = this.getAttribute('data-theme');
+        let theme = this.getAttribute('data-theme');
         changeTheme(theme);
     });
 });
