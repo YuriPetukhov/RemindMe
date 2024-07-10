@@ -8,25 +8,24 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
-<div class="main__content">
-    <div class="menu__panel">
-        <ul>
-            <li class="menu__list"><a href="/cards" class="menu__link">Your Cards</a></li>
-            <li class="menu__list"><a href="/view-statistics" class="menu__link">View Statistics</a></li>
-            <li class="menu__list"><a href="/practise" class="menu__link">Practise</a></li>
-            <li class="menu__list"><a href="/info" class="menu__link">INFO</a></li>
-            <li class="menu__list"><a href="/settings" class="menu__link">Settings</a></li>
-        </ul>
-    </div>
-    <div id="content">
-        <div class="cards" id="cardsContainer"></div>
-        <div th:replace="cards.html :: manageCards"></div>
-        <div th:replace="view-statistics.html :: viewStatistics"></div>
-        <div th:replace="practise.html :: practise"></div>
-        <div th:replace="info.html :: info"></div>
-        <div th:replace="settings.html :: settings"></div>
-    </div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+        var roles = /*[[${roles}]]*/ [];
+        var userId = /*[[${userId}]]*/ 'default';
+    /*]]>*/
+</script>
+<div th:if="${#lists.contains(roles, 'ROLE_USER')}">
+    <div th:replace="user/user-interface.html :: user-interface"></div>
 </div>
-<script src="../script.js" defer></script>
+<div th:if="${#lists.contains(roles, 'ROLE_TEACHER')}">
+    <div th:replace="teacher/teacher-interface.html :: teacher-interface"></div>
+</div>
+<div th:if="${#lists.contains(roles, 'ROLE_STUDENT')}">
+    <div th:replace="student-interface.html :: student-interface"></div>
+</div>
+<div th:if="${#lists.contains(roles, 'ROLE_ADMIN')}">
+    <div th:replace="admin/admin-interface.html :: admin-interface"></div>
+</div>
+<script src="../script.js"></script>
 </body>
 </html>
