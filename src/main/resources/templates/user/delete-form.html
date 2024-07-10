@@ -1,0 +1,37 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Word</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<div th:fragment="deleteWordForm">
+    <div id="deleteWordFormContainer" class="form-style">
+        <form id="findWordFormDelete">
+            <label for="cardTitleToFindDelete">Your word:</label>
+            <input type="text" id="cardTitleToFindDelete" name="title" required>
+            <button type="submit">Find word</button>
+        </form>
+    </div>
+
+    <div id="foundCardsContainerDelete" style="display:none;" class="form-style">
+        <h3>Found Cards</h3>
+        <div id="foundCardsListDelete"></div>
+    </div>
+
+    <div id="deleteCardContainer" style="display:none;" class="form-style">
+        <form id="deleteCardForm">
+            <input type="hidden" id="cardIdDelete" name="cardId">
+            <label for="deleteCardTitle">Delete word:</label>
+            <input type="text" id="deleteCardTitle" name="title" readonly>
+            <button type="submit">Delete word</button>
+        </form>
+    </div>
+</div>
+
+<script src="../script.js"></script>
+</body>
+</html>
