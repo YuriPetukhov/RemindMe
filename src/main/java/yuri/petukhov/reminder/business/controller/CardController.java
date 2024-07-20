@@ -3,6 +3,7 @@ package yuri.petukhov.reminder.business.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #userId)")
 @RequestMapping("/cards")
 @Tag(name = "CARDS")
+@Slf4j
 public class CardController {
 
     private final CardService cardService;
@@ -56,7 +59,6 @@ public class CardController {
      */
 
     @GetMapping("/all")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #userId)")
     @Operation(summary = "Получить все карточки пользователя: указать количество и размер страницы")
     public ResponseEntity<List<CardDTO>> getAllCards(
             @RequestParam(value = "page") Integer pageNumber,
@@ -228,7 +230,6 @@ public class CardController {
      */
 
     @GetMapping("/random-set")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #userId)")
     @Operation(summary = "Получение набора 60 случайных карточек")
     public ResponseEntity<List<CardDTO>> getCards(Authentication authentication) {
         List<CardDTO> cards = cardService.getAllCardsDTOByUserId(Long.valueOf(authentication.getName()));
@@ -243,6 +244,7 @@ public class CardController {
     @GetMapping("/random-card")
     @Operation(summary = "Получение случайной карточки")
     public ResponseEntity<CardDTO> getRandomCard(Authentication authentication) {
+        log.info("user " + authentication.getName());
         return ResponseEntity.ok(cardService.getRandomCardsDTOByUserId(Long.valueOf(authentication.getName())));
     }
     /**
