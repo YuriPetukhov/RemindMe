@@ -28,9 +28,10 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-/src/main/resources/
 
 /docker-compose.yaml
 /Dockerfile
 /mvnw
 /mvnw.cmd
+/src/main/resources/application-dev.properties
+/src/main/resources/application-prod.properties

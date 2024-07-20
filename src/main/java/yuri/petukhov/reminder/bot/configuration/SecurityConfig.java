@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -26,7 +28,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig extends GlobalMethodSecurityConfiguration implements WebMvcConfigurer {
 
     private static final String[] AUTH_WHITELIST = {
-            "/auto-login/"
+            "/auto-login",
+            "/ws/**",
+            "/api/user-roles"
     };
 
     @Bean
@@ -50,6 +54,17 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration implements
                 .httpBasic(withDefaults());
 
         return http.build();
+    }
+
+
+    /**
+     * Bean definition for the password encoder to be used in the application.
+     * @return A BCryptPasswordEncoder instance.
+     */
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

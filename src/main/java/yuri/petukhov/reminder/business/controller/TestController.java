@@ -4,9 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import yuri.petukhov.reminder.business.enums.RoleName;
+import yuri.petukhov.reminder.business.model.Role;
+import yuri.petukhov.reminder.business.service.RoleService;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static yuri.petukhov.reminder.business.enums.RoleName.*;
 
 /**
  * Controller dedicated to handling test page requests.
@@ -17,19 +27,43 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class TestController {
 
+    private final RoleService roleService;
+
     /**
      * Displays the test page to the user.
      * This method checks if the user has the 'ADMIN' role or is authorized by the userServiceImpl before granting access to the test page.
      * @param userId The ID of the user requesting access to the test page.
      * @param model The model object to pass attributes to the view.
      * @param authentication The authentication object containing the user's security context.
-     * @return The name of the HTML file to be displayed (index.html).
+     * @return The name of the HTML file to be displayed (user-interface.html).
      */
 
     @GetMapping("/test")
-    @PreAuthorize(value = "hasRole('ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
     public String showTestPage(@RequestParam("userId") Long userId, Model model, Authentication authentication) {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        List<Role> userRoles = authorities.stream()
+                .map(authority -> roleService.findByRoleName(RoleName.valueOf(authority.getAuthority())).orElse(null))
+                .collect(Collectors.toList());
+
+        Role highestPriorityRole = roleService.getHighestPriorityRole(userRoles);
+
         model.addAttribute("userId", userId);
-        return "index.html";
+        model.addAttribute("roles", userRoles.stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.toList()));
+
+        String redirectPage = "index";
+//        if (highestPriorityRole != null) {
+//            switch (highestPriorityRole.getRoleName()) {
+//                case ROLE_ADMIN -> redirectPage = "admin-interface";
+//                case ROLE_TEACHER -> redirectPage = "teacher-interface";
+//                case ROLE_STUDENT -> redirectPage = "student-interface";
+//            }
+//        }
+
+        return redirectPage;
     }
+
+
 }

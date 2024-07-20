@@ -1,0 +1,38 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<div th:fragment="manageUsers">
+    <div id="manageUsersContainer" class="form-style">
+        <ul>
+            <li class="menu__list"><a href="#add-user" class="menu__link tablinks">Add User</a></li>
+            <li class="menu__list"><a href="#update-user" class="menu__link tablinks">Update User</a></li>
+            <li class="menu__list"><a href="#delete-user" class="menu__link tablinks">Delete User</a></li>
+            <li class="menu__list"><a href="#get-user" class="menu__link tablinks">Get User</a></li>
+            <li class="menu__list"><a href="#get-users" class="menu__link tablinks">Get Users</a></li>
+        </ul>
+    </div>
+
+    <div id="add-user" class="tabcontent" style="display:none;">
+        <div th:replace="admin/add-user-form.html :: addUserForm"></div>
+    </div>
+    <div id="update-user" class="tabcontent" style="display:none;">
+        <div th:replace="admin/update-user-form.html :: updateUserForm"></div>
+    </div>
+    <div id="delete-user" class="tabcontent" style="display:none;">
+        <div th:replace="admin/delete-user-form.html :: deleteUserForm"></div>
+    </div>
+    <div id="get-user" class="tabcontent" style="display:none;">
+        <div th:replace="admin/get-user-form.html :: getUserForm"></div>
+    </div>
+    <div id="get-users" class="tabcontent" style="display:none;">
+        <div th:replace="admin/get-users-form.html :: getUsersForm"></div>
+    </div>
+</div>
+</body>
+</html>

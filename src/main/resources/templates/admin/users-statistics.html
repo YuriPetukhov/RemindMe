@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AddWord</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Users Statistic</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
-<div th:fragment="viewStatistics">
-    <div id="statsContainer" style="display:none;">
+<div th:fragment="usersStatistics">
+    <div id="usersStatsContainer" style="display:none;">
         <div class="stat-container">
             <table class="stats-table">
                 <thead>
@@ -18,7 +17,7 @@
                     <th>Progress</th>
                 </tr>
                 </thead>
-                <tbody id="statsTableBody01">
+                <tbody id="statsTableBody03">
                 </tbody>
             </table>
             <table class="stats-table">
@@ -29,7 +28,7 @@
                     <th>Errors</th>
                 </tr>
                 </thead>
-                <tbody id="statsTableBody02">
+                <tbody id="statsTableBody04">
                 </tbody>
             </table>
         </div>

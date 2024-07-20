@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
-import yuri.petukhov.reminder.business.enums.UserRole;
 
 import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -24,9 +24,13 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "user_role")
-    private UserRole role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id") }
+    )
+    private List<Role> roles;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "card_input_state")
@@ -54,7 +58,7 @@ public class User {
                "id=" + id +
                ", chatId=" + chatId +
                ", userName='" + userName + '\'' +
-               ", state=" + role +
+               ", roles=" + roles +
                ", cardState=" + cardState +
                '}';
     }

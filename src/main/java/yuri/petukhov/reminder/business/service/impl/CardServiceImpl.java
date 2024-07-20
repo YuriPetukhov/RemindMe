@@ -439,4 +439,21 @@ public class CardServiceImpl implements CardService {
         List<Card> cards = cardRepository.findRandomCardsByUserId(userId, 1);
         return mapper.toCardDTO(cards.get(0));
     }
+
+    @Override
+    public Card findById(Long cardId) {
+        Optional<Card> optCard = cardRepository.findById(cardId);
+        if(optCard.isPresent()) {
+            return optCard.get();
+        } else {
+            throw new CardNotFoundException("Card " + cardId + " not found");
+        }
+
+    }
+
+    public boolean isAuthorCard(Long userId, Long cardId) {
+        User user = userService.findUserById(userId);
+        Card card = cardRepository.findById(cardId).orElse(null);
+        return user != null && card != null && card.getUser().getId().equals(user.getId());
+    }
 }

@@ -5,3 +5,11 @@ databaseChangeLog:
       file: liquibase/scripts/script_index.sql
   - include:
       file: liquibase/scripts/script_results.sql
+  - include:
+      file: liquibase/scripts/scripts_new_tables.sql
+  - include:
+      file: liquibase/scripts/script_metric.sql
+  - include:
+      file: liquibase/scripts/script_insert_roles.sql
+  - include:
+      file: liquibase/scripts/script_alter_card_set.sql

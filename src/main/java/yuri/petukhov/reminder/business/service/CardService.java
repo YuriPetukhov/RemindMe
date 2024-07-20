@@ -70,4 +70,6 @@ public interface CardService {
     List<Integer> getStatsForAllIntervals(Long userId);
 
     CardDTO getRandomCardsDTOByUserId(Long userId);
+
+    Card findById(Long cardId);
 }

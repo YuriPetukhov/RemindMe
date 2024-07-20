@@ -1,0 +1,28 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<div th:fragment="metrics">
+    <div id="newUserMessagesContainer" class="form-style" style="display:none;">
+        <table id="newUserMessagesTable" class="stats-table">
+            <thead>
+            <tr>
+                <th class="col-checkbox"></th>
+                <th class="col-number">#</th>
+                <th class="col-message">Message</th>
+                <th class="col-timestamp">Timestamp</th>
+                <th class="col-action">Action</th>
+            </tr>
+            </thead>
+            <tbody id="newUserMessage"></tbody>
+        </table>
+        <button id="deleteSelected">Delete Selected</button>
+    </div>
+</div>
+</body>
+</html>
