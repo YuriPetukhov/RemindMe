@@ -29,7 +29,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #userId)")
 @RequestMapping("/cards")
 @Tag(name = "CARDS")
 @Slf4j
@@ -187,6 +186,7 @@ public class CardController {
      */
 
     @GetMapping("/{cardId}")
+    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Получить карточку пользователя по id")
     public ResponseEntity<Card> getUserCardById(
             @PathVariable Long cardId,
@@ -202,6 +202,7 @@ public class CardController {
      */
 
     @PutMapping(value = "/{cardId}")
+    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Обновление карточки пользователя")
     public ResponseEntity<Card> updateCard(
             @PathVariable Long cardId,
@@ -216,6 +217,7 @@ public class CardController {
      */
 
     @DeleteMapping(value = "/{cardId}")
+    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Удаление карточки")
     public ResponseEntity<Void> deleteCard(
             @PathVariable Long cardId,

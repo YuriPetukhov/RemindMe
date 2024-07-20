@@ -451,8 +451,8 @@ public class CardServiceImpl implements CardService {
 
     }
 
-    public boolean isAuthorCard(Long userId, Long cardId) {
-        User user = userService.findUserById(userId);
+    public boolean isAuthorCard(String userId, Long cardId) {
+        User user = userService.findUserById(Long.valueOf(userId));
         Card card = cardRepository.findById(cardId).orElse(null);
         return user != null && card != null && card.getUser().getId().equals(user.getId());
     }

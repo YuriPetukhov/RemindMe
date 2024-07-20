@@ -32,7 +32,7 @@ public class CardSetController {
     }
 
     @PutMapping("/{cardSetId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardSetServiceImpl.isAuthor(authentication.getName(), #cardSetId)")
+    @PreAuthorize(value = "hasRole('ADMIN') or @cardSetServiceImpl.isAuthorCardSet(authentication.getName(), #cardSetId)")
     @Operation(summary = "Добавление списка карточек в набор")
     public ResponseEntity<Void> addCardsToSet(
             @PathVariable Long cardSetId,
@@ -42,7 +42,7 @@ public class CardSetController {
     }
 
     @DeleteMapping(value = "/{cardSetId}/{cardId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardSetServiceImpl.isAuthor(authentication.getName(), #cardSetId)")
+    @PreAuthorize(value = "hasRole('ADMIN') or @cardSetServiceImpl.isAuthorCardSet(authentication.getName(), #cardSetId)")
     @Operation(summary = "Удаление карточки из набора")
     public ResponseEntity<Void> deleteCard(
             @PathVariable Long cardSetId,

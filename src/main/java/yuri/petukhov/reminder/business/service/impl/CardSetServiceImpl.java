@@ -97,8 +97,8 @@ public class CardSetServiceImpl implements CardSetService {
 
     }
 
-    public boolean isAuthorCard(Long userId, Long cardSetId) {
-        User user = userService.findUserById(userId);
+    public boolean isAuthorCardSet(String userId, Long cardSetId) {
+        User user = userService.findUserById(Long.valueOf(userId));
         CardSet cardSet = cardSetRepository.findById(cardSetId).orElse(null);
         return user != null && cardSet != null && cardSet.getUser().getId().equals(user.getId());
     }
