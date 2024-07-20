@@ -16,35 +16,35 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/card-set")
+@RequestMapping("/card-sets")
 @Tag(name = "CARD-SET")
 @Slf4j
-@PreAuthorize(value = "hasRole('ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
 public class CardSetController {
     private final CardSetService cardSetService;
 
     @PostMapping
     @Operation(summary = "Добавление набора карточек")
-    public ResponseEntity<Void> createCardSet(Authentication authentication,
-            @RequestBody CreateCardSetDTO cardSet) {
+    public ResponseEntity<Void> createCardSet(
+            @RequestBody CreateCardSetDTO cardSet,
+            Authentication authentication) {
         cardSetService.createCardSet(cardSet, Long.valueOf(authentication.getName()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{userId}/{cardSetId}")
+    @PutMapping("/{cardSetId}")
+    @PreAuthorize(value = "hasRole('ADMIN') or @cardSetServiceImpl.isAuthorCardSet(authentication.getName(), #cardSetId)")
     @Operation(summary = "Добавление списка карточек в набор")
     public ResponseEntity<Void> addCardsToSet(
-            @PathVariable Long userId,
             @PathVariable Long cardSetId,
             @RequestBody List<Long> cardIds) {
         cardSetService.addCardsToSet(cardSetId, cardIds);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @DeleteMapping(value = "/{userId}/{cardSetId}/{cardId}")
+    @DeleteMapping(value = "/{cardSetId}/{cardId}")
+    @PreAuthorize(value = "hasRole('ADMIN') or @cardSetServiceImpl.isAuthorCardSet(authentication.getName(), #cardSetId)")
     @Operation(summary = "Удаление карточки из набора")
     public ResponseEntity<Void> deleteCard(
-            @PathVariable Long userId,
             @PathVariable Long cardSetId,
             @PathVariable Long cardId) {
         cardSetService.removeCardFromSet(cardSetId, cardId);

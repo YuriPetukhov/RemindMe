@@ -64,8 +64,7 @@ public class MatchResultController {
     @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Получить отчет по ответам для выбранной карточки пользователя")
     public ResponseEntity<List<CardRecordDTO>> getCardRecord(
-            @PathVariable Long cardId,
-            Authentication authentication) {
+            @PathVariable Long cardId) {
         return ResponseEntity.ok().body(matchResultService.getCardRecord(cardId));
     }
 

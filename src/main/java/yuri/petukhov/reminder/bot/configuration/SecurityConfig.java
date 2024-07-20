@@ -40,7 +40,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration implements
                 .cors(withDefaults())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers("/cards/**", "/monitoring/**").authenticated()
+                        .requestMatchers("/cards/**", "/monitoring/**", "/card-sets/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
