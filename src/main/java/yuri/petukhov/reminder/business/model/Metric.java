@@ -22,7 +22,7 @@ public class Metric {
     private String message;
 
     @Column(name = "chat_id")
-    private Long chatId;
+    private Long adminChatId;
 
     @Column(name = "timestamp")
     private LocalDateTime timestamp;

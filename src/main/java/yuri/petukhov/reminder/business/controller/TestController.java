@@ -8,10 +8,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import yuri.petukhov.reminder.business.enums.RoleName;
+import yuri.petukhov.reminder.business.model.Role;
+import yuri.petukhov.reminder.business.service.RoleService;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static yuri.petukhov.reminder.business.enums.RoleName.*;
 
 /**
  * Controller dedicated to handling test page requests.
@@ -21,6 +26,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class TestController {
+
+    private final RoleService roleService;
 
     /**
      * Displays the test page to the user.
@@ -35,14 +42,28 @@ public class TestController {
     @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
     public String showTestPage(@RequestParam("userId") Long userId, Model model, Authentication authentication) {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        List<String> roles = authorities.stream()
-                .map(GrantedAuthority::getAuthority)
+        List<Role> userRoles = authorities.stream()
+                .map(authority -> roleService.findByRoleName(RoleName.valueOf(authority.getAuthority())).orElse(null))
                 .collect(Collectors.toList());
 
-        model.addAttribute("roles", roles);
-        model.addAttribute("userId", userId);
+        Role highestPriorityRole = roleService.getHighestPriorityRole(userRoles);
 
-        return "index";
+        model.addAttribute("userId", userId);
+        model.addAttribute("roles", userRoles.stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.toList()));
+
+        String redirectPage = "index";
+//        if (highestPriorityRole != null) {
+//            switch (highestPriorityRole.getRoleName()) {
+//                case ROLE_ADMIN -> redirectPage = "admin-interface";
+//                case ROLE_TEACHER -> redirectPage = "teacher-interface";
+//                case ROLE_STUDENT -> redirectPage = "student-interface";
+//            }
+//        }
+
+        return redirectPage;
     }
+
 
 }

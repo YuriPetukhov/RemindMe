@@ -76,6 +76,9 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.interval = :interval")
     Integer findAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval);
 
+    @Query("SELECT COUNT(c) FROM cards c WHERE c.interval = :interval")
+    int findAllCardsNumberByReminderInterval(ReminderInterval interval);
+
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId")
     List<Card> findUserCards(Long userId);
 
@@ -83,6 +86,12 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findRandomCardsByUserId(Long userId, int limit);
     @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.activity != 'FINISHED'")
     int getAllCardsNumber(Long userId);
+    @Query("SELECT COUNT(c) FROM cards c WHERE c.activity != 'FINISHED'")
+    int getAllCardsNumber();
     @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.activity = :activity")
     int getFinishedCardsNumber(Long userId, CardActivity activity);
+
+    @Query("SELECT COUNT(c) FROM cards c WHERE c.activity = :activity")
+    int getFinishedCardsNumber(CardActivity activity);
+
 }

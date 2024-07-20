@@ -65,6 +65,10 @@ body {
     width: 100%;
 }
 
+.interface {
+display: none;
+}
+
 .menu__panel {
     background-color: var(--menu-bg-color);
     overflow-y: hidden;
@@ -173,6 +177,33 @@ body {
     display: block;
     transition: background-color 0.3s, transform 0.3s;
 }
+#newUserMessagesTable button {
+    margin-top: 0;
+}
+
+#newUserMessagesTable td {
+    white-space: normal;
+}
+
+.col-checkbox {
+    width: 5%;
+}
+
+.col-number {
+    width: 5%;
+}
+
+.col-message {
+    width: 50%;
+}
+
+.col-timestamp {
+    width: 20%;
+}
+
+.col-action {
+    width: 20%;
+}
 
 .form-style button:hover {
     background-color: var(--form-button-hover-bg-color);
@@ -201,8 +232,13 @@ body {
     color: var(--menu-bg-color);
 }
 
-#content {
+.content {
     width: 100%;
+}
+
+#newUserMessagesContainer {
+    padding: 5px;
+
 }
 
 /* Стили для таблицы статистики */
@@ -217,11 +253,12 @@ body {
 }
 
 .stats-table {
-    width: 1fr;
     border-collapse: collapse;
     background-color: var(--stats-table-bg-color);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
+    width: 100%;
+    table-layout: auto;
 }
 
 .stats-table th,
@@ -281,6 +318,34 @@ body {
     line-height: 1.6;
     margin-bottom: 20px;
 }
+
+ /* Встроенные стили можно добавить сюда */
+    .interface-buttons {
+        margin: 2px;
+    }
+
+    .interface-buttons button {
+        background-color: var(--menu-bg-color);
+        border: 3px solid var(--menu-hover-bg-color);
+        border-radius: 12px;
+        margin-bottom: 4px;
+        text-align: left;
+        color: var(--menu-text-color);
+        font-weight: 500;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        font-size: 16px;
+        padding: 10px;
+        display: block;
+        width: 100%;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .interface-buttons button:hover {
+        background-color: var(--menu-hover-bg-color);
+        border: 3px solid var(--menu-hover-border-color);
+        transform: translateY(-2px);
+        border-radius: 12px;
+    }
 
 @media (max-width: 1080px) {
     .cards {

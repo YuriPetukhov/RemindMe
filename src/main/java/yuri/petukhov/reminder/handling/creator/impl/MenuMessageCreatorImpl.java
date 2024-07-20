@@ -97,5 +97,4 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
         messageExecutor.executeMessage(message, adminChatId);
     }
 
-
 }

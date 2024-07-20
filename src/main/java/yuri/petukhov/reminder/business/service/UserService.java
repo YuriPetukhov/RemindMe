@@ -17,7 +17,6 @@ public interface UserService {
     Optional<User> findUserByChatId(Long chatId);
 
     List<String> getUserRoles(Long chatId, String userName);
-    void setUserRole(Long chatId, RoleName state);
 
     void setCardInputState(User user, UserCardInputState userCardInputState);
 
@@ -26,4 +25,10 @@ public interface UserService {
     Long getUserId(Long chatId);
 
     void createNewUser(Long chatId, String userName);
+
+    void addRole(Long userId, RoleName role);
+
+    List<String> getCurrentUserRoles(long l);
+
+    void deleteRoleByUser(Long userId, RoleName roleName);
 }

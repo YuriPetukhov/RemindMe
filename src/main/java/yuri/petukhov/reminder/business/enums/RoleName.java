@@ -4,9 +4,17 @@ import lombok.Getter;
 
 @Getter
 public enum RoleName {
-    ROLE_USER,
-    ROLE_TEACHER,
-    ROLE_STUDENT,
-    ROLE_BLOCKED,
-    ROLE_ADMIN;
+    ROLE_USER(1),
+    ROLE_STUDENT(2),
+    ROLE_TEACHER(3),
+    ROLE_BLOCKED(4),
+    ROLE_ADMIN(5);
+
+    private final int priority;
+
+    RoleName(int priority) {
+        this.priority = priority;
+    }
+
 }
+

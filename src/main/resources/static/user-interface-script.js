@@ -10,7 +10,7 @@ $(document).ready(function() {
 
     function loadCards() {
         $.ajax({
-            url: '/cards/' + userId + '/random-set',
+            url: '/cards/random-set',
             type: 'GET',
             dataType: 'json',
             success: function(cards) {
@@ -31,7 +31,7 @@ $(document).ready(function() {
 
     function loadStatistics() {
         $.ajax({
-            url: '/cards/' + userId + '/intervals/stats',
+            url: '/cards/intervals/stats',
             type: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -43,7 +43,7 @@ $(document).ready(function() {
         });
 
         $.ajax({
-            url: '/monitoring/' + userId + '/report',
+            url: '/monitoring/report',
             type: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -57,7 +57,7 @@ $(document).ready(function() {
 
     function loadRandomCard() {
             $.ajax({
-                url: '/cards/' + userId + '/random-card',
+                url: '/cards/random-card',
                 type: 'GET',
                 dataType: 'json',
                 success: function(card) {
@@ -116,7 +116,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '/cards/' + userId,
+            url: '/cards/',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(cardData),
@@ -135,7 +135,7 @@ $(document).ready(function() {
     let cardName = $('#cardTitleToFindUpdate').val().trim();
 
     $.ajax({
-        url: '/cards/' + userId + '/card-name',
+        url: '/cards/card-name',
         type: 'GET',
         data: { cardName: cardName },
         success: function(cards) {
@@ -174,7 +174,7 @@ $(document).ready(function() {
     let cardName = $('#cardTitleToFindDelete').val().trim();
 
     $.ajax({
-        url: '/cards/' + userId + '/card-name',
+        url: '/cards/card-name',
         type: 'GET',
         data: { cardName: cardName },
         success: function(cards) {
@@ -216,7 +216,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '/cards/' + userId + '/' + cardId,
+            url: '/cards/' + cardId,
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(updatedCard),
@@ -237,7 +237,7 @@ $(document).ready(function() {
         let cardId = $('#cardIdDelete').val();
 
         $.ajax({
-            url: '/cards/' + userId + '/' + cardId,
+            url: '/cards/' + cardId,
             type: 'DELETE',
             success: function(response) {
                 alert('Card deleted successfully');
@@ -271,7 +271,7 @@ $(document).ready(function() {
 }
 
     function applyTheme() {
-    let theme = localStorage.getItem('theme') || 'light'; // Устанавливаем 'light' по умолчанию
+    let theme = localStorage.getItem('theme') || 'light';
     document.body.setAttribute('data-theme', theme);
     updateButtonState(theme);
 }

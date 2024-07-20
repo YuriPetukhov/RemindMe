@@ -40,6 +40,12 @@ public interface MatchResultRepository extends JpaRepository<MatchResult, Long> 
 
     @Query("SELECT mr.interval, COUNT(mr), SUM(CASE WHEN mr.result = false THEN 1 ELSE 0 END) " +
            "FROM results mr " +
+           "GROUP BY mr.interval " +
+           "ORDER BY mr.interval")
+    List<Object[]> findAttemptsAndErrorsGroupedByInterval();
+
+    @Query("SELECT mr.interval, COUNT(mr), SUM(CASE WHEN mr.result = false THEN 1 ELSE 0 END) " +
+           "FROM results mr " +
            "JOIN cards c ON mr.cardId = c.id " +
            "WHERE c.id = :cardId " +
            "GROUP BY mr.interval " +

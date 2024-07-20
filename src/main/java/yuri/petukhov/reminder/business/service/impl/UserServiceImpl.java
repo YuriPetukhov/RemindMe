@@ -2,16 +2,17 @@ package yuri.petukhov.reminder.business.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import yuri.petukhov.reminder.bot.executor.MessageExecutor;
 import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
+import yuri.petukhov.reminder.business.exception.UserNotFoundException;
 import yuri.petukhov.reminder.business.model.Role;
 import yuri.petukhov.reminder.business.model.User;
-import yuri.petukhov.reminder.business.repository.RoleRepository;
 import yuri.petukhov.reminder.business.repository.UserRepository;
 import yuri.petukhov.reminder.business.service.AdminService;
+import yuri.petukhov.reminder.business.service.RoleService;
 import yuri.petukhov.reminder.business.service.UserService;
 
 import java.util.ArrayList;
@@ -19,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static yuri.petukhov.reminder.business.enums.RoleName.ROLE_ADMIN;
 
 /**
  * Service implementation for managing user-related operations.
@@ -32,8 +31,9 @@ import static yuri.petukhov.reminder.business.enums.RoleName.ROLE_ADMIN;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
     private final AdminService adminService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     /**
      * Saves a user to the repository.
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
     public User findUserById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new RuntimeException("User with ID " + id + " not found.");
+            throw new UserNotFoundException("User with ID " + id + " not found.");
         }
         return optionalUser.get();
     }
@@ -117,38 +117,6 @@ public class UserServiceImpl implements UserService {
             return Collections.singletonList(RoleName.ROLE_USER.name());
         }
     }
-
-
-
-
-    /**
-     * Sets the role of a user by their chat ID.
-     * @param chatId The chat ID of the user.
-     * @param state The new role to set for the user.
-     */
-
-    @Override
-    public void setUserRole(Long chatId, RoleName state) {
-        User user = findUserByChatId(chatId).orElseThrow();
-        List<Role> roles = user.getRoles() != null ? user.getRoles() : new ArrayList<>();
-
-        if (state.equals(ROLE_ADMIN)) {
-            roles.clear();
-            roles.add(new Role(ROLE_ADMIN));
-        } else {
-            if (roles.isEmpty()) {
-                roles.add(new Role(RoleName.ROLE_USER));
-            }
-            else if (!roles.contains(new Role(ROLE_ADMIN))) {
-                roles.add(new Role(state));
-            }
-        }
-
-        user.setRoles(roles);
-        saveUser(user);
-    }
-
-
 
     /**
      * Sets the card input state of a user.
@@ -197,17 +165,73 @@ public class UserServiceImpl implements UserService {
         user.setChatId(chatId);
         user.setUserName(userName);
 
-        Role userRole = roleRepository.findByRoleName(RoleName.ROLE_USER);
+        Optional<Role> userRoleOpt = roleService.findByRoleName(RoleName.ROLE_USER);
+        if (userRoleOpt.isPresent()) {
+            Role userRole = userRoleOpt.get();
+            List<Role> roles = new ArrayList<>();
+            roles.add(userRole);
+            user.setRoles(roles);
+        } else {
+            log.error("Attempted to add a non-existent role for user: " + userName + " with chat ID: " + chatId);
 
-        List<Role> roles = new ArrayList<>();
-        roles.add(userRole);
-        user.setRoles(roles);
+        }
 
         user.setCardState(UserCardInputState.NONE);
-        adminService.adminNotificate(userName, chatId);
+        adminService.adminNotify(userName, chatId);
         saveUser(user);
     }
 
+    @Override
+    public void addRole(Long userId, RoleName role) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Role> roleOpt = roleService.findByRoleName(role);
+
+        if (userOpt.isPresent() && roleOpt.isPresent()) {
+            User user = userOpt.get();
+            Role userRole = roleOpt.get();
+            List<Role> roles = user.getRoles();
+
+            if (roles.contains(userRole)) {
+                log.error("Attempted to add an already existent role " + role + " for user: " + userId);
+            } else {
+                roles.add(userRole);
+                userRepository.save(user);
+                messagingTemplate.convertAndSend("/topic/roles/" + userId, "Roles updated");
+            }
+        } else {
+            log.error("No user or role");
+        }
+    }
+
+    @Override
+    public List<String> getCurrentUserRoles(long id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.map(value -> value.getRoles().stream()
+                .map(role -> role.getRoleName().name())
+                .collect(Collectors.toList())).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public void deleteRoleByUser(Long userId, RoleName roleName) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Role> roleOpt = roleService.findByRoleName(roleName);
+
+        if (userOpt.isPresent() && roleOpt.isPresent()) {
+            User user = userOpt.get();
+            Role userRole = roleOpt.get();
+            List<Role> roles = user.getRoles();
+
+            if (roles.contains(userRole)) {
+                roles.remove(userRole);
+                messagingTemplate.convertAndSend("/topic/roles/" + userId, "Roles updated");
+                userRepository.save(user);
+            } else {
+                log.error("Attempted to delete a not existent role " + roleName + " for user: " + userId);
+            }
+        } else {
+            log.error("No user or role");
+        }
+    }
 
 
     /**

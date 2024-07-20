@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RemindMe</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<div th:fragment="interface-links" id="userInterface" class="interface user-interface">
+<div class="main__content">
+    <div class="menu__panel">
+        <ul id="interfaceLinks">
+            <li class="menu__list bum" id="userLink"><a href="#userInterface" class="menu__link">User Interface</a></li>
+            <li class="menu__list bum" id="adminLink"><a href="#adminInterface" class="menu__link">Admin Interface</a></li>
+            <li class="menu__list bum" id="teacherLink"><a href="#teacherInterface" class="menu__link">Teacher Interface</a></li>
+            <li class="menu__list bum" id="studentLink"><a href="#studentInterface" class="menu__link">Student Interface</a></li>
+        </ul>
+    </div>
+</div>
+<script src="../main-script.js" defer></script>
+</body>
+</html>
+
+
+

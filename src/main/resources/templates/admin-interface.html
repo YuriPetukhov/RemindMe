@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin-interface</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<div th:fragment="admin-interface" id="adminInterface">
+    <div class="main__content">
+        <div class="menu__panel">
+            <ul>
+                <li class="menuList"></li>
+                <li class="menu__list"><a href="/users" class="menu__link">Users</a></li>
+                <li class="menu__list"><a href="/statistics" class="menu__link">Users Statistics</a></li>
+                <li class="menu__list"><a href="/roles" class="menu__link">Roles</a></li>
+                <li class="menu__list"><a href="/messages" class="menu__link">Messages</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="cards" id="adminContainer"></div>
+            <div th:replace="admin/users.html :: manageUsers"></div>
+            <div th:replace="admin/users-statistics.html :: usersStatistics"></div>
+            <div th:replace="admin/roles.html :: roles"></div>
+            <div th:replace="admin/messages.html :: metrics"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
