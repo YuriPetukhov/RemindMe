@@ -451,6 +451,7 @@ public class CardServiceImpl implements CardService {
 
     }
 
+    @SuppressWarnings("unused")
     public boolean isAuthorCard(String userId, Long cardId) {
         User user = userService.findUserById(Long.valueOf(userId));
         Card card = cardRepository.findById(cardId).orElse(null);
