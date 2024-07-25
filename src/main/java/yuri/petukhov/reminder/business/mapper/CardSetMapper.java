@@ -14,6 +14,7 @@ public interface CardSetMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "cards", ignore = true)
     @Mapping(target = "user", ignore = true)
+    @Mapping(target = "folder", ignore = true)
     CardSet toEntityCardSet(CreateCardSetDTO dto);
 
     @Mapping(source = "setName", target = "setName")
