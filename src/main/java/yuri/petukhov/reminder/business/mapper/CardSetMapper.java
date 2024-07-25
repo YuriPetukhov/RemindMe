@@ -2,6 +2,7 @@ package yuri.petukhov.reminder.business.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import yuri.petukhov.reminder.business.dto.CardSetDTO;
 import yuri.petukhov.reminder.business.dto.CreateCardSetDTO;
 import yuri.petukhov.reminder.business.model.CardSet;
 
@@ -14,4 +15,9 @@ public interface CardSetMapper {
     @Mapping(target = "cards", ignore = true)
     @Mapping(target = "user", ignore = true)
     CardSet toEntityCardSet(CreateCardSetDTO dto);
+
+    @Mapping(source = "setName", target = "setName")
+    @Mapping(source = "setDescription", target = "setDescription")
+    @Mapping(target = "setSize", ignore = true)
+    CardSetDTO toDTOCardSet(CardSet entity);
 }

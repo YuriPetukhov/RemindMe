@@ -27,5 +27,17 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Внутренняя ошибка сервера: " + ex.getMessage());
     }
+
+    @ExceptionHandler(FileProcessingException.class)
+    public ResponseEntity<Object> handleFileProcessingException(FileProcessingException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при обработке файла: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(UnsupportedFileFormatException.class)
+    public ResponseEntity<Object> handleUnsupportedFileFormatException(UnsupportedFileFormatException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неподдерживаемый формат файла: " + ex.getMessage());
+    }
 }
 

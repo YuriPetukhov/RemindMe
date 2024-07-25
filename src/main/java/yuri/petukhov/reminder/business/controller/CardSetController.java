@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import yuri.petukhov.reminder.business.dto.CardDTO;
+import yuri.petukhov.reminder.business.dto.CardSetDTO;
 import yuri.petukhov.reminder.business.dto.CreateCardSetDTO;
 import yuri.petukhov.reminder.business.service.CardSetService;
 
@@ -27,12 +29,13 @@ public class CardSetController {
     public ResponseEntity<Void> createCardSet(
             @RequestBody CreateCardSetDTO cardSet,
             Authentication authentication) {
+        log.info("new card set " + cardSet.getSetName());
         cardSetService.createCardSet(cardSet, Long.valueOf(authentication.getName()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{cardSetId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardSetServiceImpl.isAuthorCardSet(authentication.getName(), #cardSetId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardSetServiceImpl.isAuthorCardSet(authentication.getName(), #cardSetId)")
     @Operation(summary = "Добавление списка карточек в набор")
     public ResponseEntity<Void> addCardsToSet(
             @PathVariable Long cardSetId,
@@ -49,6 +52,13 @@ public class CardSetController {
             @PathVariable Long cardId) {
         cardSetService.removeCardFromSet(cardSetId, cardId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "Получить все наборы карточек пользователя")
+    public ResponseEntity<List<CardSetDTO>> getAllCardSets(
+            Authentication authentication) {
+        return ResponseEntity.ok().body(cardSetService.getAllCardSetsByUserId(Long.valueOf(authentication.getName())));
     }
 
 }

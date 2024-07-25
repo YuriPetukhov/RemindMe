@@ -35,5 +35,10 @@ public class CardSet {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "folder_id")
+    private Folder folder;
+
+
 }
 

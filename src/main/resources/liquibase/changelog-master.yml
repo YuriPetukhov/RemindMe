@@ -13,3 +13,5 @@ databaseChangeLog:
       file: liquibase/scripts/script_insert_roles.sql
   - include:
       file: liquibase/scripts/script_alter_card_set.sql
+  - include:
+      file: liquibase/scripts/script_folders.sql

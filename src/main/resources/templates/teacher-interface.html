@@ -13,18 +13,20 @@
     <div class="main__content">
         <div class="menu__panel">
             <ul>
-                <li class="menuList"></li>
                 <li class="menu__list"><a href="/card-sets" class="menu__link">Card-Sets</a></li>
                 <li class="menu__list"><a href="/studying-groups" class="menu__link">Studying Groups</a></li>
-                <li class="menu__list"><a href="/statistics" class="menu__link">Statistics</a></li>
-                <li class="menu__list"><a href="/settings" class="menu__link">Settings</a></li>
+                <li class="menu__list"><a href="/students-statistics" class="menu__link">Student Statistics</a></li>
+                <li class="menu__list"><a href="/student-settings" class="menu__link">Student Settings</a></li>
+            </ul>
+            <ul>
+                <li class="menuList"></li>
             </ul>
         </div>
         <div class="content">
             <div th:replace="teacher/card-sets.html :: cardSets"></div>
-            <div th:replace="teacher/groups-statistics.html :: groupsStatistics"></div>
-            <div th:replace="teacher/study-settings.html :: studySettings"></div>
             <div th:replace="teacher/studying-groups.html :: studyingGroups"></div>
+            <div th:replace="teacher/students-statistics.html :: studentsStatistics"></div>
+            <div th:replace="teacher/student-settings.html :: studentSettings"></div>
         </div>
     </div>
 </div>

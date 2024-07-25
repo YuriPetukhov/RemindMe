@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.dto.FindCardDTO;
@@ -19,6 +20,7 @@ import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.service.CardService;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -186,7 +188,7 @@ public class CardController {
      */
 
     @GetMapping("/{cardId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Получить карточку пользователя по id")
     public ResponseEntity<Card> getUserCardById(
             @PathVariable Long cardId,
@@ -202,7 +204,7 @@ public class CardController {
      */
 
     @PutMapping(value = "/{cardId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Обновление карточки пользователя")
     public ResponseEntity<Card> updateCard(
             @PathVariable Long cardId,
@@ -217,7 +219,7 @@ public class CardController {
      */
 
     @DeleteMapping(value = "/{cardId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Удаление карточки")
     public ResponseEntity<Void> deleteCard(
             @PathVariable Long cardId,

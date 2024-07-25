@@ -3,6 +3,7 @@ package yuri.petukhov.reminder.business.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/metrics")
-@PreAuthorize(value = "hasRole('ADMIN')")
 @Tag(name = "METRICS")
+@Slf4j
 public class MetricController {
 
     private final MetricService metricService;

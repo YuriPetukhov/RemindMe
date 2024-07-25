@@ -437,6 +437,9 @@ public class CardServiceImpl implements CardService {
     @Override
     public CardDTO getRandomCardsDTOByUserId(Long userId) {
         List<Card> cards = cardRepository.findRandomCardsByUserId(userId, 1);
+        if (cards.isEmpty()) {
+            return new CardDTO();
+        }
         return mapper.toCardDTO(cards.get(0));
     }
 
@@ -449,6 +452,11 @@ public class CardServiceImpl implements CardService {
             throw new CardNotFoundException("Card " + cardId + " not found");
         }
 
+    }
+
+    @Override
+    public List <Card> saveAll(List<Card> cardToSave) {
+        return cardRepository.saveAll(cardToSave);
     }
 
     @SuppressWarnings("unused")

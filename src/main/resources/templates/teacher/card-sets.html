@@ -8,7 +8,27 @@
 </head>
 <body>
 <div th:fragment="cardSets">
+    <div id="manageCardSetsContainer" class="form-style">
+        <ul>
+            <li class="menu__list"><a href="#addCardSet" class="menu__link tablinks">Add card set</a></li>
+<!--            <li class="menu__list"><a href="#updateCardSet" class="menu__link tablinks">Update card set</a></li>-->
+<!--            <li class="menu__list"><a href="#deleteCardSet" class="menu__link tablinks">Delete card set</a></li>-->
+        </ul>
+    </div>
 
+    <div id="addCardSet" class="tabcontent" style="display:none;">
+        <div th:replace="teacher/add-card-set-form.html :: addCardSetForm"></div>
+    </div>
+<!--    <div id="updateCardSet" class="tabcontent" style="display:none;">-->
+<!--        <div th:replace="teacher/update-card-set.html :: updateCardSetForm"></div>-->
+<!--    </div>-->
+<!--    <div id="deleteCardSet" class="tabcontent" style="display:none;">-->
+<!--        <div th:replace="teacher/delete-card-set.html :: deleteCardSetForm"></div>-->
+<!--    </div>-->
+    <div class="content">
+        <div class="cards" id="cardSetsContainer">
+        </div>
+    </div>
 </div>
 </body>
 </html>

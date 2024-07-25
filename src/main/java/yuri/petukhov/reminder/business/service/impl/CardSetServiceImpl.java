@@ -3,6 +3,7 @@ package yuri.petukhov.reminder.business.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import yuri.petukhov.reminder.business.dto.CardSetDTO;
 import yuri.petukhov.reminder.business.dto.CreateCardSetDTO;
 import yuri.petukhov.reminder.business.exception.CardNotFoundException;
 import yuri.petukhov.reminder.business.exception.CardSetNotFoundException;
@@ -42,7 +43,7 @@ public class CardSetServiceImpl implements CardSetService {
         CardSet cardSet = getCardSetById(cardSetId);
         for (Long cardId : cardIds) {
             try {
-                Card card = cardService.findById(cardId);  // Этот метод может выбросить исключение
+                Card card = cardService.findById(cardId);
                 cardSet.getCards().add(card);
             } catch (CardNotFoundException e) {
                 log.warn("Card with ID {} not found, skipping.", cardId);
@@ -95,6 +96,23 @@ public class CardSetServiceImpl implements CardSetService {
         cardSet.setCards(cards);
         return cardSetRepository.save(cardSet);
 
+    }
+
+    @Override
+    public List<CardSetDTO> getAllCardSetsByUserId(Long aLong) {
+        List<CardSet> cardSets = cardSetRepository.findAllByUserId(aLong);
+        return cardSets.stream()
+                .map(cardSet -> {
+                    CardSetDTO cardSetDTO = cardSetMapper.toDTOCardSet(cardSet);
+                    cardSetDTO.setSetSize(cardSet.getCards().size());
+                    return cardSetDTO;
+                })
+                .toList();
+    }
+
+    @Override
+    public void save(CardSet cardSet) {
+        cardSetRepository.save(cardSet);
     }
 
     public boolean isAuthorCardSet(String userId, Long cardSetId) {

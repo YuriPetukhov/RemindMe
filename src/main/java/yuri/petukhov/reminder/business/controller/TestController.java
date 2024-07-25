@@ -32,37 +32,24 @@ public class TestController {
     /**
      * Displays the test page to the user.
      * This method checks if the user has the 'ADMIN' role or is authorized by the userServiceImpl before granting access to the test page.
-     * @param userId The ID of the user requesting access to the test page.
      * @param model The model object to pass attributes to the view.
      * @param authentication The authentication object containing the user's security context.
      * @return The name of the HTML file to be displayed (user-interface.html).
      */
 
     @GetMapping("/test")
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
-    public String showTestPage(@RequestParam("userId") Long userId, Model model, Authentication authentication) {
+    public String showTestPage(Model model, Authentication authentication) {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         List<Role> userRoles = authorities.stream()
                 .map(authority -> roleService.findByRoleName(RoleName.valueOf(authority.getAuthority())).orElse(null))
-                .collect(Collectors.toList());
+                .toList();
 
-        Role highestPriorityRole = roleService.getHighestPriorityRole(userRoles);
-
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", authentication.getName());
         model.addAttribute("roles", userRoles.stream()
                 .map(Role::getRoleName)
                 .collect(Collectors.toList()));
 
-        String redirectPage = "index";
-//        if (highestPriorityRole != null) {
-//            switch (highestPriorityRole.getRoleName()) {
-//                case ROLE_ADMIN -> redirectPage = "admin-interface";
-//                case ROLE_TEACHER -> redirectPage = "teacher-interface";
-//                case ROLE_STUDENT -> redirectPage = "student-interface";
-//            }
-//        }
-
-        return redirectPage;
+        return  "index";
     }
 
 

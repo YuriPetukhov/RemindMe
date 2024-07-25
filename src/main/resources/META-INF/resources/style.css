@@ -70,6 +70,9 @@ display: none;
 }
 
 .menu__panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     background-color: var(--menu-bg-color);
     overflow-y: hidden;
     width: 200px;
@@ -143,8 +146,11 @@ display: none;
 /* Стили для формы */
 
 .form-style {
+    display: flex;
+    flex-direction: column;
     background-color: var(--form-bg-color);
     padding: 20px;
+    margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--stats-table-text-color);

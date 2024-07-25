@@ -72,4 +72,6 @@ public interface CardService {
     CardDTO getRandomCardsDTOByUserId(Long userId);
 
     Card findById(Long cardId);
+
+    List <Card> saveAll(List<Card> cardToSave);
 }

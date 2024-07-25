@@ -1,125 +1,131 @@
 $(document).ready(function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
-
-    if (!userId) {
-        alert('userId is missing in URL. Please provide a valid userId.');
-        return;
+    function makeAjaxRequest(url, type, successCallback, errorCallback) {
+        $.ajax({
+            url: url,
+            type: type,
+            dataType: 'json',
+            success: successCallback,
+            error: errorCallback
+        });
     }
 
     function loadStatistics() {
-        $.ajax({
-            url: '/admin/users/intervals/stats',
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
+        makeAjaxRequest(
+            '/admin/users/intervals/stats',
+            'GET',
+            function(data) {
                 handleProgressData(data, "#statsTableBody03");
             },
-            error: function(error) {
+            function(error) {
                 console.error('Ошибка загрузки статистики:', error);
             }
-        });
+        );
 
-        $.ajax({
-            url: '/admin/users/report',
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
+        makeAjaxRequest(
+            '/admin/users/report',
+            'GET',
+            function(data) {
                 handleReportData(data, "#statsTableBody04");
             },
-            error: function(error) {
+            function(error) {
                 console.error('Ошибка загрузки отчета по ошибкам:', error);
             }
-        });
+        );
     }
 
     function loadMessages() {
-        $.ajax({
-            url: '/metrics/new-user',
-            type: 'GET',
-            dataType: 'json',
-            success: function(messages) {
-                let messagesHtml = '';
-                messages.forEach(function(message, index) {
-                    messagesHtml += `
-                        <tr data-id="${message.id}">
-                            <td><input type="checkbox" class="messageCheckbox" data-id="${message.id}"></td>
-                            <td>${index + 1}</td>
-                            <td>${message.message}</td>
-                            <td>${message.timestamp}</td>
-                            <td><button class="deleteButton" data-id="${message.id}">Delete</button></td>
-                        </tr>
-                    `;
-                });
-                $('#newUserMessage').html(messagesHtml).show();
+        makeAjaxRequest(
+            '/metrics/new-user',
+            'GET',
+            function(messages) {
+                if (messages && messages.length > 0) {
+                    let messagesHtml = '';
+                    messages.forEach(function(message, index) {
+                        messagesHtml += `
+                            <tr data-id="${message.id}">
+                                <td><input type="checkbox" class="messageCheckbox" data-id="${message.id}"></td>
+                                <td>${index + 1}</td>
+                                <td>${message.message}</td>
+                                <td>${message.timestamp}</td>
+                                <td><button class="deleteButton" data-id="${message.id}">Delete</button></td>
+                            </tr>
+                        `;
+                    });
+                    $('#newUserMessage').html(messagesHtml).show();
+                } else {
+                    $('#newUserMessage').empty().show();
+                }
             },
-            error: function(error) {
+            function(xhr, status, error) {
                 console.error('Ошибка загрузки сообщений:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
+                $('#newUserMessage').empty().show();
             }
-        });
+        );
     }
 
     function deleteMessage(messageId) {
-        $.ajax({
-            url: '/metrics/new-user/' + messageId,
-            type: 'DELETE',
-            success: function(response) {
+        makeAjaxRequest(
+            '/metrics/new-user/' + messageId,
+            'DELETE',
+            function() {
                 loadMessages();
             },
-            error: function(error) {
+            function(error) {
                 console.error('Ошибка удаления сообщения:', error);
             }
-        });
+        );
     }
 
-    $('#newUserMessagesContainer').on('click', '.deleteButton', function() {
-        let messageId = $(this).data('id');
-        deleteMessage(messageId);
-    });
-
-    $('#deleteSelected').click(function() {
-        let selectedIds = $('.messageCheckbox:checked').map(function() {
-            return $(this).data('id');
-        }).get();
-        selectedIds.forEach(function(id) {
-            deleteMessage(id);
+    function setupEventHandlers() {
+        $('#newUserMessagesContainer').on('click', '.deleteButton', function() {
+            let messageId = $(this).data('id');
+            deleteMessage(messageId);
         });
-    });
 
-    $('.menu__link').click(function(e) {
-        e.preventDefault();
-        closeAllAdminContainers();
+        $('#deleteSelected').click(function() {
+            let selectedIds = $('.messageCheckbox:checked').map(function() {
+                return $(this).data('id');
+            }).get();
+            selectedIds.forEach(function(id) {
+                deleteMessage(id);
+            });
+        });
 
-        let target = $(this).attr('href');
-        if (target === '/statistics') {
-            $('#usersStatsContainer').show();
-            loadStatistics();
-        } else if (target === '/messages') {
-            $('#newUserMessagesContainer').show();
-            loadMessages();
-        } else if (target === '/users') {
-            $('#manageUsersContainer').show();
-        } else if (target === '#add-user') {
-            $('#addUserFormContainer').show();
-        } else if (target === '#update-user') {
-            $('#updateUserFormContainer').show();
-        } else if (target === '#delete-user') {
-            $('#deleteUserFormContainer').show();
-        } else if (target === '#get-user') {
-            $('#getUserFormContainer').show();
-        } else if (target === '#get-users') {
-            $('#getUsersFormContainer').show();
-        }
-    });
+        $('.menu__link').click(function(e) {
+            e.preventDefault();
+            closeAllAdminContainers();
 
-    $('.tablinks').click(function(e) {
-        e.preventDefault();
-        let tabName = $(this).attr('href').substring(1);
-        $('.tabcontent').hide();
-        $('#' + tabName).show();
-    });
+            let target = $(this).attr('href');
+            if (target === '/statistics') {
+                $('#usersStatsContainer').show();
+                loadStatistics();
+            } else if (target === '/messages') {
+                $('#newUserMessagesContainer').show();
+                loadMessages();
+            } else if (target === '/users') {
+                $('#manageUsersContainer').show();
+            } else if (target === '#add-user') {
+                $('#addUserFormContainer').show();
+            } else if (target === '#update-user') {
+                $('#updateUserFormContainer').show();
+            } else if (target === '#delete-user') {
+                $('#deleteUserFormContainer').show();
+            } else if (target === '#get-user') {
+                $('#getUserFormContainer').show();
+            } else if (target === '#get-users') {
+                $('#getUsersFormContainer').show();
+            }
+        });
 
-    loadMessages();
+        $('.tablinks').click(function(e) {
+            e.preventDefault();
+            let tabName = $(this).attr('href').substring(1);
+            $('.tabcontent').hide();
+            $('#' + tabName).show();
+        });
+    }
 
     function closeAllAdminContainers() {
         $('#adminContainer').hide();
@@ -251,4 +257,7 @@ $(document).ready(function() {
             return 'red';
         }
     }
+
+    setupEventHandlers();
+    loadMessages();
 });
