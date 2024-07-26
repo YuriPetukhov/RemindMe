@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
-<div th:fragment="addWordForm">
+<div th:fragment="addWordForm" class="form-container">
     <div id="addWordFormContainer" style="display:none;">
         <form id="addWordForm" class="form-style">
             <label for="cardTitleAdd">New word:</label>
@@ -17,9 +17,38 @@
             <button type="submit">Add word</button>
         </form>
         <form id="uploadFileForm" enctype="multipart/form-data" class="form-style">
-            <label for="uploadFile">Upload CSV/Excel file:</label>
-            <input type="file" id="uploadFile" name="file" accept=".csv, .xlsx" required>
-            <button type="button" onclick="uploadCards()">Upload file</button>
+            <div class="form-group full-width">
+                <label for="uploadFile">Upload CSV/Excel file:</label>
+                <input type="file" id="uploadFile" name="file" accept=".csv, .xlsx" required>
+            </div>
+            <div class="form-group">
+                <label for="cardSetName">Card's set name:</label>
+                <input type="text" id="cardSetName" name="cardSetName">
+            </div>
+            <div class="form-group">
+                <label for="setDescription">Card's set description:</label>
+                <input type="text" id="setDescription" name="setDescription">
+            </div>
+            <div class="form-group">
+                <label for="activationStart">Activation start:</label>
+                <input type="datetime-local" id="activationStart" name="activationStart">
+            </div>
+            <div class="form-group">
+                <label for="cardsPerBatch">Number of Cards for Initial Activation:</label>
+                <input type="number" id="cardsPerBatch" name="cardsPerBatch" min="1">
+            </div>
+            <div class="form-group">
+                <label for="activationInterval">Interval for Next Batch Activation:</label>
+                <div class="form-group-inline">
+                    <input type="number" id="activationInterval" name="activationInterval" min="1">
+                    <select id="intervalUnit" name="intervalUnit">
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                    </select>
+                </div>
+            </div>
+            <button type="button" class="full-width" onclick="uploadCards()">Upload file</button>
         </form>
     </div>
     <div class="content">

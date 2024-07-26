@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import yuri.petukhov.reminder.business.enums.CardActivity;
+import yuri.petukhov.reminder.business.enums.RecallMode;
+import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.exception.FileProcessingException;
 import yuri.petukhov.reminder.business.exception.UnsupportedFileFormatException;
 import yuri.petukhov.reminder.business.model.Card;
@@ -17,6 +20,7 @@ import yuri.petukhov.reminder.business.service.UserService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +31,10 @@ public class CardUploadServiceImpl implements CardUploadService {
     private final UserService userService;
     private final CardService cardService;
     private final CardSetService cardSetService;
-    public void addUploadCards(MultipartFile file, Long userId) {
+    public void addUploadCards(MultipartFile file, String cardSetName, String setDescription, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
         try {
             List<Card> cards = parseFile(file);
-            saveCards(cards, userId);
+            saveCards(cards, cardSetName, setDescription, activationStart, cardsPerBatch, activationInterval, intervalUnit, userId);
         } catch (IOException e) {
             throw new FileProcessingException("Ошибка при обработке файла: " + e.getMessage(), e);
         }
@@ -93,20 +97,60 @@ public class CardUploadServiceImpl implements CardUploadService {
         return cards;
     }
 
-    private void saveCards(List<Card> cards, Long userId) {
+    private void saveCards(List<Card> cards, String cardSetName, String setDescription, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
         User user = userService.findUserById(userId);
         List<Card> cardToSave = new ArrayList<>();
+        LocalDateTime currentActivationDate = null;
+
+        if (activationStart != null && !activationStart.isBlank()) {
+            currentActivationDate = LocalDateTime.parse(activationStart);
+        }
+
+        int batchCounter = 0;
+
         for (Card card : cards) {
             card.setUser(user);
+
+            if (currentActivationDate != null) {
+                card.setActivity(CardActivity.INACTIVE);
+                card.setRecallMode(RecallMode.NONE);
+                card.setInterval(ReminderInterval.MINUTES_20);
+                card.setReminderDateTime(currentActivationDate);
+
+                batchCounter++;
+                if (batchCounter >= cardsPerBatch) {
+                    currentActivationDate = incrementDate(currentActivationDate, activationInterval, intervalUnit);
+                    batchCounter = 0;
+                }
+            }
+
             cardToSave.add(card);
         }
+
+
         List <Card> savedCards = cardService.saveAll(cardToSave);
         CardSet cardSet = new CardSet();
         cardSet.setUser(user);
         cardSet.setCards(savedCards);
-        cardSet.setSetName("New Set");
-        cardSet.setSetDescription("Set Description");
-        cardSet.setSetName("New Set");
+        if(cardSetName == null || cardSetName.isBlank()) {
+            cardSet.setSetName("New Set");
+        } else {
+            cardSet.setSetName(cardSetName);
+        }
+        if(setDescription == null || setDescription.isBlank()) {
+            cardSet.setSetDescription("Set Description");
+        } else {
+            cardSet.setSetDescription(cardSetName);
+        }
         cardSetService.save(cardSet);
+    }
+
+    private LocalDateTime incrementDate(LocalDateTime date, int interval, String unit) {
+        return switch (unit.toLowerCase()) {
+            case "hours" -> date.plusHours(interval);
+            case "days" -> date.plusDays(interval);
+            case "weeks" -> date.plusWeeks(interval);
+            default -> throw new IllegalArgumentException("Invalid interval unit: " + unit);
+        };
     }
 }

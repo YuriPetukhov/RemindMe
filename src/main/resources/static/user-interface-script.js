@@ -430,31 +430,6 @@ $(document).ready(function() {
             }
         }
 
-        function uploadCards() {
-                    let fileInput = document.getElementById('uploadFile');
-                    let file = fileInput.files[0];
-
-                    if (!file) {
-                        alert('Please select a file to upload.');
-                        return;
-                    }
-
-                    let formData = new FormData();
-                    formData.append('file', file);
-
-                    fetch('/api/cards/upload', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert('Cards successfully uploaded');
-                    })
-                    .catch(error => {
-                        console.error('Error uploading cards:', error);
-                    });
-                }
-
         function loadUserCardSets() {
                         $.ajax({
                             url: '/card-sets/all',
@@ -495,3 +470,44 @@ $(document).ready(function() {
         }
 
 });
+
+function uploadCards() {
+    const formData = new FormData();
+    const fileInput = document.getElementById('uploadFile');
+    const cardSetName = document.getElementById('cardSetName').value;
+    const setDescription = document.getElementById('setDescription').value;
+    const activationStart = document.getElementById('activationStart').value;
+    const cardsPerBatch = document.getElementById('cardsPerBatch').value;
+    const activationInterval = document.getElementById('activationInterval').value;
+    const intervalUnit = document.getElementById('intervalUnit').value;
+
+    formData.append('file', fileInput.files[0]);
+    formData.append('cardSetName', cardSetName);
+    formData.append('setDescription', setDescription);
+
+    if (activationStart) {
+        formData.append('activationStart', activationStart);
+        formData.append('cardsPerBatch', cardsPerBatch);
+        formData.append('activationInterval', activationInterval);
+        formData.append('intervalUnit', intervalUnit);
+    }
+
+    fetch('/api/cards/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        alert('Cards successfully uploaded: ' + data.message);
+    })
+    .catch(error => {
+        console.error('Error uploading cards:', error);
+        alert('Error uploading cards: ' + error.message);
+    });
+}
