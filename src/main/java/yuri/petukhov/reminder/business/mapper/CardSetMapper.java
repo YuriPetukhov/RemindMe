@@ -19,6 +19,9 @@ public interface CardSetMapper {
 
     @Mapping(source = "setName", target = "setName")
     @Mapping(source = "setDescription", target = "setDescription")
+    @Mapping(source = "id", target = "id")
+    @Mapping(target = "active", ignore = true)
     @Mapping(target = "setSize", ignore = true)
     CardSetDTO toDTOCardSet(CardSet entity);
 }
+

@@ -4,7 +4,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
-import yuri.petukhov.reminder.business.dto.FindCardDTO;
 import yuri.petukhov.reminder.business.model.Card;
 @Mapper(componentModel = "spring")
 public interface CardMapper {
@@ -15,9 +14,4 @@ public interface CardMapper {
     @Mapping(source = "cardName", target = "title")
     @Mapping(source = "cardMeaning", target = "content")
     CardDTO toCardDTO(Card card);
-
-    @Mapping(source = "cardName", target = "title")
-    @Mapping(source = "cardMeaning", target = "content")
-    @Mapping(source = "id", target = "id")
-    FindCardDTO toFindCardDTO(Card card);
 }

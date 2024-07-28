@@ -11,7 +11,7 @@ $(document).ready(function() {
                 if (cards && cards.length > 0) {
                     let cardsHtml = '';
                     cards.forEach(function(card) {
-                        cardsHtml += '<div class="card">' +
+                        cardsHtml += '<div class="card" data-id="' + card.id + '">' +
                                       '<h2>' + card.content + '</h2>' +
                                       '<p>' + card.title + '</p>' +
                                       '</div>';
@@ -28,6 +28,27 @@ $(document).ready(function() {
                 }
             });
         }
+
+        function loadCardSet(cardSetId) {
+                $.ajax({
+                    url: '/card-sets/' + cardSetId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(cardSet) {
+                        currentCardSet = cardSet;
+                        $('#editCardSetName').val(cardSet.setName);
+                        $('#editCardSetDescription').val(cardSet.setDescription);
+                        $('#editCardSetSize').text(cardSet.setSize);
+                        closeAllContainers();
+                        $('.form-container').show();
+                        $('#editCardSetContainer').show();
+                        $('#loadUserCardSetCards').show();
+                    },
+                    error: function(error) {
+                        console.error('Ошибка загрузки набора карточек:', error);
+                    }
+                });
+            }
 
         function loadStatistics() {
             $.ajax({
@@ -95,6 +116,7 @@ $(document).ready(function() {
             $('#manageCardsContainer').show();
         } else if (target === '#add') {
             $('#addWordFormContainer').show();
+            $('.form-container').show();
             loadUserCardSets();
         } else if (target === '/view-statistics') {
             $('#statsContainer').show();
@@ -118,6 +140,39 @@ $(document).ready(function() {
             $('.tabcontent').hide();
             $('#' + tabName).show();
         });
+
+
+        $(document).on('click', '.card-set', function() {
+            const cardSetId = $(this).data('set-id');
+            loadCardSet(cardSetId);
+            loadUserCardSetCards(cardSetId);
+        });
+
+        $(document).on('click', '.card', function() {
+            const cardId = $(this).data('id');
+            loadCard(cardId);
+        });
+
+        function loadCard(cardId) {
+            $.ajax({
+                url: '/cards/' + cardId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(card) {
+                    currentCard = card;
+                    $('#cardIdUpdateUser').val(card.id);
+                    $('#editCardSetCardTitle').val(card.title);
+                    $('#editCardSetCardContent').val(card.content);
+                    $('#activationStartCard').val(card.reminderDateTime);
+                    $('#userCardSetCardsContainer').hide();
+                    $('#editCardSetContainer').hide();
+                    $('#editCardSetCardContainer').show();
+                },
+                error: function(error) {
+                    console.error('Ошибка загрузки карточки:', error);
+                }
+            });
+        }
 
         $('#addWordForm').submit(function(e) {
             e.preventDefault();
@@ -276,27 +331,30 @@ $(document).ready(function() {
         $('#nextCardButton').click(function() {
             loadRandomCard();
         });
-        function changeTheme(theme) {
-        localStorage.setItem('theme', theme);
-        applyTheme();
-    }
 
-        function applyTheme() {
-        let theme = localStorage.getItem('theme') || 'light';
-        document.body.setAttribute('data-theme', theme);
-        updateButtonState(theme);
-    }
+        $('#editCardSetForm').submit(function(e) {
+        e.preventDefault();
+        const updatedCardSet = {
+            setName: $('#editCardSetName').val(),
+            setDescription: $('#editCardSetDescription').val()
+        };
 
-        function updateButtonState(theme) {
-        let buttons = document.querySelectorAll('.theme-button');
-        buttons.forEach(button => {
-            if (button.getAttribute('data-theme') === theme) {
-                button.classList.add('active');
-            } else {
-                button.classList.remove('active');
+        $.ajax({
+            url: '/card-sets/' + currentCardSet.id,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedCardSet),
+            success: function(response) {
+                alert('Набор карточек успешно обновлен');
+                $('#editCardSetContainer').hide();
+                closeAllContainers()
+                loadUserCardSets();
+            },
+            error: function(error) {
+                console.error('Ошибка обновления набора карточек:', error);
             }
         });
-    }
+    });
 
         applyTheme();
 
@@ -311,203 +369,259 @@ $(document).ready(function() {
 
         loadCards();
 
-        function handleProgressData(progressData, tableBodyId) {
-            const intervals = [
-                '20 minutes', '1 hour', '4 hours', '8 hours',
-                '24 hours', '48 hours', '96 hours', '14 days',
-                '30 days', '60 days'
-            ];
+        loadUserCardSets();
 
-            let statsHtml = intervals.map((interval, index) => {
-                const completedWords = progressData[index];
-                const totalWords = progressData[progressData.length - 2];
-                const percentage = totalWords > 0 ? (completedWords / totalWords) * 100 : 0;
-                const progressBarColor = getProgressBarColor(percentage);
-                return `
-                    <tr>
-                        <td>${interval}</td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar" style="width: ${percentage}%; background-color: ${progressBarColor};">
-                                    ${Math.round(percentage)}% (${completedWords}/${totalWords})
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-
-            const totalWords = progressData[progressData.length - 2];
-            const finishedWords = progressData[progressData.length - 1];
-            statsHtml += `
-                <tr>
-                    <td>Total</td>
-                    <td>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: 100%; background-color: green;">${totalWords}</div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Finished</td>
-                    <td>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: ${finishedWords / totalWords * 100}%; background-color: ${getProgressBarColor(finishedWords / totalWords * 100)};">
-                                ${finishedWords}
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            `;
-
-            $(tableBodyId).html(statsHtml);
-        }
-
-        function handleReportData(reportData, tableBodyId) {
-            const intervals = [
-                '20 minutes', '1 hour', '4 hours', '8 hours',
-                '24 hours', '48 hours', '96 hours', '14 days',
-                '30 days', '60 days'
-            ];
-
-            let tableHtml = '';
-            let totalAttempts = 0;
-            let totalErrors = 0;
-
-            reportData.forEach(function(report, index) {
-                const errorPercentage = report.attemptsCount > 0 ? (report.errorCount / report.attemptsCount) * 100 : 0;
-                const errorIndicatorColor = getErrorIndicatorColor(errorPercentage);
-                tableHtml += `
-                    <tr>
-                        <td>${intervals[index]}</td>
-                        <td>${report.attemptsCount}</td>
-                        <td>
-                            <div class="error-indicator" style="width: ${errorPercentage}%; background-color: ${errorIndicatorColor};">
-                                ${report.errorCount} (${Math.round(errorPercentage)}%)
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                totalAttempts += report.attemptsCount;
-                totalErrors += report.errorCount;
-            });
-
-            const totalErrorPercentage = totalAttempts > 0 ? (totalErrors / totalAttempts) * 100 : 0;
-            tableHtml += `
-                <tr>
-                    <td>Total</td>
-                    <td>${totalAttempts}</td>
-                    <td>
-                        <div class="error-indicator" style="width: ${totalErrorPercentage}%; background-color: ${getErrorIndicatorColor(totalErrorPercentage)};">
-                            ${totalErrors} (${Math.round(totalErrorPercentage)}%)
-                        </div>
-                    </td>
-                </tr>
-            `;
-
-            $(tableBodyId).html(tableHtml);
-        }
-
-        function getProgressBarColor(percentage) {
-            if (percentage >= 75) {
-                return 'green';
-            } else if (percentage >= 50) {
-                return 'orange';
-            } else if (percentage > 0) {
-                return 'red';
-            } else {
-                return 'grey';
+        function changeTheme(theme) {
+                localStorage.setItem('theme', theme);
+                applyTheme();
             }
-        }
 
-        function getErrorIndicatorColor(errorPercentage) {
-            if (errorPercentage === 0) {
-                return 'green';
-            } else if (errorPercentage <= 5) {
-                return 'orange';
-            } else {
-                return 'red';
+        function applyTheme() {
+                let theme = localStorage.getItem('theme') || 'light';
+                document.body.setAttribute('data-theme', theme);
+                updateButtonState(theme);
             }
-        }
 
-        function loadUserCardSets() {
-                        $.ajax({
-                            url: '/card-sets/all',
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(cardSets) {
-                                let cardSetsHtml = '';
-                                cardSets.forEach(function(cardSet) {
-                                    cardSetsHtml += '<div class="card">' +
-                                                    '<h2>' + cardSet.setName + '</h2>' +
-                                                    '<p>' + cardSet.setDescription + '</p>' +
-                                                    '<p>Cards number: ' + cardSet.setSize + '</p>' +
-                                                    '</div>';
-                                });
-                                $('#userCardSetsContainer').html(cardSetsHtml).show();
-                            },
-                            error: function(error) {
-                                console.error('Ошибка загрузки наборов карточек:', error);
-                            }
-                        });
+        function updateButtonState(theme) {
+                let buttons = document.querySelectorAll('.theme-button');
+                buttons.forEach(button => {
+                    if (button.getAttribute('data-theme') === theme) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
                     }
+                });
+            }
 
-        function closeAllContainers() {
-            $('#cardsContainer').hide();
-            $('#manageCardsContainer').hide();
-            $('#statsContainer').hide();
-            $('#addWordFormContainer').hide();
-            $('#userCardSetsContainer').hide();
-            $('#updateWordFormContainer').hide();
-            $('#deleteWordFormContainer').hide();
-            $('#foundCardsContainerUpdate').hide();
-            $('#editCardContainer').hide();
-            $('#foundCardsContainerDelete').hide();
-            $('#deleteCardContainer').hide();
-            $('#practiseContainer').hide();
-            $('#infoContainer').hide();
-            $('#settingsContainer').hide();
-        }
+        function loadUserCardSetCards(cardSetId) {
+        $.ajax({
+            url: '/card-sets/' + cardSetId + '/cards',
+            type: 'GET',
+            dataType: 'json',
+            success: function(cards) {
+                if (cards && cards.length > 0) {
+                    let cardsHtml = '';
+                    cards.forEach(function(card) {
+                        cardsHtml += '<div class="card" data-id="' + card.id + '">' +
+                                      '<h2>' + card.content + '</h2>' +
+                                      '<p>' + card.title + '</p>' +
+                                      '</div>';
+                    });
+                    $('#userCardSetCardsContainer').html(cardsHtml).show();
+                } else {
+                    $('#userCardSetCardsContainer').empty();
+                }
+            },
+            error: function(error) {
+                console.error('Ошибка загрузки карточек:', error);
+            }
+        });
+    }
 
 });
 
+function handleProgressData(progressData, tableBodyId) {
+                    const intervals = [
+                        '20 minutes', '1 hour', '4 hours', '8 hours',
+                        '24 hours', '48 hours', '96 hours', '14 days',
+                        '30 days', '60 days'
+                    ];
+
+                    let statsHtml = intervals.map((interval, index) => {
+                        const completedWords = progressData[index];
+                        const totalWords = progressData[progressData.length - 2];
+                        const percentage = totalWords > 0 ? (completedWords / totalWords) * 100 : 0;
+                        const progressBarColor = getProgressBarColor(percentage);
+                        return `
+                            <tr>
+                                <td>${interval}</td>
+                                <td>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: ${percentage}%; background-color: ${progressBarColor};">
+                                            ${Math.round(percentage)}% (${completedWords}/${totalWords})
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                    const totalWords = progressData[progressData.length - 2];
+                    const finishedWords = progressData[progressData.length - 1];
+                    statsHtml += `
+                        <tr>
+                            <td>Total</td>
+                            <td>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" style="width: 100%; background-color: green;">${totalWords}</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Finished</td>
+                            <td>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" style="width: ${finishedWords / totalWords * 100}%; background-color: ${getProgressBarColor(finishedWords / totalWords * 100)};">
+                                        ${finishedWords}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+
+                    $(tableBodyId).html(statsHtml);
+                }
+
+function handleReportData(reportData, tableBodyId) {
+                    const intervals = [
+                        '20 minutes', '1 hour', '4 hours', '8 hours',
+                        '24 hours', '48 hours', '96 hours', '14 days',
+                        '30 days', '60 days'
+                    ];
+
+                    let tableHtml = '';
+                    let totalAttempts = 0;
+                    let totalErrors = 0;
+
+                    reportData.forEach(function(report, index) {
+                        const errorPercentage = report.attemptsCount > 0 ? (report.errorCount / report.attemptsCount) * 100 : 0;
+                        const errorIndicatorColor = getErrorIndicatorColor(errorPercentage);
+                        tableHtml += `
+                            <tr>
+                                <td>${intervals[index]}</td>
+                                <td>${report.attemptsCount}</td>
+                                <td>
+                                    <div class="error-indicator" style="width: ${errorPercentage}%; background-color: ${errorIndicatorColor};">
+                                        ${report.errorCount} (${Math.round(errorPercentage)}%)
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        totalAttempts += report.attemptsCount;
+                        totalErrors += report.errorCount;
+                    });
+
+                    const totalErrorPercentage = totalAttempts > 0 ? (totalErrors / totalAttempts) * 100 : 0;
+                    tableHtml += `
+                        <tr>
+                            <td>Total</td>
+                            <td>${totalAttempts}</td>
+                            <td>
+                                <div class="error-indicator" style="width: ${totalErrorPercentage}%; background-color: ${getErrorIndicatorColor(totalErrorPercentage)};">
+                                    ${totalErrors} (${Math.round(totalErrorPercentage)}%)
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+
+                    $(tableBodyId).html(tableHtml);
+                }
+
+function getProgressBarColor(percentage) {
+                    if (percentage >= 75) {
+                        return 'green';
+                    } else if (percentage >= 50) {
+                        return 'orange';
+                    } else if (percentage > 0) {
+                        return 'red';
+                    } else {
+                        return 'grey';
+                    }
+                }
+
+function getErrorIndicatorColor(errorPercentage) {
+                    if (errorPercentage === 0) {
+                        return 'green';
+                    } else if (errorPercentage <= 5) {
+                        return 'orange';
+                    } else {
+                        return 'red';
+                    }
+                }
+
+function loadUserCardSets() {
+                $.ajax({
+                    url: '/card-sets/all',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(cardSets) {
+                        let cardSetsHtml = '';
+                        cardSets.forEach(function(cardSet) {
+                            const cardClass = cardSet.active ? 'active-card-set' : 'inactive-card-set';
+                            cardSetsHtml += '<div class="card-set ' + cardClass + '" data-set-id="' + cardSet.id + '">' +
+                                            '<h2>' + cardSet.setName + '</h2>' +
+                                            '<p>' + cardSet.setDescription + '</p>' +
+                                            '<p>Cards number: ' + cardSet.setSize + '</p>' +
+                                            '</div>';
+                        });
+                        $('#userCardSetsContainer').html(cardSetsHtml).show();
+                    },
+                    error: function(error) {
+                        console.error('Ошибка загрузки наборов карточек:', error);
+                    }
+                });
+            }
+
 function uploadCards() {
-    const formData = new FormData();
-    const fileInput = document.getElementById('uploadFile');
-    const cardSetName = document.getElementById('cardSetName').value;
-    const setDescription = document.getElementById('setDescription').value;
-    const activationStart = document.getElementById('activationStart').value;
-    const cardsPerBatch = document.getElementById('cardsPerBatch').value;
-    const activationInterval = document.getElementById('activationInterval').value;
-    const intervalUnit = document.getElementById('intervalUnit').value;
+            const formData = new FormData();
+            const fileInput = document.getElementById('uploadFile');
+            const cardSetName = document.getElementById('cardSetName').value;
+            const setDescription = document.getElementById('setDescription').value;
+            const activationStart = document.getElementById('activationStart').value;
+            const cardsPerBatch = document.getElementById('cardsPerBatch').value;
+            const activationInterval = document.getElementById('activationInterval').value;
+            const intervalUnit = document.getElementById('intervalUnit').value;
 
-    formData.append('file', fileInput.files[0]);
-    formData.append('cardSetName', cardSetName);
-    formData.append('setDescription', setDescription);
+            formData.append('file', fileInput.files[0]);
+            formData.append('cardSetName', cardSetName);
+            formData.append('setDescription', setDescription);
 
-    if (activationStart) {
-        formData.append('activationStart', activationStart);
-        formData.append('cardsPerBatch', cardsPerBatch);
-        formData.append('activationInterval', activationInterval);
-        formData.append('intervalUnit', intervalUnit);
-    }
+            if (activationStart) {
+                formData.append('activationStart', activationStart);
+                formData.append('cardsPerBatch', cardsPerBatch);
+                formData.append('activationInterval', activationInterval);
+                formData.append('intervalUnit', intervalUnit);
+            }
 
-    fetch('/api/cards/upload', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+            fetch('/api/cards/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                alert('Cards successfully uploaded: ' + data.message);
+            })
+            .catch(error => {
+                console.error('Error uploading cards:', error);
+                alert('Error uploading cards: ' + error.message);
+            });
         }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Success:', data);
-        alert('Cards successfully uploaded: ' + data.message);
-    })
-    .catch(error => {
-        console.error('Error uploading cards:', error);
-        alert('Error uploading cards: ' + error.message);
-    });
-}
+
+function closeAllContainers() {
+                    $('#cardsContainer').hide();
+                    $('#manageCardsContainer').hide();
+                    $('#statsContainer').hide();
+                    $('#addWordFormContainer').hide();
+                    $('#userCardSetsContainer').hide();
+                    $('#updateWordFormContainer').hide();
+                    $('#deleteWordFormContainer').hide();
+                    $('#foundCardsContainerUpdate').hide();
+                    $('#editCardContainer').hide();
+                    $('#foundCardsContainerDelete').hide();
+                    $('#deleteCardContainer').hide();
+                    $('#practiseContainer').hide();
+                    $('#infoContainer').hide();
+                    $('#settingsContainer').hide();
+                    $('#editCardSetContainer').hide();
+                    $('#editCardSetCardContainer').hide();
+                    $('#loadUserCardSetCards').hide();
+                    $('.form-container').hide();
+//                    $('#userCardSetCardsContainer').hide();
+
+                }

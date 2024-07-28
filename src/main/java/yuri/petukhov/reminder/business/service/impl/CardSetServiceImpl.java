@@ -3,10 +3,12 @@ package yuri.petukhov.reminder.business.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardSetDTO;
 import yuri.petukhov.reminder.business.dto.CreateCardSetDTO;
 import yuri.petukhov.reminder.business.exception.CardNotFoundException;
 import yuri.petukhov.reminder.business.exception.CardSetNotFoundException;
+import yuri.petukhov.reminder.business.mapper.CardMapper;
 import yuri.petukhov.reminder.business.mapper.CardSetMapper;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.CardSet;
@@ -28,6 +30,7 @@ public class CardSetServiceImpl implements CardSetService {
     private final CardService cardService;
     private final UserService userService;
     private final CardSetMapper cardSetMapper;
+    private final CardMapper cardMapper;
 
     @Override
     public void createCardSet(CreateCardSetDTO createCardSetDTO, Long userId) {
@@ -99,20 +102,55 @@ public class CardSetServiceImpl implements CardSetService {
     }
 
     @Override
-    public List<CardSetDTO> getAllCardSetsByUserId(Long aLong) {
-        List<CardSet> cardSets = cardSetRepository.findAllByUserId(aLong);
+    public CardSet updateCardSet(Long cardSetId, CreateCardSetDTO createCardSetDTO) {
+        CardSet cardSet = getCardSetById(cardSetId);
+        cardSet.setSetName(createCardSetDTO.getSetName());
+        cardSet.setSetDescription(createCardSetDTO.getSetDescription());
+        return cardSetRepository.save(cardSet);
+
+    }
+
+    @Override
+    public List<CardSetDTO> getAllCardSetsByUserId(Long userId) {
+        List<CardSet> cardSets = cardSetRepository.findAllByUserId(userId);
         return cardSets.stream()
                 .map(cardSet -> {
                     CardSetDTO cardSetDTO = cardSetMapper.toDTOCardSet(cardSet);
                     cardSetDTO.setSetSize(cardSet.getCards().size());
+
+                    cardSetDTO.setActive(false);
+
+                    boolean isActive = cardSet.getCards().stream()
+                            .anyMatch(card -> card.getReminderDateTime() != null);
+                    cardSetDTO.setActive(isActive);
+
                     return cardSetDTO;
                 })
                 .toList();
     }
 
+
     @Override
     public void save(CardSet cardSet) {
         cardSetRepository.save(cardSet);
+    }
+
+    @Override
+    public CardSet getCardSet(Long cardSetId, Long aLong) {
+        Optional<CardSet> cartSetOpt =  cardSetRepository.findById(cardSetId);
+        return cartSetOpt.orElse(new CardSet());
+    }
+
+    @Override
+    public List<CardDTO> getCardSetCards(Long setId) {
+        Optional<CardSet> cardSetOpt = cardSetRepository.findById(setId);
+        if(cardSetOpt.isPresent()) {
+            List<Card> cards = cardSetOpt.get().getCards();
+            return cards.stream()
+                    .map(cardMapper::toCardDTO)
+                    .toList();
+        }
+        return new ArrayList<>();
     }
 
     public boolean isAuthorCardSet(String userId, Long cardSetId) {

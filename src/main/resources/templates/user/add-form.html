@@ -7,7 +7,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
-<div th:fragment="addWordForm" class="form-container">
+<div th:fragment="addWordForm">
+<div class="form-container">
     <div id="addWordFormContainer" style="display:none;">
         <form id="addWordForm" class="form-style">
             <label for="cardTitleAdd">New word:</label>
@@ -55,6 +56,8 @@
         <div class="cards" id="userCardSetsContainer">
         </div>
     </div>
+    <div th:replace="user/card-set-update.html :: cardSetFragment"></div>
+</div>
 </div>
 </body>
 </html>

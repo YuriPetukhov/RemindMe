@@ -35,7 +35,7 @@ public class Card {
     private RecallMode recallMode;
 
     @Column(name = "next_date_time")
-    LocalDateTime reminderDateTime;
+    private LocalDateTime reminderDateTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "interval")
