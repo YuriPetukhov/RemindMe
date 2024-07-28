@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
-import yuri.petukhov.reminder.business.dto.FindCardDTO;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -105,7 +104,7 @@ public class CardController {
 
     @GetMapping("/card-name")
     @Operation(summary = "Получить карточку пользователя по названию")
-    public ResponseEntity<List<FindCardDTO>> getCardByName(
+    public ResponseEntity<List<CardDTO>> getCardByName(
             @RequestParam String cardName,
             Authentication authentication) {
         return ResponseEntity.ok().body(cardService.getCardByName(Long.valueOf(authentication.getName()), cardName));
@@ -186,12 +185,12 @@ public class CardController {
      */
 
     @GetMapping("/{cardId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Получить карточку пользователя по id")
-    public ResponseEntity<Card> getUserCardById(
+    public ResponseEntity<CardDTO> getCardDTO(
             @PathVariable Long cardId,
             Authentication authentication) {
-        return ResponseEntity.ok().body(cardService.getUserCardById(Long.valueOf(authentication.getName()), cardId));
+        return ResponseEntity.ok().body(cardService.getUserCardById(cardId));
     }
 
     /**
@@ -202,7 +201,7 @@ public class CardController {
      */
 
     @PutMapping(value = "/{cardId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Обновление карточки пользователя")
     public ResponseEntity<Card> updateCard(
             @PathVariable Long cardId,
@@ -217,7 +216,7 @@ public class CardController {
      */
 
     @DeleteMapping(value = "/{cardId}")
-    @PreAuthorize(value = "hasRole('ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardServiceImpl.isAuthorCard(authentication.getName(), #cardId)")
     @Operation(summary = "Удаление карточки")
     public ResponseEntity<Void> deleteCard(
             @PathVariable Long cardId,

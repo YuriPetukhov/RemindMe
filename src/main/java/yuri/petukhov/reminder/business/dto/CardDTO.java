@@ -1,10 +1,13 @@
 package yuri.petukhov.reminder.business.dto;
 
 import lombok.Data;
-import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Data
 public class CardDTO {
-    String title;
-    String content;
+    private Long id;
+    private String title;
+    private String content;
+    private LocalDateTime reminderDateTime;
 }

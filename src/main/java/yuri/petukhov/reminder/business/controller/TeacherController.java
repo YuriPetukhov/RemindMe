@@ -11,7 +11,7 @@ import yuri.petukhov.reminder.business.service.TeacherService;
 @RequiredArgsConstructor
 @RequestMapping("/teacher")
 @Tag(name = "TEACHER")
-@PreAuthorize(value = "hasRole('ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
+@PreAuthorize(value = "hasRole('ROLE_ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
 public class TeacherController {
 
     private final TeacherService teacherService;

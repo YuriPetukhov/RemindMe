@@ -49,6 +49,7 @@ public class RecallServiceImpl implements RecallService {
      * This method finds a card for recall, updates the user's input state, and sends a notification to the user.
      * @param userId The ID of the user to recall words for.
      */
+    @Transactional
     @Override
     public void recallWordsForUser(Long userId) {
         log.info("recallWordsForUser() is started");

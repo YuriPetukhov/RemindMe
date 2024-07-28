@@ -38,6 +38,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void adminNotify(String userName, Long userChatId) {
         List<User> admins = findAdmins();
+        if(admins.isEmpty()) {
+            return;
+        }
         for (User admin : admins) {
             if (admin.getCardState().equals(UserCardInputState.NONE)) {
                 menuMessageCreator.createAdminNewUserNotifyMessage(userName, userChatId, admin.getChatId());

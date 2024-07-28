@@ -1,5 +1,7 @@
 package yuri.petukhov.reminder.business.service;
 
+import yuri.petukhov.reminder.business.dto.CardDTO;
+import yuri.petukhov.reminder.business.dto.CardSetDTO;
 import yuri.petukhov.reminder.business.dto.CreateCardSetDTO;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.CardSet;
@@ -20,4 +22,14 @@ public interface CardSetService {
     CardSet getCardSetById(Long cardSetId);
 
     CardSet updateCardSet(Long cardSetId, String setName, String setDescription, List<Card> cards);
+
+    CardSet updateCardSet(Long cardSetId, CreateCardSetDTO createCardSetDTO);
+
+    List<CardSetDTO> getAllCardSetsByUserId(Long aLong);
+
+    void save(CardSet cardSet);
+
+    CardSet getCardSet(Long cardSetId, Long aLong);
+
+    List<CardDTO> getCardSetCards(Long setId);
 }

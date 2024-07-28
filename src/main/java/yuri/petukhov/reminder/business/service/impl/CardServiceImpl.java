@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.CardUpdate;
-import yuri.petukhov.reminder.business.dto.FindCardDTO;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -238,10 +237,10 @@ public class CardServiceImpl implements CardService {
      */
 
     @Override
-    public List<FindCardDTO> getCardByName(Long userId, String cardName) {
+    public List<CardDTO> getCardByName(Long userId, String cardName) {
         List<Card> results = cardRepository.findAllByCardNameAndUserId(userId, cardName);
         return results.stream()
-                .map(mapper:: toFindCardDTO)
+                .map(mapper:: toCardDTO)
                 .toList();
     }
 
@@ -363,16 +362,22 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a specific card for a user by card ID.
-     * @param userId The ID of the user to retrieve the card for.
      * @param cardId The ID of the card to retrieve.
      * @return The requested Card object.
      */
 
     @Override
-    public Card getUserCardById(Long userId, Long cardId) {
-        return cardRepository.findByIdAndUserId(cardId, userId).orElseThrow(() ->
-                new CardNotFoundException("Card with id " + cardId + " by user " + userId + " was not found"));
+    public CardDTO getUserCardById(Long cardId) {
+        Card card = cardRepository.findById(cardId).orElseThrow(() ->
+                new CardNotFoundException("Card with id " + cardId + " was not found"));
 
+        CardDTO cardDTO = new CardDTO();
+        cardDTO.setId(cardId);
+        cardDTO.setTitle(card.getCardName());
+        cardDTO.setContent(card.getCardMeaning());
+        cardDTO.setReminderDateTime(card.getReminderDateTime());
+
+        return cardDTO;
     }
 
     /**
@@ -437,6 +442,9 @@ public class CardServiceImpl implements CardService {
     @Override
     public CardDTO getRandomCardsDTOByUserId(Long userId) {
         List<Card> cards = cardRepository.findRandomCardsByUserId(userId, 1);
+        if (cards.isEmpty()) {
+            return new CardDTO();
+        }
         return mapper.toCardDTO(cards.get(0));
     }
 
@@ -451,6 +459,12 @@ public class CardServiceImpl implements CardService {
 
     }
 
+    @Override
+    public List <Card> saveAll(List<Card> cardToSave) {
+        return cardRepository.saveAll(cardToSave);
+    }
+
+    @SuppressWarnings("unused")
     public boolean isAuthorCard(String userId, Long cardId) {
         User user = userService.findUserById(Long.valueOf(userId));
         Card card = cardRepository.findById(cardId).orElse(null);

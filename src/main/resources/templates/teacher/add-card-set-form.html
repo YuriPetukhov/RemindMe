@@ -1,0 +1,42 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AddCardSet</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</head>
+<body>
+<div th:fragment="addCardSetForm">
+    <div id="addCardSetFormContainer" class="form-style">
+        <form id="addCardSetForm">
+            <label for="cardSetName">New card set:</label>
+            <input type="text" id="cardSetName" name="setName" required>
+            <label for="cardSetDescription">Description:</label>
+            <textarea id="cardSetDescription" name="setDescription" required></textarea>
+            <button type="submit">Add card set</button>
+        </form>
+        <form id="uploadFileFormTeacher" enctype="multipart/form-data" class="form-style">
+            <label for="uploadFileTeacher">Upload CSV/Excel file:</label>
+            <input type="file" id="uploadFileTeacher" name="file" accept=".csv, .xlsx" required>
+            <button type="button" onclick="uploadCards()">Upload file</button>
+        </form>
+    </div>
+    <div>
+        <form id="createFolderForm" class="form-style">
+            <label for="folderName">New Folder:</label>
+            <input type="text" id="folderName" name="folderName" required>
+            <label for="parentFolder">Parent Folder (Optional):</label>
+            <select id="parentFolder" name="parentFolder"></select>
+            <button type="submit">Create Folder</button>
+        </form>
+    </div>
+    <div id="foldersContainer" class="form-style"></div>
+    <div id="noFolderCardSetsContainer" class="form-style"></div>
+    <div class="content">
+        <div class="cards" id="teacherCardSetsContainer">
+        </div>
+    </div>
+</div>
+</body>
+</html>

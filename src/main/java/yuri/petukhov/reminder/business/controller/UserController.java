@@ -13,7 +13,7 @@ import yuri.petukhov.reminder.business.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize(value = "hasRole('ADMIN')")
+@PreAuthorize(value = "hasRole('ROLE_ADMIN')")
 @RequestMapping("/users")
 @Tag(name = "USERS")
 public class UserController {

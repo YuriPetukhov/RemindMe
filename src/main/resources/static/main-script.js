@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Получаем текущее состояние интерфейса из localStorage
     currentInterface = localStorage.getItem('currentInterface') || 'userInterface';
     loadUserRoles();
 });
@@ -43,7 +42,6 @@ function showCurrentInterface() {
     if (document.getElementById(currentInterface)) {
         $('#' + currentInterface).show();
     } else {
-        // Если текущий интерфейс не найден, покажем интерфейс по умолчанию
         currentInterface = 'userInterface';
         $('#userInterface').show();
     }
@@ -67,7 +65,6 @@ function loadInterfaces() {
         currentInterface = 'userInterface';
     }
 
-    // Сохраняем текущее состояние интерфейса в localStorage
     localStorage.setItem('currentInterface', currentInterface);
 }
 

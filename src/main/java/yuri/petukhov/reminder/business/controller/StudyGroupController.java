@@ -13,7 +13,7 @@ import yuri.petukhov.reminder.business.service.StudyGroupService;
 @RequestMapping("/study-group")
 @Tag(name = "LOGIN")
 @Slf4j
-@PreAuthorize(value = "hasRole('ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
+@PreAuthorize(value = "hasRole('ROLE_ADMIN') or @userServiceImpl.isAuthorized(authentication.getName(), #userId)")
 public class StudyGroupController {
 
     private final StudyGroupService studyGroupService;

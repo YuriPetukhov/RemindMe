@@ -24,6 +24,7 @@
         <springdoc.openapi.version>2.1.0</springdoc.openapi.version>
         <swagger.annotations.v1.version>1.5.21</swagger.annotations.v1.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <thymeleaf.extras.version>3.0.4.RELEASE</thymeleaf.extras.version>
     </properties>
     <dependencies>
         <dependency>
@@ -108,7 +109,7 @@
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
-            <version>3.0.4.RELEASE</version>
+            <version>${thymeleaf.extras.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -118,8 +119,33 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-websocket</artifactId>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
 
+    </dependencies>
     <build>
         <plugins>
             <plugin>

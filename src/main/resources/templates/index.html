@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,22 +10,23 @@
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </head>
 <body>
+
 <div id="adminInterface" class="interface">
     <div th:replace="admin-interface.html :: admin-interface"></div>
-    <script src="../admin-interface-script.js" defer></script>
+    <script src="../admin-interface-script.js"></script>
 </div>
 <div id="teacherInterface" class="interface">
     <div th:replace="teacher-interface.html :: teacher-interface"></div>
-    <script src="../teacher-interface-script.js" defer></script>
+    <script src="../teacher-interface-script.js"></script>
 </div>
 <div id="studentInterface" class="interface">
     <div th:replace="student-interface.html :: student-interface"></div>
-    <script src="../student-interface-script.js" defer></script>
+    <script src="../student-interface-script.js"></script>
 </div>
 <div id="userInterface" class="interface">
     <div th:replace="user-interface.html :: user-interface"></div>
-    <script src="../user-interface-script.js" defer></script>
+    <script src="../user-interface-script.js"></script>
 </div>
-<script src="../main-script.js" defer></script>
+<script src="../main-script.js"></script>
 </body>
 </html>

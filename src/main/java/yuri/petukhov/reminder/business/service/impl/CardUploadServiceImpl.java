@@ -1,0 +1,156 @@
+package yuri.petukhov.reminder.business.service.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import yuri.petukhov.reminder.business.enums.CardActivity;
+import yuri.petukhov.reminder.business.enums.RecallMode;
+import yuri.petukhov.reminder.business.enums.ReminderInterval;
+import yuri.petukhov.reminder.business.exception.FileProcessingException;
+import yuri.petukhov.reminder.business.exception.UnsupportedFileFormatException;
+import yuri.petukhov.reminder.business.model.Card;
+import yuri.petukhov.reminder.business.model.CardSet;
+import yuri.petukhov.reminder.business.model.User;
+import yuri.petukhov.reminder.business.service.CardService;
+import yuri.petukhov.reminder.business.service.CardSetService;
+import yuri.petukhov.reminder.business.service.CardUploadService;
+import yuri.petukhov.reminder.business.service.UserService;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+@Service
+@RequiredArgsConstructor
+public class CardUploadServiceImpl implements CardUploadService {
+
+    private final UserService userService;
+    private final CardService cardService;
+    private final CardSetService cardSetService;
+    public void addUploadCards(MultipartFile file, String cardSetName, String setDescription, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
+        try {
+            List<Card> cards = parseFile(file);
+            saveCards(cards, cardSetName, setDescription, activationStart, cardsPerBatch, activationInterval, intervalUnit, userId);
+        } catch (IOException e) {
+            throw new FileProcessingException("Ошибка при обработке файла: " + e.getMessage(), e);
+        }
+    }
+
+    private List<Card> parseFile(MultipartFile file) throws IOException {
+        String fileName = file.getOriginalFilename();
+        if (fileName != null && fileName.endsWith(".csv")) {
+            return parseCsvFile(file);
+        } else if (fileName != null && (fileName.endsWith(".xls") || fileName.endsWith(".xlsx"))) {
+            return parseExcelFile(file);
+        } else {
+            throw new UnsupportedFileFormatException("Неподдерживаемый формат файла");
+        }
+    }
+
+    private List<Card> parseCsvFile(MultipartFile file) throws IOException {
+        List<Card> cards = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = reader.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+                String[] fields = line.split(",");
+                Card card = new Card();
+                card.setCardName(fields[0]);
+                card.setCardMeaning(fields[1]);
+
+                cards.add(card);
+            }
+        }
+        return cards;
+    }
+
+    private List<Card> parseExcelFile(MultipartFile file) throws IOException {
+        List<Card> cards = new ArrayList<>();
+        Workbook workbook = WorkbookFactory.create(file.getInputStream());
+        Sheet sheet = workbook.getSheetAt(0);
+
+        Iterator<Row> rows = sheet.iterator();
+        while (rows.hasNext()) {
+            Row row = rows.next();
+            if (row.getRowNum() == 0) {
+                continue;
+            }
+
+            String title = row.getCell(0).getStringCellValue();
+            String description = row.getCell(1).getStringCellValue();
+
+            Card card = new Card();
+            card.setCardName(title);
+            card.setCardMeaning(description);
+            cards.add(card);
+        }
+
+        workbook.close();
+        return cards;
+    }
+
+    private void saveCards(List<Card> cards, String cardSetName, String setDescription, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
+        User user = userService.findUserById(userId);
+        List<Card> cardToSave = new ArrayList<>();
+        LocalDateTime currentActivationDate = null;
+
+        if (activationStart != null && !activationStart.isBlank()) {
+            currentActivationDate = LocalDateTime.parse(activationStart);
+        }
+
+        int batchCounter = 0;
+
+        for (Card card : cards) {
+            card.setUser(user);
+
+            if (currentActivationDate != null) {
+                card.setActivity(CardActivity.INACTIVE);
+                card.setRecallMode(RecallMode.NONE);
+                card.setInterval(ReminderInterval.MINUTES_20);
+                card.setReminderDateTime(currentActivationDate);
+
+                batchCounter++;
+                if (batchCounter >= cardsPerBatch) {
+                    currentActivationDate = incrementDate(currentActivationDate, activationInterval, intervalUnit);
+                    batchCounter = 0;
+                }
+            }
+
+            cardToSave.add(card);
+        }
+
+
+        List <Card> savedCards = cardService.saveAll(cardToSave);
+        CardSet cardSet = new CardSet();
+        cardSet.setUser(user);
+        cardSet.setCards(savedCards);
+        if(cardSetName == null || cardSetName.isBlank()) {
+            cardSet.setSetName("New Set");
+        } else {
+            cardSet.setSetName(cardSetName);
+        }
+        if(setDescription == null || setDescription.isBlank()) {
+            cardSet.setSetDescription("Set Description");
+        } else {
+            cardSet.setSetDescription(cardSetName);
+        }
+        cardSetService.save(cardSet);
+    }
+
+    private LocalDateTime incrementDate(LocalDateTime date, int interval, String unit) {
+        return switch (unit.toLowerCase()) {
+            case "hours" -> date.plusHours(interval);
+            case "days" -> date.plusDays(interval);
+            case "weeks" -> date.plusWeeks(interval);
+            default -> throw new IllegalArgumentException("Invalid interval unit: " + unit);
+        };
+    }
+}
