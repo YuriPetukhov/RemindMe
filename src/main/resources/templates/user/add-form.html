@@ -8,7 +8,6 @@
 </head>
 <body>
 <div th:fragment="addWordForm">
-<div class="form-container">
     <div id="addWordFormContainer" style="display:none;">
         <form id="addWordForm" class="form-style">
             <label for="cardTitleAdd">New word:</label>
@@ -51,13 +50,12 @@
             </div>
             <button type="button" class="full-width" onclick="uploadCards()">Upload file</button>
         </form>
-    </div>
-    <div class="content">
-        <div class="cards" id="userCardSetsContainer">
+        <div class="content">
+            <div class="user-card-sets" id="userCardSetsContainer">
+            </div>
+            <div th:replace="user/card-set-update.html :: cardSetFragment"></div>
         </div>
     </div>
-    <div th:replace="user/card-set-update.html :: cardSetFragment"></div>
-</div>
 </div>
 </body>
 </html>
