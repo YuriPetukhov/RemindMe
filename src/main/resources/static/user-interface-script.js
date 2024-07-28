@@ -40,6 +40,7 @@ $(document).ready(function() {
                         $('#editCardSetDescription').val(cardSet.setDescription);
                         $('#editCardSetSize').text(cardSet.setSize);
                         closeAllContainers();
+                        $('#addWordFormContainer').show();
                         $('#editCardSetContainer').show();
                         $('#userCardSetCardsContainer').show();
                         $('#editCardSetForm').show();
@@ -348,7 +349,6 @@ $(document).ready(function() {
             success: function(response) {
                 alert('Набор карточек успешно обновлен');
                 closeAllContainers()
-//                loadUserCardSets()
             },
             error: function(error) {
                 console.error('Ошибка обновления набора карточек:', error);
@@ -530,6 +530,7 @@ function loadUserCardSets() {
                                             '</div>';
                         });
                         $('#userCardSetsContainer').html(cardSetsHtml).show();
+                        $('#addWordFormContainer').show();
                         $('#addWordForm').show();
                         $('#uploadFileForm').show();
                     },
@@ -623,6 +624,7 @@ function closeAllContainers() {
                     $('#editCardSetCardContainer').hide();
                     $('#loadUserCardSetCards').hide();
                     $('#userCardSetCardsContainer').hide();
+                    $('#addWordFormContainer').hide();
                     $('#addWordForm').hide();
                     $('#uploadFileForm').hide();
 
