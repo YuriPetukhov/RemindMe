@@ -107,7 +107,7 @@ display: none;
     transform: translateY(-2px);
     border-radius: 12px;
 }
-
+.user-card-sets,
 .cards {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -115,9 +115,13 @@ display: none;
     gap: 5px;
     padding: 5px;
     background-color: var(--background-color);
-    overflow-y: scroll;
     height: 100vh;
 }
+
+.cards {
+    overflow-y: scroll;
+}
+
 .card-set,
 .card {
     border: 1px solid var(--text-color);
@@ -164,6 +168,13 @@ display: none;
     font-size: 14px;
     color: var(--card-text-color);
     line-height: 1.6;
+}
+
+#addWordFormContainer {
+display: flex;
+flex-direction: column;
+overflow-y: scroll;
+height: 100vh;
 }
 
         .modal {
@@ -436,12 +447,14 @@ display: none;
     }
 
 @media (max-width: 1080px) {
+.user-card-sets,
     .cards {
         grid-template-columns: repeat(4, 1fr);
     }
 }
 
 @media (max-width: 780px) {
+.user-card-sets,
     .cards {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -452,6 +465,7 @@ display: none;
 }
 
 @media (max-width: 680px) {
+.user-card-sets,
     .cards {
         grid-template-columns: 1fr;
     }
@@ -485,6 +499,7 @@ display: none;
         flex-wrap: wrap;
     }
     .stat-container,
+    .user-card-sets,
     .cards {
         height: 100vh;
         padding-bottom: 102px;
