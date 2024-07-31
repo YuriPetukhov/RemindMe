@@ -15,4 +15,6 @@ public interface InputService {
     void sendMenuMessage(CommandEntity commandEntity);
 
     void sendWebInterfaceLink(CommandEntity commandEntity);
+
+    void response(String response, Long aLong);
 }

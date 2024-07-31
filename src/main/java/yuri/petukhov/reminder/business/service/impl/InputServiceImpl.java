@@ -94,6 +94,19 @@ public class InputServiceImpl implements InputService {
         menuMessageCreator.createLinkMessage(commandEntity.getChatId(), commandEntity.getUserId(), commandEntity.getRoles());
     }
 
+    @Override
+    public void response(String response, Long userId) {
+        User user = userService.findUserById(userId);
+        Long chatId = user.getChatId();
+        CommandEntity commandEntity = new CommandEntity();
+        commandEntity.setCardState(user.getCardState());
+        commandEntity.setRoles(userService.getUserRoles(chatId));
+        commandEntity.setChatId(chatId);
+        commandEntity.setUserId(userId);
+        commandEntity.setMessageText(response);
+        processMessage(commandEntity);
+    }
+
 
     private void changeCardAndUserParameters(Card card) {
         log.info("changeCardAndUserParameters() is started");
