@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import yuri.petukhov.reminder.business.dto.CardUpdate;
 import yuri.petukhov.reminder.business.service.InputService;
 
 @RestController
@@ -26,6 +25,8 @@ public class InputController {
     public ResponseEntity<Void> response(
             @RequestBody String response,
             Authentication authentication) {
+        response = response.replace("\"", "").trim();
+        log.info("Answer is " + response);
         inputService.response(response, Long.valueOf(authentication.getName()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

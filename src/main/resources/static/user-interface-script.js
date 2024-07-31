@@ -645,7 +645,7 @@ function displayMessage(message) {
     localStorage.setItem('lastMessage', message);
 
     let messageButton = document.createElement('button');
-    messageButton.textContent = message;
+    messageButton.innerHTML = message;
     messageButton.addEventListener('click', function() {
         showResponseModal(message);
     });
@@ -662,19 +662,20 @@ function showResponseModal(message) {
 document.getElementById('submitResponse').addEventListener('click', function() {
     const response = document.getElementById('responseInput').value;
     $.ajax({
-            url: '/input',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ response: response, originalMessage: document.getElementById('responseMessage').innerHTML }),
-            success: function(data) {
-                console.log('Ответ успешно отправлен:', data);
-                document.getElementById('responseModal').style.display = 'none';
-                document.getElementById('responseInput').value = '';
-            },
-            error: function(error) {
-                console.error('Ошибка при отправке ответа:', error);
-            }
-        });
+        url: '/input',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(response),
+        success: function(data) {
+            console.log('Ответ успешно отправлен:', data);
+            document.getElementById('responseModal').style.display = 'none';
+            document.getElementById('responseInput').value = '';
+        },
+        error: function(error) {
+            console.error('Ошибка при отправке ответа:', error);
+        }
+    });
+
     console.log('Отправлен ответ:', response);
     document.getElementById('responseModal').style.display = 'none';
     document.getElementById('responseInput').value = '';
