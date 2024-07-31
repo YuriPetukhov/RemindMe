@@ -31,10 +31,10 @@ public class CardUploadServiceImpl implements CardUploadService {
     private final UserService userService;
     private final CardService cardService;
     private final CardSetService cardSetService;
-    public void addUploadCards(MultipartFile file, String cardSetName, String setDescription, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
+    public void addUploadCards(MultipartFile file, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
         try {
             List<Card> cards = parseFile(file);
-            saveCards(cards, cardSetName, setDescription, activationStart, cardsPerBatch, activationInterval, intervalUnit, userId);
+            saveCards(cards, activationStart, cardsPerBatch, activationInterval, intervalUnit, userId);
         } catch (IOException e) {
             throw new FileProcessingException("Ошибка при обработке файла: " + e.getMessage(), e);
         }
@@ -77,9 +77,7 @@ public class CardUploadServiceImpl implements CardUploadService {
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = workbook.getSheetAt(0);
 
-        Iterator<Row> rows = sheet.iterator();
-        while (rows.hasNext()) {
-            Row row = rows.next();
+        for (Row row : sheet) {
             if (row.getRowNum() == 0) {
                 continue;
             }
@@ -97,13 +95,15 @@ public class CardUploadServiceImpl implements CardUploadService {
         return cards;
     }
 
-    private void saveCards(List<Card> cards, String cardSetName, String setDescription, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
+    private void saveCards(List<Card> cards, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
         User user = userService.findUserById(userId);
         List<Card> cardToSave = new ArrayList<>();
         LocalDateTime currentActivationDate = null;
 
         if (activationStart != null && !activationStart.isBlank()) {
             currentActivationDate = LocalDateTime.parse(activationStart);
+        } else {
+            currentActivationDate = LocalDateTime.now();
         }
 
         int batchCounter = 0;
@@ -128,21 +128,8 @@ public class CardUploadServiceImpl implements CardUploadService {
         }
 
 
-        List <Card> savedCards = cardService.saveAll(cardToSave);
-        CardSet cardSet = new CardSet();
-        cardSet.setUser(user);
-        cardSet.setCards(savedCards);
-        if(cardSetName == null || cardSetName.isBlank()) {
-            cardSet.setSetName("New Set");
-        } else {
-            cardSet.setSetName(cardSetName);
-        }
-        if(setDescription == null || setDescription.isBlank()) {
-            cardSet.setSetDescription("Set Description");
-        } else {
-            cardSet.setSetDescription(cardSetName);
-        }
-        cardSetService.save(cardSet);
+       cardService.saveAll(cardToSave);
+
     }
 
     private LocalDateTime incrementDate(LocalDateTime date, int interval, String unit) {

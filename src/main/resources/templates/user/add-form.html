@@ -21,26 +21,26 @@
                 <label for="uploadFile">Upload CSV/Excel file:</label>
                 <input type="file" id="uploadFile" name="file" accept=".csv, .xlsx" required>
             </div>
-            <div class="form-group">
-                <label for="cardSetName">Card's set name:</label>
-                <input type="text" id="cardSetName" name="cardSetName">
-            </div>
-            <div class="form-group">
-                <label for="setDescription">Card's set description:</label>
-                <input type="text" id="setDescription" name="setDescription">
-            </div>
+<!--            <div class="form-group">-->
+<!--                <label for="cardSetName">Card's set name:</label>-->
+<!--                <input type="text" id="cardSetName" name="cardSetName">-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label for="setDescription">Card's set description:</label>-->
+<!--                <input type="text" id="setDescription" name="setDescription">-->
+<!--            </div>-->
             <div class="form-group">
                 <label for="activationStart">Activation start:</label>
-                <input type="datetime-local" id="activationStart" name="activationStart">
+                <input type="datetime-local" id="activationStart" name="activationStart" required>
             </div>
             <div class="form-group">
                 <label for="cardsPerBatch">Number of Cards for Initial Activation:</label>
-                <input type="number" id="cardsPerBatch" name="cardsPerBatch" min="1">
+                <input type="number" id="cardsPerBatch" name="cardsPerBatch" min="1" required>
             </div>
             <div class="form-group">
                 <label for="activationInterval">Interval for Next Batch Activation:</label>
                 <div class="form-group-inline">
-                    <input type="number" id="activationInterval" name="activationInterval" min="1">
+                    <input type="number" id="activationInterval" name="activationInterval" min="1" required>
                     <select id="intervalUnit" name="intervalUnit">
                         <option value="hours">Hours</option>
                         <option value="days">Days</option>
@@ -50,11 +50,11 @@
             </div>
             <button type="button" class="full-width" onclick="uploadCards()">Upload file</button>
         </form>
-        <div class="content">
-            <div class="user-card-sets" id="userCardSetsContainer">
-            </div>
-            <div th:replace="user/card-set-update.html :: cardSetFragment"></div>
-        </div>
+<!--        <div class="content">-->
+<!--            <div class="user-card-sets" id="userCardSetsContainer">-->
+<!--            </div>-->
+<!--            <div th:replace="user/card-set-update.html :: cardSetFragment"></div>-->
+<!--        </div>-->
     </div>
 </div>
 </body>

@@ -3,6 +3,7 @@ package yuri.petukhov.reminder.handling.creator.impl;
 import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.bot.configuration.RemindMeBotConfiguration;
 import yuri.petukhov.reminder.bot.executor.MessageExecutor;
@@ -21,6 +22,7 @@ import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 public class MenuMessageCreatorImpl implements MenuMessageCreator {
     private final MessageExecutor messageExecutor;
     private final RemindMeBotConfiguration configuration;
+    private final SimpMessagingTemplate messagingTemplate;
 
     private String message;
 
@@ -48,7 +50,12 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     @Override
     public void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber, ReminderInterval interval) {
         log.info("Notification {} was sent for chatId = {}", cardMeaning, chatId);
-        messageExecutor.executeMessage("Questions remain: " + wordsNumber + "\n" + "Current interval: " + interval + "\n" + cardMeaning, chatId);
+
+        String botMessage = formatMessage(cardMeaning, wordsNumber, interval, false);
+        String webMessage = formatMessage(cardMeaning, wordsNumber, interval, true);
+
+        messageExecutor.executeMessage(botMessage, chatId);
+        messagingTemplate.convertAndSend("/topic/recall", webMessage);
     }
 
     @Override
@@ -95,6 +102,11 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     public void createAdminNewUserNotifyMessage(String userName, Long userChatId, Long adminChatId) {
         message = "New user: " + userName + ", chatId: " + userChatId;
         messageExecutor.executeMessage(message, adminChatId);
+    }
+
+    private String formatMessage(String cardMeaning, int wordsNumber, ReminderInterval interval, boolean isForWeb) {
+        String lineBreak = isForWeb ? "<br>" : "\n";
+        return "Questions remain: " + wordsNumber + lineBreak + "Current interval: " + interval + lineBreak + cardMeaning;
     }
 
 }
