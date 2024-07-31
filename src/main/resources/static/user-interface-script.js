@@ -637,25 +637,43 @@ stompClient2.connect({}, function (frame) {
 
     stompClient2.subscribe('/topic/recall', function (message) {
         console.log("New message received:", message.body);
-        displayMessage(message.body);
+
+        const messageContent = message.body.toLowerCase();
+        console.log("message is ", messageContent)
+
+        if (messageContent.startsWith('questions remain')) {
+            displayQuestion(message.body);
+        } else {
+            displayResponse(message.body);
+        }
     });
 });
 
-function displayMessage(message) {
-    localStorage.setItem('lastMessage', message);
-
-    let messageButton = document.createElement('button');
-    messageButton.innerHTML = message;
-    messageButton.addEventListener('click', function() {
-        showResponseModal(message);
+function displayQuestion(question) {
+    const questionBoard = document.getElementById('questionBoard');
+    questionBoard.innerHTML = '';
+    let questionButton = document.createElement('button');
+    questionButton.innerHTML = question;
+    questionButton.addEventListener('click', function() {
+        showResponseModal(question);
     });
 
-    document.getElementById('chat').innerHTML = '';
-    document.getElementById('chat').appendChild(messageButton);
+    questionBoard.appendChild(questionButton);
+
+    localStorage.setItem('lastQuestion', question);
 }
 
-function showResponseModal(message) {
-    document.getElementById('responseMessage').innerHTML = message;
+function displayResponse(response) {
+    const responseBoard = document.getElementById('responseBoard');
+    responseBoard.innerHTML = '';
+    let responseElement = document.createElement('button');
+    responseElement.innerHTML = response;
+    responseBoard.appendChild(responseElement);
+    localStorage.setItem('lastResponse', response);
+}
+
+function showResponseModal(question) {
+    document.getElementById('responseMessage').innerHTML = question;
     document.getElementById('responseModal').style.display = 'block';
 }
 
@@ -667,7 +685,6 @@ document.getElementById('submitResponse').addEventListener('click', function() {
         contentType: 'application/json',
         data: JSON.stringify(response),
         success: function(data) {
-            console.log('Ответ успешно отправлен:', data);
             document.getElementById('responseModal').style.display = 'none';
             document.getElementById('responseInput').value = '';
         },
@@ -675,10 +692,6 @@ document.getElementById('submitResponse').addEventListener('click', function() {
             console.error('Ошибка при отправке ответа:', error);
         }
     });
-
-    console.log('Отправлен ответ:', response);
-    document.getElementById('responseModal').style.display = 'none';
-    document.getElementById('responseInput').value = '';
 });
 
 document.getElementById('cancelResponse').addEventListener('click', function() {
@@ -687,8 +700,12 @@ document.getElementById('cancelResponse').addEventListener('click', function() {
 });
 
 window.onload = function() {
-    const lastMessage = localStorage.getItem('lastMessage');
-    if (lastMessage) {
-        displayMessage(lastMessage);
+    const lastQuestion = localStorage.getItem('lastQuestion');
+    const lastResponse = localStorage.getItem('lastResponse');
+    if (lastQuestion) {
+        displayQuestion(lastQuestion);
+    }
+    if (lastResponse) {
+        displayResponse(lastResponse);
     }
 };

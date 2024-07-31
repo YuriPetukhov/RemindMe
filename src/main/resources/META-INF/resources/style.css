@@ -108,13 +108,16 @@ display: none;
     border-radius: 12px;
 }
 
-#chat {
+#questionBoard,
+#responseBoard {
 display: flex;
+flex-direction: column;
 margin: 5px;
 
 }
 
-#chat button {
+#questionBoard button,
+#responseBoard button {
     line-height: 1.5;
     padding: 5px;
     font-weight: 600;
@@ -159,7 +162,8 @@ margin: 5px;
     overflow-y: scroll;
 }
 
-#chat button,
+#questionBoard button,
+#responseBoard button,
 .card-set,
 .card {
     border: 1px solid var(--text-color);

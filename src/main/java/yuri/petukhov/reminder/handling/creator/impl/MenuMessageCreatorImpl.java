@@ -61,8 +61,9 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     @Override
     public void createOkMessage(Long chatId) {
         log.info("Ok Message was sent for chatId = {}", chatId);
-        message = "Yes!";
+        message = "Yes! It is correct!";
         messageExecutor.executeMessage(message, chatId);
+        messagingTemplate.convertAndSend("/topic/recall", message);
     }
 
     @Override
@@ -70,13 +71,15 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
         log.info("No Message was sent for chatId = {}", chatId);
         message = "No! The word is " + cardName;
         messageExecutor.executeMessage(message, chatId);
+        messagingTemplate.convertAndSend("/topic/recall", message);
     }
 
     @Override
     public void createCompletedMessage(Long chatId) {
         log.info("Completed Message was sent for chatId = {}", chatId);
-        message = "Bingo!";
+        message = "Bingo! You have finished";
         messageExecutor.executeMessage(message, chatId);
+        messagingTemplate.convertAndSend("/topic/recall", message);
     }
 
     @Override
