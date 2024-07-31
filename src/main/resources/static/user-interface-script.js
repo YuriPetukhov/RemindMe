@@ -640,10 +640,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(message => {
-            if (message.toLowerCase().startsWith('questions remain')) {
-                displayQuestion(message);
+            if (message.trim() === '') {
+                displayDefaultMessage();
             } else {
-                displayResponse(message);
+                if (message.toLowerCase().startsWith('questions remain')) {
+                    displayQuestion(message);
+                } else {
+                    displayResponse(message);
+                }
             }
         })
         .catch(error => {
@@ -693,6 +697,20 @@ function displayResponse(response) {
     responseBoard.appendChild(responseElement);
     localStorage.setItem('lastResponse', response);
 }
+
+function displayDefaultMessage() {
+    const questionBoard = document.getElementById('questionBoard');
+    questionBoard.innerHTML = '';
+
+    let questionButton = document.createElement('button');
+    questionButton.innerHTML = 'No new questions at the moment.';
+    questionButton.disabled = true;
+    questionButton.classList.add('default-message-button');
+
+    questionBoard.appendChild(questionButton);
+}
+
+
 
 function showResponseModal(question) {
     document.getElementById('responseMessage').innerHTML = question;

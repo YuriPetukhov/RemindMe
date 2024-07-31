@@ -16,9 +16,9 @@ public interface MenuMessageCreator {
 
     void createNotificationToUser(Long chatId, Long userId, String cardMeaning, int wordsNumber, ReminderInterval interval);
 
-    void createOkMessage(Long chatId);
+    void createOkMessage(Long chatId, Long userId);
 
-    void createNoMessage(Long chatId, String cardName);
+    void createNoMessage(Long chatId, String cardName, Long userId);
 
     void createCompletedMessage(Long chatId);
 
@@ -29,4 +29,6 @@ public interface MenuMessageCreator {
     void createAdminNewUserNotifyMessage(String userName, Long chatId, Long chatId1);
 
     String getLatestMessage(Long chatId);
+
+    void removeLatestMessage(Long chatId);
 }

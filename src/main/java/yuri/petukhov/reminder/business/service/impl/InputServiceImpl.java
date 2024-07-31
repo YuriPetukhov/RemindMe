@@ -66,9 +66,9 @@ public class InputServiceImpl implements InputService {
         defineNewReminderParameter(card, result);
         changeCardAndUserParameters(card);
         if (result) {
-            menuMessageCreator.createOkMessage(commandEntity.getChatId());
+            menuMessageCreator.createOkMessage(commandEntity.getChatId(), commandEntity.getUserId());
         } else {
-            menuMessageCreator.createNoMessage(commandEntity.getChatId(), card.getCardName());
+            menuMessageCreator.createNoMessage(commandEntity.getChatId(), card.getCardName(), commandEntity.getUserId());
         }
         recallService.recallWordsForUser(commandEntity.getUserId());
         return cardMonitoring;

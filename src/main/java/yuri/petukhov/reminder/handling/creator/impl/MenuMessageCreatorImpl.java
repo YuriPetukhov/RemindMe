@@ -71,19 +71,21 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
-    public void createOkMessage(Long chatId) {
+    public void createOkMessage(Long chatId, Long userId) {
         log.info("Ok Message was sent for chatId = {}", chatId);
         message = "Yes! It is correct!";
         messageExecutor.executeMessage(message, chatId);
         messagingTemplate.convertAndSend("/topic/recall", message);
+        removeLatestMessage(userId);
     }
 
     @Override
-    public void createNoMessage(Long chatId, String cardName) {
+    public void createNoMessage(Long chatId, String cardName, Long userId) {
         log.info("No Message was sent for chatId = {}", chatId);
         message = "No! The word is " + cardName;
         messageExecutor.executeMessage(message, chatId);
         messagingTemplate.convertAndSend("/topic/recall", message);
+        removeLatestMessage(userId);
     }
 
     @Override
@@ -120,8 +122,13 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
-    public String getLatestMessage(Long chatId) {
-        return latestMessages.get(chatId);
+    public String getLatestMessage(Long userId) {
+        return latestMessages.get(userId);
+    }
+
+    @Override
+    public void removeLatestMessage(Long userId) {
+        latestMessages.remove(userId);
     }
 
     private String formatMessage(String cardMeaning, int wordsNumber, ReminderInterval interval, boolean isForWeb) {
