@@ -519,40 +519,47 @@ height: 100vh;
         font-size: 10px;
     }
 
-    .form-style button {
-        font-size: 10px;
-        width: 100px;
+    #userInterface {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 100vh;
     }
 
-    .main__content {
+    #cardsContainer,
+    #manageCardsContainer,
+    #practiseContainer,
+    #settingsContainer {
+        display: none;
+    }
+
+    #addWordFormContainer {
+        display: flex;
         flex-direction: column;
+        overflow-y: hidden;
+        height: 100%;
     }
 
-    .menu__list {
-        height: 50px;
+    #userInterface {
+        display: flex;
+        height: 100vh;
+        flex-direction: column;
+        overflow-y: scroll;
     }
 
     .menu__panel {
-        max-height: 100px;
-        width: 100%;
+        display: block;
+        width: auto;
+        height: auto;
     }
 
-    ul {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .stat-container,
-    .user-card-sets,
-    .cards {
-        height: 100vh;
-        padding-bottom: 102px;
+    .main__content {
+        display: block;
     }
 
-    #infoContainer h3 {
-        font-size: 12px;
+    .stat-container {
+        overflow-y: none;
+        height: auto;
     }
 
-    #infoContainer p {
-        font-size: 10px;
-    }
 }
