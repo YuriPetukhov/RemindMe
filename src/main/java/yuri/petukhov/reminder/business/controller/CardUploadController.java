@@ -20,8 +20,8 @@ public class CardUploadController {
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadCards(
             @RequestParam(value = "file") MultipartFile file,
-            @RequestParam(value = "cardSetName", required = false) String cardSetName,
-            @RequestParam(value = "setDescription", required = false) String setDescription,
+//            @RequestParam(value = "cardSetName", required = false) String cardSetName,
+//            @RequestParam(value = "setDescription", required = false) String setDescription,
             @RequestParam(value = "activationStart", required = false) String activationStart,
             @RequestParam(value = "cardsPerBatch", required = false, defaultValue = "0") int cardsPerBatch,
             @RequestParam(value = "activationInterval", required = false, defaultValue = "0") int activationInterval,
@@ -30,7 +30,7 @@ public class CardUploadController {
 
         Long userId = Long.valueOf(authentication.getName());
 
-        cardUploadService.addUploadCards(file, cardSetName, setDescription, activationStart, cardsPerBatch, activationInterval, intervalUnit, userId);
+        cardUploadService.addUploadCards(file, activationStart, cardsPerBatch, activationInterval, intervalUnit, userId);
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "File and data successfully uploaded and processed");

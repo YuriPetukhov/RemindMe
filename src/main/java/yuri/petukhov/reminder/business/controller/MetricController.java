@@ -34,4 +34,5 @@ public class MetricController {
         metricService.deleteNewUserMetrics(messageId);
         return ResponseEntity.noContent().build();
     }
+
 }

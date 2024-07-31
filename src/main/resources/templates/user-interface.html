@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
-<div th:fragment="user-interface" id="userInterface">
+<div th:fragment="user-interface" class="user">
     <div class="main__content">
         <div class="menu__panel">
             <ul>
@@ -17,6 +17,17 @@
                 <li class="menu__list"><a href="/info" class="menu__link">INFO</a></li>
                 <li class="menu__list"><a href="/settings" class="menu__link">Settings</a></li>
             </ul>
+            <div>
+                <div id="responseBoard"></div>
+                <div id="questionBoard"></div>
+                <div id="responseModal" style="display:none;">
+                    <p id="responseMessage"></p>
+                    <input type="text" id="responseInput" />
+                    <button id="submitResponse">Submit</button>
+                    <button id="cancelResponse">Cancel</button>
+                </div>
+            </div>
+
             <ul>
                 <li class="menuList"></li>
             </ul>

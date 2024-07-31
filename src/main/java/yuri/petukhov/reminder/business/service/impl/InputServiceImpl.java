@@ -66,9 +66,9 @@ public class InputServiceImpl implements InputService {
         defineNewReminderParameter(card, result);
         changeCardAndUserParameters(card);
         if (result) {
-            menuMessageCreator.createOkMessage(commandEntity.getChatId());
+            menuMessageCreator.createOkMessage(commandEntity.getChatId(), commandEntity.getUserId());
         } else {
-            menuMessageCreator.createNoMessage(commandEntity.getChatId(), card.getCardName());
+            menuMessageCreator.createNoMessage(commandEntity.getChatId(), card.getCardName(), commandEntity.getUserId());
         }
         recallService.recallWordsForUser(commandEntity.getUserId());
         return cardMonitoring;
@@ -92,6 +92,19 @@ public class InputServiceImpl implements InputService {
     @Override
     public void sendWebInterfaceLink(CommandEntity commandEntity) {
         menuMessageCreator.createLinkMessage(commandEntity.getChatId(), commandEntity.getUserId(), commandEntity.getRoles());
+    }
+
+    @Override
+    public void response(String response, Long userId) {
+        User user = userService.findUserById(userId);
+        Long chatId = user.getChatId();
+        CommandEntity commandEntity = new CommandEntity();
+        commandEntity.setCardState(user.getCardState());
+        commandEntity.setRoles(userService.getUserRoles(chatId));
+        commandEntity.setChatId(chatId);
+        commandEntity.setUserId(userId);
+        commandEntity.setMessageText(response);
+        processMessage(commandEntity);
     }
 
 

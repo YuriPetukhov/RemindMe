@@ -118,6 +118,22 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
+    @Override
+    public List<String> getUserRoles(Long chatId) {
+        Optional<User> optUser = findUserByChatId(chatId);
+        List<String> roleNames = null;
+        if (optUser.isPresent()) {
+            User user = optUser.get();
+            List<Role> roles = user.getRoles();
+            roleNames = roles.stream()
+                    .map(role -> role.getRoleName().name())
+                    .collect(Collectors.toList());
+            log.info("User roles were detected: " + roleNames);
+        }
+        return roleNames;
+    }
+
     /**
      * Sets the card input state of a user.
      * @param user The user to set the state for.

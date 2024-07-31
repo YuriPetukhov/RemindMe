@@ -13,21 +13,22 @@ $(document).ready(function() {
                     loadCardSetsWithoutFolder();
                 }
 
-        function loadFolders() {
-                    $.ajax({
-                        url: '/folders/all',
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(folders) {
-                            let foldersHtml = generateFolderHtml(folders);
-                            $('#foldersContainer').html(foldersHtml);
-                            populateParentFolderOptions(folders);
-                        },
-                        error: function(error) {
-                            console.error('Ошибка загрузки папок:', error);
-                        }
-                    });
-                }
+       function loadFolders() {
+           $.ajax({
+               url: '/folders/all',
+               type: 'GET',
+               dataType: 'json',
+               success: function(folders) {
+                   let foldersHtml = generateFolderHtml(folders);
+                   $('#foldersContainer').html(foldersHtml);
+                   populateParentFolderOptions(folders);
+               },
+               error: function(jqXHR, textStatus, errorThrown) {
+                   console.error('Ошибка загрузки папок:', textStatus, errorThrown);
+                   console.error('Ответ сервера:', jqXHR.responseText);
+               }
+           });
+       }
 
         function generateFolderHtml(folders, parentFolderId = null) {
                     let html = '';
@@ -190,6 +191,8 @@ $(document).ready(function() {
                         }
                     });
                 });
+
+});
 
         function closeAllTeacherContainers() {
                 $('#manageCardSetsContainer').hide();
@@ -364,5 +367,3 @@ $(document).ready(function() {
                     return 'red';
                 }
             }
-
-});

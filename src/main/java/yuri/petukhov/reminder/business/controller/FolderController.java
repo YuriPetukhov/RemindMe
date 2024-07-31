@@ -1,6 +1,7 @@
 package yuri.petukhov.reminder.business.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import yuri.petukhov.reminder.business.model.Folder;
 import yuri.petukhov.reminder.business.service.FolderService;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/folders")
 @RequiredArgsConstructor
+@Slf4j
 public class FolderController {
 
     private final FolderService folderService;

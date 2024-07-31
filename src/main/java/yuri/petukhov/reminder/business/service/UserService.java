@@ -1,5 +1,6 @@
 package yuri.petukhov.reminder.business.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
 import yuri.petukhov.reminder.business.model.User;
@@ -17,6 +18,9 @@ public interface UserService {
     Optional<User> findUserByChatId(Long chatId);
 
     List<String> getUserRoles(Long chatId, String userName);
+
+    @Transactional
+    List<String> getUserRoles(Long chatId);
 
     void setCardInputState(User user, UserCardInputState userCardInputState);
 

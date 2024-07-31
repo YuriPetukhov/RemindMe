@@ -29,27 +29,27 @@ $(document).ready(function() {
             });
         }
 
-        function loadCardSet(cardSetId) {
-                $.ajax({
-                    url: '/card-sets/' + cardSetId,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(cardSet) {
-                        currentCardSet = cardSet;
-                        $('#editCardSetName').val(cardSet.setName);
-                        $('#editCardSetDescription').val(cardSet.setDescription);
-                        $('#editCardSetSize').text(cardSet.setSize);
-                        closeAllContainers();
-                        $('#addWordFormContainer').show();
-                        $('#editCardSetContainer').show();
-                        $('#userCardSetCardsContainer').show();
-                        $('#editCardSetForm').show();
-                    },
-                    error: function(error) {
-                        console.error('Ошибка загрузки набора карточек:', error);
-                    }
-                });
-            }
+//        function loadCardSet(cardSetId) {
+//                $.ajax({
+//                    url: '/card-sets/' + cardSetId,
+//                    type: 'GET',
+//                    dataType: 'json',
+//                    success: function(cardSet) {
+//                        currentCardSet = cardSet;
+//                        $('#editCardSetName').val(cardSet.setName);
+//                        $('#editCardSetDescription').val(cardSet.setDescription);
+//                        $('#editCardSetSize').text(cardSet.setSize);
+//                        closeAllContainers();
+//                        $('#addWordFormContainer').show();
+//                        $('#editCardSetContainer').show();
+//                        $('#userCardSetCardsContainer').show();
+//                        $('#editCardSetForm').show();
+//                    },
+//                    error: function(error) {
+//                        console.error('Ошибка загрузки набора карточек:', error);
+//                    }
+//                });
+//            }
 
         function loadStatistics() {
             $.ajax({
@@ -117,8 +117,8 @@ $(document).ready(function() {
             $('#manageCardsContainer').show();
         } else if (target === '#add') {
             $('#addWordFormContainer').show();
-            $('.form-container').show();
-            loadUserCardSets();
+            $('#addWordForm').show();
+            $('#uploadFileForm').show();
         } else if (target === '/view-statistics') {
             $('#statsContainer').show();
             loadStatistics();
@@ -143,11 +143,11 @@ $(document).ready(function() {
         });
 
 
-        $(document).on('click', '.card-set', function() {
-            const cardSetId = $(this).data('set-id');
-            loadCardSet(cardSetId);
-            loadUserCardSetCards(cardSetId);
-        });
+//        $(document).on('click', '.card-set', function() {
+//            const cardSetId = $(this).data('set-id');
+//            loadCardSet(cardSetId);
+//            loadUserCardSetCards(cardSetId);
+//        });
 
         $(document).on('click', '.card', function() {
             const cardId = $(this).data('id');
@@ -184,7 +184,7 @@ $(document).ready(function() {
             };
 
             $.ajax({
-                url: '/cards/',
+                url: '/cards',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(cardData),
@@ -334,27 +334,27 @@ $(document).ready(function() {
             loadRandomCard();
         });
 
-        $('#editCardSetForm').submit(function(e) {
-        e.preventDefault();
-        const updatedCardSet = {
-            setName: $('#editCardSetName').val(),
-            setDescription: $('#editCardSetDescription').val()
-        };
+//        $('#editCardSetForm').submit(function(e) {
+//        e.preventDefault();
+//        const updatedCardSet = {
+//            setName: $('#editCardSetName').val(),
+//            setDescription: $('#editCardSetDescription').val()
+//        };
 
-        $.ajax({
-            url: '/card-sets/' + currentCardSet.id,
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedCardSet),
-            success: function(response) {
-                alert('Набор карточек успешно обновлен');
-                closeAllContainers()
-            },
-            error: function(error) {
-                console.error('Ошибка обновления набора карточек:', error);
-            }
-        });
-    });
+//        $.ajax({
+//            url: '/card-sets/' + currentCardSet.id,
+//            type: 'PUT',
+//            contentType: 'application/json',
+//            data: JSON.stringify(updatedCardSet),
+//            success: function(response) {
+//                alert('Набор карточек успешно обновлен');
+//                closeAllContainers()
+//            },
+//            error: function(error) {
+//                console.error('Ошибка обновления набора карточек:', error);
+//            }
+//        });
+//    });
 
         applyTheme();
 
@@ -369,7 +369,7 @@ $(document).ready(function() {
 
         loadCards();
 
-        loadUserCardSets();
+//        loadUserCardSets();
 
         function changeTheme(theme) {
                 localStorage.setItem('theme', theme);
@@ -514,77 +514,76 @@ function getErrorIndicatorColor(errorPercentage) {
                     }
                 }
 
-function loadUserCardSets() {
-                $.ajax({
-                    url: '/card-sets/all',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(cardSets) {
-                        let cardSetsHtml = '';
-                        cardSets.forEach(function(cardSet) {
-                            const cardClass = cardSet.active ? 'active-card-set' : 'inactive-card-set';
-                            cardSetsHtml += '<div class="card-set ' + cardClass + '" data-set-id="' + cardSet.id + '">' +
-                                            '<h2>' + cardSet.setName + '</h2>' +
-                                            '<p>' + cardSet.setDescription + '</p>' +
-                                            '<p>Cards number: ' + cardSet.setSize + '</p>' +
-                                            '</div>';
-                        });
-                        $('#userCardSetsContainer').html(cardSetsHtml).show();
-                        $('#addWordFormContainer').show();
-                        $('#addWordForm').show();
-                        $('#uploadFileForm').show();
-                    },
-                    error: function(error) {
-                        console.error('Ошибка загрузки наборов карточек:', error);
-                    }
-                });
-            }
+//function loadUserCardSets() {
+//                $.ajax({
+//                    url: '/card-sets/all',
+//                    type: 'GET',
+//                    dataType: 'json',
+//                    success: function(cardSets) {
+//                        let cardSetsHtml = '';
+//                        cardSets.forEach(function(cardSet) {
+//                            const cardClass = cardSet.active ? 'active-card-set' : 'inactive-card-set';
+//                            cardSetsHtml += '<div class="card-set ' + cardClass + '" data-set-id="' + cardSet.id + '">' +
+//                                            '<h2>' + cardSet.setName + '</h2>' +
+//                                            '<p>' + cardSet.setDescription + '</p>' +
+//                                            '<p>Cards number: ' + cardSet.setSize + '</p>' +
+//                                            '</div>';
+//                        });
+//                        $('#userCardSetsContainer').html(cardSetsHtml).show();
+//                        $('#addWordFormContainer').show();
+//                        $('#addWordForm').show();
+//                        $('#uploadFileForm').show();
+//                    },
+//                    error: function(error) {
+//                        console.error('Ошибка загрузки наборов карточек:', error);
+//                    }
+//                });
+//            }
 
-function loadUserCardSetCards(cardSetId) {
-        $.ajax({
-            url: '/card-sets/' + cardSetId + '/cards',
-            type: 'GET',
-            dataType: 'json',
-            success: function(cards) {
-                if (cards && cards.length > 0) {
-                    let cardsHtml = '';
-                    cards.forEach(function(card) {
-                        cardsHtml += '<div class="card" data-id="' + card.id + '">' +
-                                      '<h2>' + card.content + '</h2>' +
-                                      '<p>' + card.title + '</p>' +
-                                      '</div>';
-                    });
-                    $('#userCardSetCardsContainer').html(cardsHtml).show();
-                } else {
-                    $('#userCardSetCardsContainer').empty();
-                }
-            },
-            error: function(error) {
-                console.error('Ошибка загрузки карточек:', error);
-            }
-        });
-    }
+//function loadUserCardSetCards(cardSetId) {
+//        $.ajax({
+//            url: '/card-sets/' + cardSetId + '/cards',
+//            type: 'GET',
+//            dataType: 'json',
+//            success: function(cards) {
+//                if (cards && cards.length > 0) {
+//                    let cardsHtml = '';
+//                    cards.forEach(function(card) {
+//                        cardsHtml += '<div class="card" data-id="' + card.id + '">' +
+//                                      '<h2>' + card.content + '</h2>' +
+//                                      '<p>' + card.title + '</p>' +
+//                                      '</div>';
+//                    });
+//                    $('#userCardSetCardsContainer').html(cardsHtml).show();
+//                } else {
+//                    $('#userCardSetCardsContainer').empty();
+//                }
+//            },
+//            error: function(error) {
+//                console.error('Ошибка загрузки карточек:', error);
+//            }
+//        });
+//    }
 
 function uploadCards() {
             const formData = new FormData();
             const fileInput = document.getElementById('uploadFile');
-            const cardSetName = document.getElementById('cardSetName').value;
-            const setDescription = document.getElementById('setDescription').value;
+//            const cardSetName = document.getElementById('cardSetName').value;
+//            const setDescription = document.getElementById('setDescription').value;
             const activationStart = document.getElementById('activationStart').value;
             const cardsPerBatch = document.getElementById('cardsPerBatch').value;
             const activationInterval = document.getElementById('activationInterval').value;
             const intervalUnit = document.getElementById('intervalUnit').value;
 
             formData.append('file', fileInput.files[0]);
-            formData.append('cardSetName', cardSetName);
-            formData.append('setDescription', setDescription);
+//            formData.append('cardSetName', cardSetName);
+//            formData.append('setDescription', setDescription);
 
-            if (activationStart) {
-                formData.append('activationStart', activationStart);
-                formData.append('cardsPerBatch', cardsPerBatch);
-                formData.append('activationInterval', activationInterval);
-                formData.append('intervalUnit', intervalUnit);
-            }
+            formData.append('activationStart', activationStart);
+            formData.append('cardsPerBatch', cardsPerBatch);
+            formData.append('activationInterval', activationInterval);
+            formData.append('intervalUnit', intervalUnit);
+
 
             fetch('/api/cards/upload', {
                 method: 'POST',
@@ -629,3 +628,113 @@ function closeAllContainers() {
                     $('#uploadFileForm').hide();
 
                 }
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    fetch(`/input/latestMessage`)
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('No content');
+            }
+        })
+        .then(message => {
+            if (message.trim() === '') {
+                displayDefaultMessage();
+            } else {
+                if (message.toLowerCase().startsWith('questions remain')) {
+                    displayQuestion(message);
+                } else {
+                    displayResponse(message);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при получении последнего сообщения:', error);
+        });
+});
+
+let socket2 = new SockJS('/ws/recall');
+let stompClient2 = Stomp.over(socket2);
+
+stompClient2.connect({}, function (frame) {
+    console.log('Connected: ' + frame);
+
+    stompClient2.subscribe('/topic/recall', function (message) {
+        console.log("New message received:", message.body);
+
+        const messageContent = message.body.toLowerCase();
+        console.log("message is ", messageContent);
+
+        if (messageContent.startsWith('questions remain')) {
+            displayQuestion(message.body);
+        } else {
+            displayResponse(message.body);
+        }
+    });
+});
+
+function displayQuestion(question) {
+    const questionBoard = document.getElementById('questionBoard');
+    questionBoard.innerHTML = '';
+    let questionButton = document.createElement('button');
+    questionButton.innerHTML = question;
+    questionButton.addEventListener('click', function() {
+        showResponseModal(question);
+    });
+
+    questionBoard.appendChild(questionButton);
+
+    localStorage.setItem('lastQuestion', question);
+}
+
+function displayResponse(response) {
+    const responseBoard = document.getElementById('responseBoard');
+    responseBoard.innerHTML = '';
+    let responseElement = document.createElement('button');
+    responseElement.innerHTML = response;
+    responseBoard.appendChild(responseElement);
+    localStorage.setItem('lastResponse', response);
+}
+
+function displayDefaultMessage() {
+    const questionBoard = document.getElementById('questionBoard');
+    questionBoard.innerHTML = '';
+
+    let questionButton = document.createElement('button');
+    questionButton.innerHTML = 'No new questions at the moment.';
+    questionButton.disabled = true;
+    questionButton.classList.add('default-message-button');
+
+    questionBoard.appendChild(questionButton);
+}
+
+
+
+function showResponseModal(question) {
+    document.getElementById('responseMessage').innerHTML = question;
+    document.getElementById('responseModal').style.display = 'block';
+}
+
+document.getElementById('submitResponse').addEventListener('click', function() {
+    const response = document.getElementById('responseInput').value;
+    $.ajax({
+        url: '/input',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(response),
+        success: function(data) {
+            document.getElementById('responseModal').style.display = 'none';
+            document.getElementById('responseInput').value = '';
+        },
+        error: function(error) {
+            console.error('Ошибка при отправке ответа:', error);
+        }
+    });
+});
+
+document.getElementById('cancelResponse').addEventListener('click', function() {
+    document.getElementById('responseModal').style.display = 'none';
+    document.getElementById('responseInput').value = '';
+});
