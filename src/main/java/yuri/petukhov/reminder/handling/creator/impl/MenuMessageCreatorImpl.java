@@ -1,6 +1,7 @@
 package yuri.petukhov.reminder.handling.creator.impl;
 
 import com.pengrad.telegrambot.request.SendMessage;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -13,6 +14,8 @@ import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
 import yuri.petukhov.reminder.business.dto.CommandEntity;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
@@ -25,6 +28,13 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     private final SimpMessagingTemplate messagingTemplate;
 
     private String message;
+
+    private ConcurrentMap<Long, String> latestMessages;
+
+    @PostConstruct
+    public void init() {
+        latestMessages = new ConcurrentHashMap<>();
+    }
 
     @Override
     public void createInputWordMessage(Long chatId) {
@@ -48,7 +58,7 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
-    public void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber, ReminderInterval interval) {
+    public void createNotificationToUser(Long chatId, Long userId, String cardMeaning, int wordsNumber, ReminderInterval interval) {
         log.info("Notification {} was sent for chatId = {}", cardMeaning, chatId);
 
         String botMessage = formatMessage(cardMeaning, wordsNumber, interval, false);
@@ -56,6 +66,8 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
 
         messageExecutor.executeMessage(botMessage, chatId);
         messagingTemplate.convertAndSend("/topic/recall", webMessage);
+
+        latestMessages.put(userId, webMessage);
     }
 
     @Override
@@ -105,6 +117,11 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     public void createAdminNewUserNotifyMessage(String userName, Long userChatId, Long adminChatId) {
         message = "New user: " + userName + ", chatId: " + userChatId;
         messageExecutor.executeMessage(message, adminChatId);
+    }
+
+    @Override
+    public String getLatestMessage(Long chatId) {
+        return latestMessages.get(chatId);
     }
 
     private String formatMessage(String cardMeaning, int wordsNumber, ReminderInterval interval, boolean isForWeb) {

@@ -629,6 +629,28 @@ function closeAllContainers() {
 
                 }
 
+document.addEventListener('DOMContentLoaded', function() {
+
+    fetch(`/input/latestMessage`)
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('No content');
+            }
+        })
+        .then(message => {
+            if (message.toLowerCase().startsWith('questions remain')) {
+                displayQuestion(message);
+            } else {
+                displayResponse(message);
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при получении последнего сообщения:', error);
+        });
+});
+
 let socket2 = new SockJS('/ws/recall');
 let stompClient2 = Stomp.over(socket2);
 
@@ -639,7 +661,7 @@ stompClient2.connect({}, function (frame) {
         console.log("New message received:", message.body);
 
         const messageContent = message.body.toLowerCase();
-        console.log("message is ", messageContent)
+        console.log("message is ", messageContent);
 
         if (messageContent.startsWith('questions remain')) {
             displayQuestion(message.body);
@@ -698,14 +720,3 @@ document.getElementById('cancelResponse').addEventListener('click', function() {
     document.getElementById('responseModal').style.display = 'none';
     document.getElementById('responseInput').value = '';
 });
-
-window.onload = function() {
-    const lastQuestion = localStorage.getItem('lastQuestion');
-    const lastResponse = localStorage.getItem('lastResponse');
-    if (lastQuestion) {
-        displayQuestion(lastQuestion);
-    }
-    if (lastResponse) {
-        displayResponse(lastResponse);
-    }
-};

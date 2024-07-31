@@ -60,7 +60,7 @@ public class RecallServiceImpl implements RecallService {
             userService.setCardInputState(user, UserCardInputState.ANSWER);
             cardService.activateCard(card, userId);
             int wordsNumber = cardService.getCardByRecallMode(user.getId(), RecallMode.RECALL).size();
-            menuMessageCreator.createNotificationToUser(user.getChatId(), card.getCardMeaning(), wordsNumber, card.getInterval());
+            menuMessageCreator.createNotificationToUser(user.getChatId(), userId, card.getCardMeaning(), wordsNumber, card.getInterval());
         } else{
             userService.setCardInputState(user, UserCardInputState.NONE);
         }

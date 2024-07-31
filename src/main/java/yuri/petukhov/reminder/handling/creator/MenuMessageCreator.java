@@ -14,7 +14,7 @@ public interface MenuMessageCreator {
 
     void createCardSavedMessage(CommandEntity commandEntity);
 
-    void createNotificationToUser(Long chatId, String cardMeaning, int wordsNumber, ReminderInterval interval);
+    void createNotificationToUser(Long chatId, Long userId, String cardMeaning, int wordsNumber, ReminderInterval interval);
 
     void createOkMessage(Long chatId);
 
@@ -27,4 +27,6 @@ public interface MenuMessageCreator {
     void createLinkMessage(Long chatId, Long userId, List<String> roles);
 
     void createAdminNewUserNotifyMessage(String userName, Long chatId, Long chatId1);
+
+    String getLatestMessage(Long chatId);
 }

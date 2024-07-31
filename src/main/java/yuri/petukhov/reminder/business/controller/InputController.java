@@ -6,11 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.service.InputService;
+import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
 
 @RestController
 @RequestMapping("/input")
@@ -19,6 +17,7 @@ import yuri.petukhov.reminder.business.service.InputService;
 public class InputController {
 
     private final InputService inputService;
+    private final MenuMessageCreator menuMessageCreator;
 
     @PostMapping
     @Operation(summary = "Ответ пользователя через веб-интерфейс")
@@ -29,5 +28,16 @@ public class InputController {
         log.info("Answer is " + response);
         inputService.response(response, Long.valueOf(authentication.getName()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/latestMessage")
+    public ResponseEntity<String> getLatestMessage(
+            Authentication authentication) {
+        String latestMessage = menuMessageCreator.getLatestMessage(Long.valueOf(authentication.getName()));
+        if (latestMessage != null) {
+            return ResponseEntity.ok(latestMessage);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 }
