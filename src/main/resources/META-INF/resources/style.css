@@ -121,6 +121,7 @@ margin: 5px;
     line-height: 1.5;
     padding: 5px;
     font-weight: 600;
+    color: var(--text-color);
 }
 
 #responseModal {
