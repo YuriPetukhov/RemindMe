@@ -51,16 +51,32 @@ public class CardUploadServiceImpl implements CardUploadService {
         }
     }
 
+//    private List<Card> parseCsvFile(MultipartFile file) throws IOException {
+//        List<Card> cards = new ArrayList<>();
+//        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+//            String line;
+//            boolean firstLine = true;
+//            while ((line = reader.readLine()) != null) {
+//                if (firstLine) {
+//                    firstLine = false;
+//                    continue;
+//                }
+//                String[] fields = line.split(",");
+//                Card card = new Card();
+//                card.setCardName(fields[0]);
+//                card.setCardMeaning(fields[1]);
+//
+//                cards.add(card);
+//            }
+//        }
+//        return cards;
+//    }
+
     private List<Card> parseCsvFile(MultipartFile file) throws IOException {
         List<Card> cards = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
-            boolean firstLine = true;
             while ((line = reader.readLine()) != null) {
-                if (firstLine) {
-                    firstLine = false;
-                    continue;
-                }
                 String[] fields = line.split(",");
                 Card card = new Card();
                 card.setCardName(fields[0]);

@@ -104,11 +104,11 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
 
     @Override
     public void createLinkMessage(Long chatId, Long userId, List<String> roles) {
-        String messageText = String.format(configuration.getWEB_LINK(), userId, userId, chatId);
+        String messageText = String.format(configuration.getWEB_LINK(), userId, chatId);
         SendMessage message = new SendMessage(String.valueOf(chatId), messageText).parseMode(HTML);
 
         if(roles.contains(RoleName.ROLE_ADMIN.name())) {
-            String messageTextAdmin = String.format(configuration.getWEB_LINK_ADMIN(), userId, userId, chatId);
+            String messageTextAdmin = String.format(configuration.getWEB_LINK_ADMIN(), userId, chatId);
             SendMessage messageAdmin = new SendMessage(String.valueOf(chatId), messageTextAdmin).parseMode(HTML);
             messageExecutor.executeMessage(messageAdmin);
         }

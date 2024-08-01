@@ -15,3 +15,7 @@ databaseChangeLog:
       file: liquibase/scripts/script_alter_card_set.sql
   - include:
       file: liquibase/scripts/script_folders.sql
+  - include:
+      file: liquibase/scripts/scripts_students.sql
+  - include:
+      file: liquibase/scripts/script_teacher.sql

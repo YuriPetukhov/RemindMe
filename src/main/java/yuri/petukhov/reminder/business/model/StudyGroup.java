@@ -22,11 +22,15 @@ public class StudyGroup {
 
     @ManyToMany
     @JoinTable(
-            name = "study_group_users",
+            name = "study_group_students",
             joinColumns = @JoinColumn(name = "study_group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            inverseJoinColumns = @JoinColumn(name = "student_id")
     )
-    private List<User> students;
+    private List<Student> students;
+
+    @OneToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
 
     @ManyToMany
     @JoinTable(

@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,7 @@ import yuri.petukhov.reminder.business.service.impl.PostgresUserDetailsService;
 public class AutoLoginController {
 
     private final PostgresUserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
     /**
      * Automatically logs in a user and redirects to the test page.
@@ -37,19 +40,24 @@ public class AutoLoginController {
      */
 
     @GetMapping
-    public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-        Authentication auth = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
+    public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId,
+                                       @RequestParam("password") String password) {
+        try {
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userId, password);
+            Authentication authentication = authenticationManager.authenticate(authToken);
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(UriComponentsBuilder.fromPath("/test")
-                .queryParam("userId", userDetails.getUsername())
-                .build().toUri());
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(UriComponentsBuilder.fromPath("/test")
+                    .queryParam("userId", userId)
+                    .build().toUri());
 
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        } catch (AuthenticationException e) {
+            log.error("Authentication failed for user {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     /**
