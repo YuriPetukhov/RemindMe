@@ -29,20 +29,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
         jsr250Enabled = true)
 public class SecurityConfig extends GlobalMethodSecurityConfiguration implements WebMvcConfigurer {
 
-    private static final String[] AUTH_WHITELIST = {
-            "/auto-login",
-            "/ws/**",
-            "/api/user-roles"
-    };
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(withDefaults())
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .requestMatchers("/cards/**", "/monitoring/**", "/card-sets/**").authenticated()
+                        .requestMatchers("/auto-login", "/ws/**", "/api/user-roles").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -52,17 +44,10 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration implements
                         .permitAll()
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)
-                )
-                .httpBasic(withDefaults());
+                );
 
         return http.build();
     }
-
-
-    /**
-     * Bean definition for the password encoder to be used in the application.
-     * @return A BCryptPasswordEncoder instance.
-     */
 
     @Bean
     public PasswordEncoder passwordEncoder() {

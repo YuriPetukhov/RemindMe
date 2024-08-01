@@ -1,6 +1,9 @@
 package yuri.petukhov.reminder.business.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,12 +45,26 @@ public class AutoLoginController {
 
     @GetMapping
     public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId,
-                                       @RequestParam("password") String password) {
+                                       @RequestParam("password") String password,
+                                       HttpServletRequest request,
+                                       HttpServletResponse response) {
+        log.debug("Received auto-login request with userId: {} and password: {}", userId, password);
         try {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userId, password);
             Authentication authentication = authenticationManager.authenticate(authToken);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.debug("Authentication successful for userId: {}", userId);
+
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated()) {
+                log.debug("User is authenticated: {}", auth.getName());
+            } else {
+                log.warn("User is not authenticated");
+            }
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setLocation(UriComponentsBuilder.fromPath("/test")
@@ -59,6 +77,7 @@ public class AutoLoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
 
     /**
      * Automatically logs in an admin user and redirects to the Swagger UI page.
