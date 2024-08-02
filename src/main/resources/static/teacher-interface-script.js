@@ -334,7 +334,7 @@ function loadTeacherStudyingGroups() {
           studyGroup.groupDescription +
           "</p>" +
           "<p>Students number: " +
-          (studyGroup.size || 0) +
+          (studyGroup.groupSize || 0) +
           "</p>" +
           "<h2>" +
           studyGroup.joinCode +

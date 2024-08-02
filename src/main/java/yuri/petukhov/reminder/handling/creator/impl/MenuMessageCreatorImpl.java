@@ -107,12 +107,12 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
         String messageText = String.format(configuration.getWEB_LINK(), userId, chatId);
         SendMessage message = new SendMessage(String.valueOf(chatId), messageText).parseMode(HTML);
 
-        if(roles.contains(RoleName.ROLE_ADMIN.name())) {
+        if (roles.contains(RoleName.ROLE_ADMIN.name())) {
             String messageTextAdmin = String.format(configuration.getWEB_LINK_ADMIN(), userId, chatId);
             SendMessage messageAdmin = new SendMessage(String.valueOf(chatId), messageTextAdmin).parseMode(HTML);
             messageExecutor.executeMessage(messageAdmin);
         }
-            messageExecutor.executeMessage(message);
+        messageExecutor.executeMessage(message);
     }
 
     @Override
@@ -129,6 +129,41 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     @Override
     public void removeLatestMessage(Long userId) {
         latestMessages.remove(userId);
+    }
+
+    @Override
+    public void createGroupJoinCodeMessage(Long chatId) {
+        log.info("Message about entering student's group code");
+        message = "Enter your group code here:";
+        messageExecutor.executeMessage(message, chatId);
+    }
+
+    @Override
+    public void createNoSuchGroupMessage(Long chatId) {
+        log.info("Message about no such group");
+        message = "The group join code you entered does not exist. Please check the spelling and try again.";
+        messageExecutor.executeMessage(message, chatId);
+    }
+
+    @Override
+    public void createYouAddedMessage(Long chatId, String studentName, String groupName) {
+        log.info("Message about adding the student to the group");
+        message = String.format("Congratulations, %s! You have successfully joined the %s group.", studentName, groupName);
+        messageExecutor.executeMessage(message, chatId);
+    }
+
+    @Override
+    public void createFirstNameMessage(Long chatId) {
+        log.info("Message about first name student");
+        message = "Please enter your firstname:";
+        messageExecutor.executeMessage(message, chatId);
+    }
+
+    @Override
+    public void createLastNameMessage(Long chatId) {
+        log.info("Message about last name student");
+        message = "Please enter your lastname:";
+        messageExecutor.executeMessage(message, chatId);
     }
 
     private String formatMessage(String cardMeaning, int wordsNumber, ReminderInterval interval, boolean isForWeb) {

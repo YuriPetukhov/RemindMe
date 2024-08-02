@@ -14,6 +14,7 @@ import yuri.petukhov.reminder.business.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +44,15 @@ public class StudyGroupServiceImpl implements StudyGroupService {
                     return createGroupDTO;
                 })
                 .toList();
+    }
+
+    @Override
+    public Optional<StudyGroup> findGroupByJoinCode(String messageText) {
+        return studyGroupRepository.findByJoinCode(messageText);
+    }
+
+    @Override
+    public void save(StudyGroup studyGroup) {
+        studyGroupRepository.save(studyGroup);
     }
 }
