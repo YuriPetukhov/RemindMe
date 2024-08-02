@@ -14,5 +14,6 @@ public interface StudyGroupMapper {
 
     @Mapping(source = "groupName", target = "groupName")
     @Mapping(source = "description", target = "groupDescription")
+    @Mapping(source = "joinCode", target = "joinCode")
     CreateGroupDTO toCreateGroupDTO(StudyGroup studyGroup);
 }

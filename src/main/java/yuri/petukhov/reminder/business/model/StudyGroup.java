@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "study_groups")
 @AllArgsConstructor
@@ -16,6 +17,9 @@ public class StudyGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "join_code", unique = true)
+    private String joinCode;
 
     @Column(name = "group_name")
     private String groupName;
@@ -42,4 +46,10 @@ public class StudyGroup {
             inverseJoinColumns = @JoinColumn(name = "card_set_id")
     )
     private List<CardSet> cardSets;
+
+    @PrePersist
+    private void generateJoinCode() {
+        this.joinCode = UUID.randomUUID().toString().substring(0, 8);
+    }
+
 }

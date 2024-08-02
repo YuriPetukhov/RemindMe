@@ -8,4 +8,5 @@ public class CreateGroupDTO {
     private String groupName;
     private String groupDescription;
     private int groupSize;
+    private String joinCode;
 }

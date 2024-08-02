@@ -336,6 +336,9 @@ function loadTeacherStudyingGroups() {
           "<p>Students number: " +
           (studyGroup.size || 0) +
           "</p>" +
+          "<h2>" +
+          studyGroup.joinCode +
+          "</h2>"+
           "</div>";
       });
       $("#teacherStudyingGroups").html(studyGroupsHtml).show();
