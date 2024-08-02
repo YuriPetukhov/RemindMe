@@ -9,7 +9,7 @@ import yuri.petukhov.reminder.business.model.CardSet;
 import java.util.List;
 
 public interface CardSetService {
-    void createCardSet(CreateCardSetDTO cardSet, Long userId);
+    Long createCardSet(CreateCardSetDTO cardSet, Long userId);
 
     void addCardsToSet(Long cardSetId, List<Long> cardIds);
 

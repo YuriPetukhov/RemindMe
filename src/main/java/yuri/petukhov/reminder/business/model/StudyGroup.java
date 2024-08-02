@@ -20,6 +20,9 @@ public class StudyGroup {
     @Column(name = "group_name")
     private String groupName;
 
+    @Column(name = "description")
+    private String description;
+
     @ManyToMany
     @JoinTable(
             name = "study_group_students",

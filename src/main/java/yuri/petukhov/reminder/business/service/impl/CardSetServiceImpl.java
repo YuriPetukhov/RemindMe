@@ -33,12 +33,13 @@ public class CardSetServiceImpl implements CardSetService {
     private final CardMapper cardMapper;
 
     @Override
-    public void createCardSet(CreateCardSetDTO createCardSetDTO, Long userId) {
+    public Long createCardSet(CreateCardSetDTO createCardSetDTO, Long userId) {
         User user = userService.findUserById(userId);
         CardSet cardSet = cardSetMapper.toEntityCardSet(createCardSetDTO);
         cardSet.setUser(user);
         cardSet.setCards(new ArrayList<>());
         cardSetRepository.save(cardSet);
+        return cardSet.getId();
     }
 
     @Override
