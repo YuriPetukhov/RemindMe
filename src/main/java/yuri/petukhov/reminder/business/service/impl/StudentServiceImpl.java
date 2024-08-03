@@ -47,12 +47,16 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void setStudentFirstName(CommandEntity commandEntity) {
         Optional<Student> studentOpt = studentRepository.findByUserId(commandEntity.getUserId());
-        Student student;
-        student = studentOpt.orElseGet(Student::new);
+        Student student = studentOpt.orElseGet(() -> {
+            Student newStudent = new Student();
+            newStudent.setUser(userService.findUserById(commandEntity.getUserId()));
+            return newStudent;
+        });
+
         student.setFirstName(commandEntity.getMessageText());
         studentRepository.save(student);
 
-        User user = userService.findUserById(commandEntity.getUserId());
+        User user = student.getUser();
         user.setCardState(UserCardInputState.STUDENT_LASTNAME);
         userService.saveUser(user);
 
@@ -62,17 +66,20 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void setStudentLastName(CommandEntity commandEntity) {
         Optional<Student> studentOpt = studentRepository.findByUserId(commandEntity.getUserId());
-        Student student;
-        student = studentOpt.orElseGet(Student::new);
+        Student student = studentOpt.orElseGet(() -> {
+            Student newStudent = new Student();
+            newStudent.setUser(userService.findUserById(commandEntity.getUserId()));
+            return newStudent;
+        });
+
         student.setLastName(commandEntity.getMessageText());
         studentRepository.save(student);
 
-        User user = userService.findUserById(commandEntity.getUserId());
-
-        menuMessageCreator.createYouAddedMessage(user.getChatId(), student.getFirstName());
-
+        User user = student.getUser();
         user.setCardState(UserCardInputState.NONE);
         userService.saveUser(user);
+
+        menuMessageCreator.createYouAddedMessage(user.getChatId(), student.getFirstName());
     }
 
     private void refuseNewStudent(User user) {
@@ -81,6 +88,7 @@ public class StudentServiceImpl implements StudentService {
         menuMessageCreator.createNoSuchGroupMessage(user.getChatId());
     }
 
+    @Transactional
     private void addNewStudent(StudyGroup studyGroup, User user) {
         List<Student> students = studyGroup.getStudents();
         if (students == null) {
@@ -97,14 +105,12 @@ public class StudentServiceImpl implements StudentService {
         }
 
         Optional<Student> studentOpt = studentRepository.findByUserId(user.getId());
-        Student student;
-        if (studentOpt.isEmpty()) {
-            student = new Student();
-            student.setUser(user);
-            studentRepository.save(student);
-        } else {
-            student = studentOpt.get();
-        }
+        Student student = studentOpt.orElseGet(() -> {
+            Student newStudent = new Student();
+            newStudent.setUser(user);
+            studentRepository.save(newStudent);
+            return newStudent;
+        });
 
         students.add(student);
         studyGroupService.save(studyGroup);
@@ -113,15 +119,7 @@ public class StudentServiceImpl implements StudentService {
             user.setCardState(UserCardInputState.STUDENT_FIRSTNAME);
             userService.saveUser(user);
             menuMessageCreator.createFirstNameMessage(user.getChatId());
-            List<Role> roles = user.getRoles();
-            Optional<Role> studentRoleOpt = roleService.findByRoleName(RoleName.ROLE_STUDENT);
-            if (studentRoleOpt.isPresent()) {
-                Role role = studentRoleOpt.get();
-                if (!roles.contains(role)) {
-                    roles.add(role);
-                    userService.saveUser(user);
-                }
-            }
+            assignStudentRole(user);
         } else {
             menuMessageCreator.createYouAddedMessage(user.getChatId(), student.getFirstName());
             user.setCardState(UserCardInputState.NONE);
@@ -135,5 +133,7 @@ public class StudentServiceImpl implements StudentService {
         menuMessageCreator.createAlreadyAddedMessage(user.getChatId());
     }
 
+    private void assignStudentRole(User user) {
+        userService.addRole(user.getId(), RoleName.ROLE_STUDENT);
+    }
 }
-
