@@ -46,7 +46,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void setStudentFirstName(CommandEntity commandEntity) {
-        Student student = studentRepository.findByUserId(commandEntity.getUserId());
+        Optional<Student> studentOpt = studentRepository.findByUserId(commandEntity.getUserId());
+        Student student;
+        student = studentOpt.orElseGet(Student::new);
         student.setFirstName(commandEntity.getMessageText());
         studentRepository.save(student);
 
@@ -59,7 +61,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void setStudentLastName(CommandEntity commandEntity) {
-        Student student = studentRepository.findByUserId(commandEntity.getUserId());
+        Optional<Student> studentOpt = studentRepository.findByUserId(commandEntity.getUserId());
+        Student student;
+        student = studentOpt.orElseGet(Student::new);
         student.setLastName(commandEntity.getMessageText());
         studentRepository.save(student);
 
@@ -92,25 +96,36 @@ public class StudentServiceImpl implements StudentService {
             return;
         }
 
-        Student student = new Student();
-        student.setUser(user);
-        students.add(student);
+        Optional<Student> studentOpt = studentRepository.findByUserId(user.getId());
+        Student student;
+        if (studentOpt.isEmpty()) {
+            student = new Student();
+            student.setUser(user);
+            studentRepository.save(student);
+        } else {
+            student = studentOpt.get();
+        }
 
-        studentRepository.save(student);
+        students.add(student);
         studyGroupService.save(studyGroup);
 
-        user.setCardState(UserCardInputState.STUDENT_FIRSTNAME);
-        userService.saveUser(user);
-        menuMessageCreator.createFirstNameMessage(user.getChatId());
-
-        List<Role> roles = user.getRoles();
-        Optional<Role> studentRoleOpt = roleService.findByRoleName(RoleName.ROLE_STUDENT);
-        if (studentRoleOpt.isPresent()) {
-            Role role = studentRoleOpt.get();
-            if (!roles.contains(role)) {
-                roles.add(role);
-                userService.saveUser(user);
+        if (student.getFirstName() == null) {
+            user.setCardState(UserCardInputState.STUDENT_FIRSTNAME);
+            userService.saveUser(user);
+            menuMessageCreator.createFirstNameMessage(user.getChatId());
+            List<Role> roles = user.getRoles();
+            Optional<Role> studentRoleOpt = roleService.findByRoleName(RoleName.ROLE_STUDENT);
+            if (studentRoleOpt.isPresent()) {
+                Role role = studentRoleOpt.get();
+                if (!roles.contains(role)) {
+                    roles.add(role);
+                    userService.saveUser(user);
+                }
             }
+        } else {
+            menuMessageCreator.createYouAddedMessage(user.getChatId(), student.getFirstName());
+            user.setCardState(UserCardInputState.NONE);
+            userService.saveUser(user);
         }
     }
 
