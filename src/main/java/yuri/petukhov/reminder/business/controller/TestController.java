@@ -39,6 +39,12 @@ public class TestController {
 
     @GetMapping("/test")
     public String showTestPage(Model model, Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            log.warn("User is not authenticated");
+            return "redirect:/login";
+        }
+
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         List<Role> userRoles = authorities.stream()
                 .map(authority -> roleService.findByRoleName(RoleName.valueOf(authority.getAuthority())).orElse(null))
@@ -49,7 +55,7 @@ public class TestController {
                 .map(Role::getRoleName)
                 .collect(Collectors.toList()));
 
-        return  "index";
+        return "index";
     }
 
 

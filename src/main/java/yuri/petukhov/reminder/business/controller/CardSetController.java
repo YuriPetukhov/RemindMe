@@ -15,7 +15,9 @@ import yuri.petukhov.reminder.business.dto.CreateCardSetDTO;
 import yuri.petukhov.reminder.business.model.CardSet;
 import yuri.petukhov.reminder.business.service.CardSetService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,13 +29,17 @@ public class CardSetController {
 
     @PostMapping
     @Operation(summary = "Добавление набора карточек")
-    public ResponseEntity<Void> createCardSet(
+    public ResponseEntity<Map<String, Object>> createCardSet(
             @RequestBody CreateCardSetDTO cardSet,
             Authentication authentication) {
         log.info("new card set " + cardSet.getSetName());
-        cardSetService.createCardSet(cardSet, Long.valueOf(authentication.getName()));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Long cardSetId = cardSetService.createCardSet(cardSet, Long.valueOf(authentication.getName()));
+        Map<String, Object> response = new HashMap<>();
+        response.put("cardSetId", cardSetId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
 
     @PutMapping("/cards/{cardSetId}")
     @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardSetServiceImpl.isAuthorCardSet(authentication.getName(), #cardSetId)")

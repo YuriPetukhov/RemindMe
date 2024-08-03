@@ -38,6 +38,7 @@ public class InputServiceImpl implements InputService {
 
     /**
      * Initiates the process for a user to input a new word for card creation.
+     *
      * @param commandEntity The command entity containing the chat ID and user information.
      */
 
@@ -51,6 +52,7 @@ public class InputServiceImpl implements InputService {
 
     /**
      * Processes a user's message, validates it against the active card, and updates card monitoring.
+     *
      * @param commandEntity The command entity containing the message and user information.
      * @return CardMonitoring object containing the result of the validation and updated interval.
      */
@@ -76,6 +78,7 @@ public class InputServiceImpl implements InputService {
 
     /**
      * Sends the main menu message to the user.
+     *
      * @param commandEntity The command entity containing the chat ID.
      */
 
@@ -86,6 +89,7 @@ public class InputServiceImpl implements InputService {
 
     /**
      * Sends a link to the web interface to the user.
+     *
      * @param commandEntity The command entity containing the chat ID, user ID, and user role.
      */
 
@@ -107,16 +111,25 @@ public class InputServiceImpl implements InputService {
         processMessage(commandEntity);
     }
 
+    @Override
+    public void promptGroupJoinCode(CommandEntity commandEntity) {
+        Long chatId = commandEntity.getChatId();
+        User user = userService.findUserByChatId(commandEntity.getChatId()).orElseThrow();
+        userService.setCardInputState(user, UserCardInputState.STUDENT);
+        menuMessageCreator.createGroupJoinCodeMessage(chatId);
+    }
+
 
     private void changeCardAndUserParameters(Card card) {
         log.info("changeCardAndUserParameters() is started");
         CardActivity activity = CardActivity.INACTIVE;
-        if(card.getActivity().equals(CardActivity.FINISHED)) {
+        if (card.getActivity().equals(CardActivity.FINISHED)) {
             activity = CardActivity.FINISHED;
         }
         cardService.setActivity(card, activity);
         cardService.setRecallMode(card, RecallMode.NONE);
     }
+
     private void defineNewReminderParameter(Card card, boolean result) {
         log.info("defineNewReminderParameter() is started");
         ReminderInterval reminderInterval = card.getInterval();
@@ -157,6 +170,7 @@ public class InputServiceImpl implements InputService {
 
     /**
      * Adds a name to a new card and updates the user's card input state to MEANING.
+     *
      * @param commandEntity The command entity containing the message text and user information.
      */
 
@@ -173,6 +187,7 @@ public class InputServiceImpl implements InputService {
 
     /**
      * Adds a meaning to a new card, sets the card's activity to INACTIVE, and updates the user's card input state to NONE.
+     *
      * @param commandEntity The command entity containing the message text and user information.
      */
 

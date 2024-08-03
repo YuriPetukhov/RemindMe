@@ -8,7 +8,19 @@
 </head>
 <body>
 <div th:fragment="studyingGroups">
-
+    <div id="addStudyGroupTeacherContainer" class="form-style">
+        <form id="addStudyGroupForm">
+            <label for="groupName">Group name:</label>
+            <input type="text" id="groupName" name="groupName" required>
+            <label for="groupDescription">Group description:</label>
+            <textarea id="groupDescription" name="groupDescription" required></textarea>
+            <button type="submit">Add new group</button>
+        </form>
+    </div>
+    <div class="content">
+        <div class="cards" id="teacherStudyingGroups">
+        </div>
+    </div>
 </div>
 </body>
 </html>

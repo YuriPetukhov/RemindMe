@@ -17,4 +17,6 @@ public interface InputService {
     void sendWebInterfaceLink(CommandEntity commandEntity);
 
     void response(String response, Long aLong);
+
+    void promptGroupJoinCode(CommandEntity commandEntity);
 }

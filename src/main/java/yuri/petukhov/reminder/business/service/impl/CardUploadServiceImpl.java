@@ -40,6 +40,16 @@ public class CardUploadServiceImpl implements CardUploadService {
         }
     }
 
+    @Override
+    public void uploadSetCards(MultipartFile file, Long cardSetId) {
+        try {
+            List<Card> cards = parseFile(file);
+            addCardsToSet(cards, cardSetId);
+        } catch (IOException e) {
+            throw new FileProcessingException("Ошибка при обработке файла: " + e.getMessage(), e);
+        }
+    }
+
     private List<Card> parseFile(MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
         if (fileName != null && fileName.endsWith(".csv")) {
@@ -51,16 +61,32 @@ public class CardUploadServiceImpl implements CardUploadService {
         }
     }
 
+//    private List<Card> parseCsvFile(MultipartFile file) throws IOException {
+//        List<Card> cards = new ArrayList<>();
+//        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+//            String line;
+//            boolean firstLine = true;
+//            while ((line = reader.readLine()) != null) {
+//                if (firstLine) {
+//                    firstLine = false;
+//                    continue;
+//                }
+//                String[] fields = line.split(",");
+//                Card card = new Card();
+//                card.setCardName(fields[0]);
+//                card.setCardMeaning(fields[1]);
+//
+//                cards.add(card);
+//            }
+//        }
+//        return cards;
+//    }
+
     private List<Card> parseCsvFile(MultipartFile file) throws IOException {
         List<Card> cards = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
-            boolean firstLine = true;
             while ((line = reader.readLine()) != null) {
-                if (firstLine) {
-                    firstLine = false;
-                    continue;
-                }
                 String[] fields = line.split(",");
                 Card card = new Card();
                 card.setCardName(fields[0]);
@@ -78,10 +104,6 @@ public class CardUploadServiceImpl implements CardUploadService {
         Sheet sheet = workbook.getSheetAt(0);
 
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) {
-                continue;
-            }
-
             String title = row.getCell(0).getStringCellValue();
             String description = row.getCell(1).getStringCellValue();
 
@@ -94,6 +116,30 @@ public class CardUploadServiceImpl implements CardUploadService {
         workbook.close();
         return cards;
     }
+
+
+//    private List<Card> parseExcelFile(MultipartFile file) throws IOException {
+//        List<Card> cards = new ArrayList<>();
+//        Workbook workbook = WorkbookFactory.create(file.getInputStream());
+//        Sheet sheet = workbook.getSheetAt(0);
+//
+//        for (Row row : sheet) {
+//            if (row.getRowNum() == 0) {
+//                continue;
+//            }
+//
+//            String title = row.getCell(0).getStringCellValue();
+//            String description = row.getCell(1).getStringCellValue();
+//
+//            Card card = new Card();
+//            card.setCardName(title);
+//            card.setCardMeaning(description);
+//            cards.add(card);
+//        }
+//
+//        workbook.close();
+//        return cards;
+//    }
 
     private void saveCards(List<Card> cards, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
         User user = userService.findUserById(userId);
@@ -129,6 +175,19 @@ public class CardUploadServiceImpl implements CardUploadService {
 
 
        cardService.saveAll(cardToSave);
+
+    }
+
+    private void addCardsToSet(List<Card> cards, Long cardSetId) {
+        CardSet cardSet = cardSetService.getCardSetById(cardSetId);
+        User user = cardSet.getUser();
+        List<Card> setCards = cardSet.getCards();
+        for (Card card : cards) {
+            card.setUser(user);
+        }
+        cardService.saveAll(cards);
+        setCards.addAll(cards);
+        cardSetService.save(cardSet);
 
     }
 

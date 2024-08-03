@@ -37,4 +37,18 @@ public class CardUploadController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/uploadSetCards")
+    public ResponseEntity<Map<String, String>> uploadSetCards(
+            @RequestParam(value = "file") MultipartFile file,
+            @RequestParam(value = "cardSetId", required = true) Long cardSetId,
+            Authentication authentication) {
+
+        cardUploadService.uploadSetCards(file, cardSetId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "File and data successfully uploaded and processed");
+
+        return ResponseEntity.ok(response);
+    }
 }

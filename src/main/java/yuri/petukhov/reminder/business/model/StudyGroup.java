@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "study_groups")
 @AllArgsConstructor
@@ -17,16 +18,26 @@ public class StudyGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "join_code", unique = true)
+    private String joinCode;
+
     @Column(name = "group_name")
     private String groupName;
 
+    @Column(name = "description")
+    private String description;
+
     @ManyToMany
     @JoinTable(
-            name = "study_group_users",
+            name = "study_group_students",
             joinColumns = @JoinColumn(name = "study_group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            inverseJoinColumns = @JoinColumn(name = "student_id")
     )
-    private List<User> students;
+    private List<Student> students;
+
+    @OneToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
 
     @ManyToMany
     @JoinTable(
@@ -35,4 +46,10 @@ public class StudyGroup {
             inverseJoinColumns = @JoinColumn(name = "card_set_id")
     )
     private List<CardSet> cardSets;
+
+    @PrePersist
+    private void generateJoinCode() {
+        this.joinCode = UUID.randomUUID().toString().substring(0, 8);
+    }
+
 }

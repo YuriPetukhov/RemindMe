@@ -1,15 +1,21 @@
 package yuri.petukhov.reminder.business.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +35,7 @@ import yuri.petukhov.reminder.business.service.impl.PostgresUserDetailsService;
 public class AutoLoginController {
 
     private final PostgresUserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
     /**
      * Automatically logs in a user and redirects to the test page.
@@ -37,20 +44,40 @@ public class AutoLoginController {
      */
 
     @GetMapping
-    public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-        Authentication auth = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
+    public ResponseEntity<?> autoLogin(@RequestParam("userId") String userId,
+                                       @RequestParam("password") String password,
+                                       HttpServletRequest request,
+                                       HttpServletResponse response) {
+        log.debug("Received auto-login request with userId: {} and password: {}", userId, password);
+        try {
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userId, password);
+            Authentication authentication = authenticationManager.authenticate(authToken);
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.debug("Authentication successful for userId: {}", userId);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(UriComponentsBuilder.fromPath("/test")
-                .queryParam("userId", userDetails.getUsername())
-                .build().toUri());
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated()) {
+                log.debug("User is authenticated: {}", auth.getName());
+            } else {
+                log.warn("User is not authenticated");
+            }
 
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+            HttpSession session = request.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(UriComponentsBuilder.fromPath("/test")
+                    .queryParam("userId", userId)
+                    .build().toUri());
+
+            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        } catch (AuthenticationException e) {
+            log.error("Authentication failed for user {}: {}", userId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
+
 
     /**
      * Automatically logs in an admin user and redirects to the Swagger UI page.
