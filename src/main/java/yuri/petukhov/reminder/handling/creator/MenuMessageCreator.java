@@ -36,9 +36,11 @@ public interface MenuMessageCreator {
 
     void createNoSuchGroupMessage(Long chatId);
 
-    void createYouAddedMessage(Long chatId, String studentName, String groupName);
+    void createYouAddedMessage(Long chatId, String studentName);
 
     void createFirstNameMessage(Long chatId);
 
     void createLastNameMessage(Long chatId);
+
+    void createAlreadyAddedMessage(Long chatId);
 }

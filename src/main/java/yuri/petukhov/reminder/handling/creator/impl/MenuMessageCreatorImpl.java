@@ -146,9 +146,16 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
-    public void createYouAddedMessage(Long chatId, String studentName, String groupName) {
+    public void createAlreadyAddedMessage(Long chatId) {
+        log.info("Message about already added");
+        message = "You are already a member of this group.";
+        messageExecutor.executeMessage(message, chatId);
+    }
+
+    @Override
+    public void createYouAddedMessage(Long chatId, String studentName) {
         log.info("Message about adding the student to the group");
-        message = String.format("Congratulations, %s! You have successfully joined the %s group.", studentName, groupName);
+        message = String.format("Congratulations, %s! You have successfully joined your group.", studentName);
         messageExecutor.executeMessage(message, chatId);
     }
 

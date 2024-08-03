@@ -65,7 +65,7 @@ public class StudentServiceImpl implements StudentService {
 
         User user = userService.findUserById(commandEntity.getUserId());
 
-        menuMessageCreator.createYouAddedMessage(user.getChatId(), student.getFirstName(), student.getLastName());
+        menuMessageCreator.createYouAddedMessage(user.getChatId(), student.getFirstName());
 
         user.setCardState(UserCardInputState.NONE);
         userService.saveUser(user);
@@ -78,20 +78,29 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private void addNewStudent(StudyGroup studyGroup, User user) {
-        Student student = new Student();
-        student.setUser(user);
-        studentRepository.save(student);
-
         List<Student> students = studyGroup.getStudents();
         if (students == null) {
             students = new ArrayList<>();
+            studyGroup.setStudents(students);
         }
+
+        boolean studentExists = students.stream()
+                .anyMatch(student -> student.getUser().equals(user));
+
+        if (studentExists) {
+            refuseAlreadyAddedStudent(user);
+            return;
+        }
+
+        Student student = new Student();
+        student.setUser(user);
         students.add(student);
+
+        studentRepository.save(student);
         studyGroupService.save(studyGroup);
 
         user.setCardState(UserCardInputState.STUDENT_FIRSTNAME);
         userService.saveUser(user);
-
         menuMessageCreator.createFirstNameMessage(user.getChatId());
 
         List<Role> roles = user.getRoles();
@@ -104,5 +113,12 @@ public class StudentServiceImpl implements StudentService {
             }
         }
     }
+
+    private void refuseAlreadyAddedStudent(User user) {
+        user.setCardState(UserCardInputState.NONE);
+        userService.saveUser(user);
+        menuMessageCreator.createAlreadyAddedMessage(user.getChatId());
+    }
+
 }
 
