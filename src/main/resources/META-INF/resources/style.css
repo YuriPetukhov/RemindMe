@@ -166,6 +166,7 @@ margin: 5px;
 #questionBoard button,
 #responseBoard button,
 .card-set,
+.teacher-card-set,
 .card {
     border: 1px solid var(--text-color);
     border-radius: 12px;

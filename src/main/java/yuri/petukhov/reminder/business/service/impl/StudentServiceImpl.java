@@ -7,12 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import yuri.petukhov.reminder.business.dto.CommandEntity;
 import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
-import yuri.petukhov.reminder.business.model.Role;
 import yuri.petukhov.reminder.business.model.Student;
 import yuri.petukhov.reminder.business.model.StudyGroup;
 import yuri.petukhov.reminder.business.model.User;
 import yuri.petukhov.reminder.business.repository.StudentRepository;
-import yuri.petukhov.reminder.business.service.RoleService;
 import yuri.petukhov.reminder.business.service.StudentService;
 import yuri.petukhov.reminder.business.service.StudyGroupService;
 import yuri.petukhov.reminder.business.service.UserService;
@@ -29,7 +27,6 @@ public class StudentServiceImpl implements StudentService {
     private final UserService userService;
     private final StudyGroupService studyGroupService;
     private final MenuMessageCreator menuMessageCreator;
-    private final RoleService roleService;
     private final StudentRepository studentRepository;
 
     @Transactional

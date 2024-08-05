@@ -18,7 +18,40 @@
         </form>
     </div>
     <div class="content">
-        <div class="cards" id="teacherStudyingGroups">
+        <div id="teacherStudyingGroups">
+        </div>
+        <div id="groupDetailsContainer" class="group-details">
+            <div class="form-group">
+                <p><strong>Group name:</strong> <span id="detailGroupName"></span></p>
+                <p><strong>Group description:</strong> <span id="detailGroupDescription"
+                                                             class="group-description"></span></p>
+                <p><strong>Students number:</strong> <span id="detailGroupSize"></span></p>
+                <p><strong>Join code:</strong> <span id="detailJoinCode"></span></p>
+                <button id="editGroupButton" class="btn-edit">Edit</button>
+            </div>
+            <div class="form-group">
+                <h3>Students</h3>
+                <ul id="studentList">
+                </ul>
+            </div>
+            <div class="form-group">
+                <h3>Card Sets</h3>
+                <ul id="cardSetList">
+                </ul>
+            </div>
+            <div id="editGroupForm" class="edit-group-form" style="display: none;">
+                <div class="form-group">
+                    <label for="editGroupName">Group name:</label>
+                    <input type="text" id="editGroupName" name="editGroupName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editGroupDescription">Group description:</label>
+                    <textarea id="editGroupDescription" name="editGroupDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <button id="saveGroupButton" class="btn-save">Save</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

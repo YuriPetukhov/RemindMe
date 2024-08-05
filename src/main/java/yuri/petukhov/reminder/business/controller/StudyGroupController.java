@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.CardSetDTO;
 import yuri.petukhov.reminder.business.dto.CreateCardSetDTO;
 import yuri.petukhov.reminder.business.dto.CreateGroupDTO;
+import yuri.petukhov.reminder.business.dto.GroupDTO;
 import yuri.petukhov.reminder.business.service.StudyGroupService;
 
 import java.util.HashMap;
@@ -42,5 +43,13 @@ public class StudyGroupController {
     public ResponseEntity<List<CreateGroupDTO>> getAllGroups(
             Authentication authentication) {
         return ResponseEntity.ok().body(studyGroupService.getAllGroupsByUserId(Long.valueOf(authentication.getName())));
+    }
+
+    @GetMapping("/{groupId}")
+    @Operation(summary = "Получить информацию о группе")
+    public ResponseEntity<GroupDTO> getGroupInfo(
+            @PathVariable Long groupId,
+            Authentication authentication) {
+        return ResponseEntity.ok().body(studyGroupService.getGroupInfo(groupId));
     }
 }

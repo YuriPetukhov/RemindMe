@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import yuri.petukhov.reminder.business.dto.CardSetDTO;
 import yuri.petukhov.reminder.business.dto.CreateGroupDTO;
+import yuri.petukhov.reminder.business.dto.GroupDTO;
+import yuri.petukhov.reminder.business.exception.GroupNotFoundException;
 import yuri.petukhov.reminder.business.mapper.StudyGroupMapper;
 import yuri.petukhov.reminder.business.model.StudyGroup;
 import yuri.petukhov.reminder.business.model.User;
@@ -38,11 +40,7 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     public List<CreateGroupDTO> getAllGroupsByUserId(Long userId) {
         List<StudyGroup> studyGroups = studyGroupRepository.findAllByTeacherId(userId);
         return studyGroups.stream()
-                .map(studyGroup -> {
-                    CreateGroupDTO createGroupDTO = studyGroupMapper.toCreateGroupDTO(studyGroup);
-                    createGroupDTO.setGroupSize(studyGroup.getStudents().size());
-                    return createGroupDTO;
-                })
+                .map(studyGroupMapper::toCreateGroupDTO)
                 .toList();
     }
 
@@ -54,5 +52,16 @@ public class StudyGroupServiceImpl implements StudyGroupService {
     @Override
     public void save(StudyGroup studyGroup) {
         studyGroupRepository.save(studyGroup);
+    }
+
+    @Override
+    public GroupDTO getGroupInfo(Long groupId) {
+        StudyGroup studyGroup;
+        Optional<StudyGroup> studyGroupOpt = studyGroupRepository.findById(groupId);
+        if (studyGroupOpt.isPresent()) {
+            studyGroup = studyGroupOpt.get();
+            return studyGroupMapper.toGroupDTO(studyGroup);
+        }
+        throw new GroupNotFoundException("Study group not found with id: " + groupId);
     }
 }
