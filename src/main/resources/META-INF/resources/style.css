@@ -167,6 +167,7 @@ margin: 5px;
 #responseBoard button,
 .card-set,
 .teacher-card-set,
+.teacher-study-group,
 .card {
     border: 1px solid var(--text-color);
     border-radius: 12px;
