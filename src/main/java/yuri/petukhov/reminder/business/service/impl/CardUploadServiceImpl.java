@@ -21,9 +21,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CardUploadServiceImpl implements CardUploadService {
@@ -31,6 +31,7 @@ public class CardUploadServiceImpl implements CardUploadService {
     private final UserService userService;
     private final CardService cardService;
     private final CardSetService cardSetService;
+
     public void addUploadCards(MultipartFile file, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
         try {
             List<Card> cards = parseFile(file);
@@ -60,27 +61,6 @@ public class CardUploadServiceImpl implements CardUploadService {
             throw new UnsupportedFileFormatException("Неподдерживаемый формат файла");
         }
     }
-
-//    private List<Card> parseCsvFile(MultipartFile file) throws IOException {
-//        List<Card> cards = new ArrayList<>();
-//        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-//            String line;
-//            boolean firstLine = true;
-//            while ((line = reader.readLine()) != null) {
-//                if (firstLine) {
-//                    firstLine = false;
-//                    continue;
-//                }
-//                String[] fields = line.split(",");
-//                Card card = new Card();
-//                card.setCardName(fields[0]);
-//                card.setCardMeaning(fields[1]);
-//
-//                cards.add(card);
-//            }
-//        }
-//        return cards;
-//    }
 
     private List<Card> parseCsvFile(MultipartFile file) throws IOException {
         List<Card> cards = new ArrayList<>();
@@ -118,29 +98,6 @@ public class CardUploadServiceImpl implements CardUploadService {
     }
 
 
-//    private List<Card> parseExcelFile(MultipartFile file) throws IOException {
-//        List<Card> cards = new ArrayList<>();
-//        Workbook workbook = WorkbookFactory.create(file.getInputStream());
-//        Sheet sheet = workbook.getSheetAt(0);
-//
-//        for (Row row : sheet) {
-//            if (row.getRowNum() == 0) {
-//                continue;
-//            }
-//
-//            String title = row.getCell(0).getStringCellValue();
-//            String description = row.getCell(1).getStringCellValue();
-//
-//            Card card = new Card();
-//            card.setCardName(title);
-//            card.setCardMeaning(description);
-//            cards.add(card);
-//        }
-//
-//        workbook.close();
-//        return cards;
-//    }
-
     private void saveCards(List<Card> cards, String activationStart, int cardsPerBatch, int activationInterval, String intervalUnit, Long userId) {
         User user = userService.findUserById(userId);
         List<Card> cardToSave = new ArrayList<>();
@@ -165,7 +122,7 @@ public class CardUploadServiceImpl implements CardUploadService {
 
                 batchCounter++;
                 if (batchCounter >= cardsPerBatch) {
-                    currentActivationDate = incrementDate(currentActivationDate, activationInterval, intervalUnit);
+                    currentActivationDate = userService.getNextReminderDate(currentActivationDate, activationInterval, intervalUnit);
                     batchCounter = 0;
                 }
             }
@@ -174,7 +131,7 @@ public class CardUploadServiceImpl implements CardUploadService {
         }
 
 
-       cardService.saveAll(cardToSave);
+        cardService.saveAll(cardToSave);
 
     }
 
@@ -191,12 +148,4 @@ public class CardUploadServiceImpl implements CardUploadService {
 
     }
 
-    private LocalDateTime incrementDate(LocalDateTime date, int interval, String unit) {
-        return switch (unit.toLowerCase()) {
-            case "hours" -> date.plusHours(interval);
-            case "days" -> date.plusDays(interval);
-            case "weeks" -> date.plusWeeks(interval);
-            default -> throw new IllegalArgumentException("Invalid interval unit: " + unit);
-        };
-    }
 }

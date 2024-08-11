@@ -7,6 +7,7 @@ import yuri.petukhov.reminder.business.enums.UserCardInputState;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,4 +42,6 @@ public interface UserService {
     void deleteRoleByUser(Long userId, RoleName roleName);
 
     void setCardSet(User user, List<Card> cards, CardActivateDTO cardActivateDTO);
+
+    LocalDateTime getNextReminderDate(LocalDateTime currentReminderDate, int activationInterval, String intervalUnit);
 }

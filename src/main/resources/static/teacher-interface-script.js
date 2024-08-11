@@ -534,6 +534,8 @@ function activateCardSet() {
         success: function(response) {
             console.log("Card set activated successfully.");
             $("#activateFormContainer").hide();
+            $("#manageCardSetsContainer").show();
+            loadTeacherCardSets()
         },
         error: function(error) {
             console.error("Ошибка при активации набора карточек:", error);

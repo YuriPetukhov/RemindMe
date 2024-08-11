@@ -298,7 +298,8 @@ public class UserServiceImpl implements UserService {
         return newCard;
     }
 
-    private LocalDateTime getNextReminderDate(LocalDateTime currentReminderDate, int activationInterval, String intervalUnit) {
+    @Override
+    public LocalDateTime getNextReminderDate(LocalDateTime currentReminderDate, int activationInterval, String intervalUnit) {
         return switch (intervalUnit.toLowerCase()) {
             case "hours" -> currentReminderDate.plusHours(activationInterval);
             case "days" -> currentReminderDate.plusDays(activationInterval);
