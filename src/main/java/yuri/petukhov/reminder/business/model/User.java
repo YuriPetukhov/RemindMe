@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,8 +28,8 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "role_id") }
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     private List<Role> roles;
 
@@ -38,7 +39,7 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Card> cards;
+    private List<Card> cards = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -55,11 +56,11 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-               "id=" + id +
-               ", chatId=" + chatId +
-               ", userName='" + userName + '\'' +
-               ", roles=" + roles +
-               ", cardState=" + cardState +
-               '}';
+                "id=" + id +
+                ", chatId=" + chatId +
+                ", userName='" + userName + '\'' +
+                ", roles=" + roles +
+                ", cardState=" + cardState +
+                '}';
     }
 }

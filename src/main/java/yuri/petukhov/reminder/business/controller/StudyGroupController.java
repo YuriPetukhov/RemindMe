@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import yuri.petukhov.reminder.business.dto.CardSetDTO;
-import yuri.petukhov.reminder.business.dto.CreateCardSetDTO;
-import yuri.petukhov.reminder.business.dto.CreateGroupDTO;
-import yuri.petukhov.reminder.business.dto.GroupDTO;
+import yuri.petukhov.reminder.business.dto.*;
 import yuri.petukhov.reminder.business.service.StudyGroupService;
 
 import java.util.HashMap;
@@ -38,6 +35,18 @@ public class StudyGroupController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/add-card-set-to-group")
+    @Operation(summary = "Добавление группы учеников")
+    public ResponseEntity<Void> addCardSetToGroup(
+            @RequestParam String cardSetName,
+            @RequestParam Long groupId,
+            Authentication authentication) {
+        log.info("new card set to group " + groupId);
+        studyGroupService.addCardSetToGroup(cardSetName, groupId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
     @GetMapping("/all")
     @Operation(summary = "Получить все учебные группы пользователя")
     public ResponseEntity<List<CreateGroupDTO>> getAllGroups(
@@ -52,4 +61,5 @@ public class StudyGroupController {
             Authentication authentication) {
         return ResponseEntity.ok().body(studyGroupService.getGroupInfo(groupId));
     }
+
 }

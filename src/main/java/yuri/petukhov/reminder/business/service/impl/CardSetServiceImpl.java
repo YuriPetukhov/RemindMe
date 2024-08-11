@@ -138,20 +138,25 @@ public class CardSetServiceImpl implements CardSetService {
 
     @Override
     public CardSet getCardSet(Long cardSetId, Long aLong) {
-        Optional<CardSet> cartSetOpt =  cardSetRepository.findById(cardSetId);
+        Optional<CardSet> cartSetOpt = cardSetRepository.findById(cardSetId);
         return cartSetOpt.orElse(new CardSet());
     }
 
     @Override
     public List<CardDTO> getCardSetCards(Long setId) {
         Optional<CardSet> cardSetOpt = cardSetRepository.findById(setId);
-        if(cardSetOpt.isPresent()) {
+        if (cardSetOpt.isPresent()) {
             List<Card> cards = cardSetOpt.get().getCards();
             return cards.stream()
                     .map(cardMapper::toCardDTO)
                     .toList();
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public Optional<CardSet> findCardSetByName(String cardSetName) {
+        return cardSetRepository.findBySetName(cardSetName);
     }
 
     public boolean isAuthorCardSet(String userId, Long cardSetId) {

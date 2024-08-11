@@ -1,5 +1,6 @@
 package yuri.petukhov.reminder.business.service;
 
+import yuri.petukhov.reminder.business.dto.CardActivateDTO;
 import yuri.petukhov.reminder.business.dto.CreateGroupDTO;
 import yuri.petukhov.reminder.business.dto.GroupDTO;
 import yuri.petukhov.reminder.business.model.StudyGroup;
@@ -17,4 +18,8 @@ public interface StudyGroupService {
     void save(StudyGroup studyGroup);
 
     GroupDTO getGroupInfo(Long groupId);
+
+    void addCardSetToGroup(String cardSetName, Long groupId);
+
+    Optional<StudyGroup> findById(Long groupId);
 }

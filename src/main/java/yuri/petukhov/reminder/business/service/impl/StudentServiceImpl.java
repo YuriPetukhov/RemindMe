@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yuri.petukhov.reminder.business.dto.CardActivateDTO;
 import yuri.petukhov.reminder.business.dto.CommandEntity;
 import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
-import yuri.petukhov.reminder.business.model.Student;
-import yuri.petukhov.reminder.business.model.StudyGroup;
-import yuri.petukhov.reminder.business.model.User;
+import yuri.petukhov.reminder.business.model.*;
 import yuri.petukhov.reminder.business.repository.StudentRepository;
+import yuri.petukhov.reminder.business.service.CardSetService;
 import yuri.petukhov.reminder.business.service.StudentService;
 import yuri.petukhov.reminder.business.service.StudyGroupService;
 import yuri.petukhov.reminder.business.service.UserService;
@@ -28,6 +28,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudyGroupService studyGroupService;
     private final MenuMessageCreator menuMessageCreator;
     private final StudentRepository studentRepository;
+    private final CardSetService cardSetService;
 
     @Transactional
     @Override
@@ -132,5 +133,29 @@ public class StudentServiceImpl implements StudentService {
 
     private void assignStudentRole(User user) {
         userService.addRole(user.getId(), RoleName.ROLE_STUDENT);
+    }
+
+    @Override
+    public void activateCardSet(Long groupId, CardActivateDTO cardActivateDTO) {
+        List<Student> students;
+        Optional<StudyGroup> studyGroupOpt = studyGroupService.findById(groupId);
+        if (studyGroupOpt.isPresent()) {
+            students = studyGroupOpt.get().getStudents();
+        } else {
+            return;
+        }
+
+        List<Card> cards;
+        Optional<CardSet> cardSetOpt = cardSetService.findCardSetByName(cardActivateDTO.getCardSetName());
+        if (cardSetOpt.isPresent()) {
+            cards = cardSetOpt.get().getCards();
+        } else {
+            return;
+        }
+
+        for (Student student : students) {
+            userService.setCardSet(student.getUser(), cards, cardActivateDTO);
+        }
+
     }
 }

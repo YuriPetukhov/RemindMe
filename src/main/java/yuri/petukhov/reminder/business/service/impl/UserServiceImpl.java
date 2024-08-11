@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import yuri.petukhov.reminder.business.enums.RoleName;
-import yuri.petukhov.reminder.business.enums.UserCardInputState;
+import yuri.petukhov.reminder.business.dto.CardActivateDTO;
+import yuri.petukhov.reminder.business.enums.*;
 import yuri.petukhov.reminder.business.exception.UserNotFoundException;
+import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.Role;
 import yuri.petukhov.reminder.business.model.User;
 import yuri.petukhov.reminder.business.repository.UserRepository;
@@ -15,6 +16,7 @@ import yuri.petukhov.reminder.business.service.AdminService;
 import yuri.petukhov.reminder.business.service.RoleService;
 import yuri.petukhov.reminder.business.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Saves a user to the repository.
+     *
      * @param user The user to save.
      */
 
@@ -47,6 +50,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Updates a user in the repository.
+     *
      * @param user The user to update.
      */
 
@@ -57,6 +61,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Removes a user from the repository by their ID.
+     *
      * @param id The ID of the user to remove.
      */
 
@@ -67,6 +72,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Finds a user by their ID.
+     *
      * @param id The ID of the user to find.
      * @return The found user.
      */
@@ -81,6 +87,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Finds a user by their chat ID.
+     *
      * @param chatId The chat ID of the user to find.
      * @return An Optional containing the found user or empty if not found.
      */
@@ -95,7 +102,8 @@ public class UserServiceImpl implements UserService {
      * If the user is found, returns a list of their role names.
      * If the user is not found, a new user is created with the USER role
      * and a list containing only the USER role name is returned.
-     * @param chatId The chat ID of the user.
+     *
+     * @param chatId   The chat ID of the user.
      * @param userName The username of the user.
      * @return The list of RoleName states of the user.
      */
@@ -136,7 +144,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Sets the card input state of a user.
-     * @param user The user to set the state for.
+     *
+     * @param user               The user to set the state for.
      * @param userCardInputState The new card input state to set.
      */
 
@@ -148,6 +157,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Gets the card input state of a user by their chat ID.
+     *
      * @param chatId The chat ID of the user.
      * @return The UserCardInputState of the user.
      */
@@ -160,6 +170,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Gets the user ID by their chat ID.
+     *
      * @param chatId The chat ID of the user.
      * @return The ID of the user.
      */
@@ -172,7 +183,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Creates a new user with the given chat ID and username.
-     * @param chatId The chat ID for the new user.
+     *
+     * @param chatId   The chat ID for the new user.
      * @param userName The username for the new user.
      */
     @Override
@@ -249,9 +261,55 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void setCardSet(User user, List<Card> cards, CardActivateDTO cardActivateDTO) {
+        List<Card> studentCards = new ArrayList<>();
+        LocalDateTime reminderDate = cardActivateDTO.getActivationStart();
+        int cardsPerBatch = cardActivateDTO.getCardsPerBatch();
+        int activationInterval = cardActivateDTO.getActivationInterval();
+        String intervalUnit = cardActivateDTO.getIntervalUnit();
+
+        int cardCount = 0;
+
+        for (Card card : cards) {
+            Card newCard = setParameter(card, reminderDate, user);
+            studentCards.add(newCard);
+            cardCount++;
+
+            if (cardCount % cardsPerBatch == 0) {
+                reminderDate = getNextReminderDate(reminderDate, activationInterval, intervalUnit);
+            }
+        }
+        List<Card> currentList = user.getCards();
+        currentList.addAll(studentCards);
+        saveUser(user);
+    }
+
+    private Card setParameter(Card card, LocalDateTime reminderDate, User user) {
+        Card newCard = new Card();
+        newCard.setCardName(card.getCardName());
+        newCard.setCardMeaning(card.getCardMeaning());
+        newCard.setUser(user);
+        newCard.setInterval(ReminderInterval.MINUTES_20);
+        newCard.setActivity(CardActivity.INACTIVE);
+        newCard.setReminderDateTime(reminderDate);
+        newCard.setRecallMode(RecallMode.NONE);
+
+        return newCard;
+    }
+
+    private LocalDateTime getNextReminderDate(LocalDateTime currentReminderDate, int activationInterval, String intervalUnit) {
+        return switch (intervalUnit.toLowerCase()) {
+            case "hours" -> currentReminderDate.plusHours(activationInterval);
+            case "days" -> currentReminderDate.plusDays(activationInterval);
+            case "weeks" -> currentReminderDate.plusWeeks(activationInterval);
+            default -> throw new IllegalArgumentException("Invalid interval unit: " + intervalUnit);
+        };
+    }
 
     /**
      * Checks if a user is authorized by comparing authentication ID and user ID.
+     *
      * @param authId The authentication ID.
      * @param userId The user ID.
      * @return True if the IDs match, false otherwise.

@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+let currentGroupId;
+
   $("#addCardSetForm").submit(function (e) {
     e.preventDefault();
     let cardSetData = {
@@ -154,6 +157,15 @@ $(document).ready(function () {
       saveGroupDetails(groupId);
     });
 
+    $(document).on("click", ".select-activate-btn", function() {
+        const cardSetName = $(this).data("card-set-name");
+
+        $("#selectedCardSetName").val(cardSetName);
+
+        $("#groupDetailsContainer").hide();
+        $("#activateFormContainer").show();
+    });
+
     loadTeacherCardSets();
     loadTeacherStudyingGroups();
 });
@@ -170,6 +182,7 @@ function closeAllTeacherContainers() {
   $("#deleteCardSetFormContainer").hide();
   $("#cardSetsContainer").hide();
   $("#groupDetailsContainer").hide();
+  $("#activateFormContainer").hide();
 }
 
 function handleProgressData(progressData, tableBodyId) {
@@ -369,9 +382,11 @@ function loadTeacherStudyingGroups() {
 
 function loadGroupDetailsNew(groupId) {
     if (!groupId) {
-        console.error("groupId is undefined or null 2.");
+        console.error("groupId is undefined or null.");
         return;
     }
+
+    currentGroupId = groupId;
 
     $.ajax({
         url: "/study-group/" + groupId,
@@ -379,8 +394,8 @@ function loadGroupDetailsNew(groupId) {
         dataType: "json",
         success: function (studyGroup) {
             $("#groupDetailsContainer").show();
-            $("#detailGroupName").text(studyGroup.groupName).show();
-            $("#detailGroupDescription").text(studyGroup.groupDescription).show();
+            $("#detailGroupName").text(studyGroup.groupName);
+            $("#detailGroupDescription").text(studyGroup.groupDescription);
             $("#detailGroupSize").text(studyGroup.groupSize || 0);
             $("#detailJoinCode").text(studyGroup.joinCode);
 
@@ -388,31 +403,95 @@ function loadGroupDetailsNew(groupId) {
             studentList.empty();
 
             if (studyGroup.students && studyGroup.students.length > 0) {
-                studyGroup.students.forEach(student => {
-                    studentList.append(`<li>${student}</li>`);
+                studyGroup.students.forEach((student, index) => {
+                    studentList.append(`<li>${index + 1}. ${student} <button class="edit-btn">Edit</button></li>`);
                 });
             } else {
-                console.log("Список студентов пуст.");
+                studentList.append("<li>No students available.</li>");
             }
 
             const cardSetList = $("#cardSetList");
             cardSetList.empty();
 
             if (studyGroup.cardSets && studyGroup.cardSets.length > 0) {
-                studyGroup.cardSets.forEach(cardSet => {
-                    cardSetList.append(`<li>${cardSet}</li>`);
+                studyGroup.cardSets.forEach((cardSet, index) => {
+                    cardSetList.append(`
+                    <li>
+                         ${index + 1}. ${cardSet}
+                         <button class="select-activate-btn" data-card-set-name="${cardSet}">Select to activate</button>
+                         </li>`);
                 });
             } else {
-                console.log("Список карточек пуст.");
+                cardSetList.append("<li>No card sets available.</li>");
             }
 
             $("#editGroupForm").hide();
             $("#editGroupName").val(studyGroup.groupName);
             $("#editGroupDescription").val(studyGroup.groupDescription);
-            $("#editGroupForm").data("group-id", studyGroup.groupId);
+            $("#editGroupForm").data("group-id", groupId);
+
+            $("#addCardSetButton").off("click").on("click", function() {
+                loadAvailableCardSets(groupId);
+                $("#cardSetModal").show();
+            });
+
+            $("#closeModalButton").off("click").on("click", function() {
+                $("#cardSetModal").hide();
+            });
+
+            $("#availableCardSets").off("click", "li").on("click", "li", function() {
+                const cardSetName = $(this).text();
+                addCardSetToGroup(cardSetName, groupId);
+            });
         },
         error: function (error) {
             console.error("Ошибка загрузки деталей группы:", error);
+        }
+    });
+}
+
+function loadAvailableCardSets(groupId) {
+    $.ajax({
+        url: "/card-sets/all",
+        type: "GET",
+        dataType: "json",
+        success: function (availableCardSets) {
+            const availableCardSetsList = $("#availableCardSets");
+            availableCardSetsList.empty();
+
+            if (availableCardSets && availableCardSets.length > 0) {
+                availableCardSets.forEach(cardSet => {
+                    availableCardSetsList.append(`<li>${cardSet.setName}</li>`);
+                });
+            } else {
+                availableCardSetsList.append(`<li>No card sets available.</li>`);
+            }
+        },
+        error: function (error) {
+            console.error("Ошибка загрузки доступных наборов карточек:", error);
+        }
+    });
+}
+
+function addCardSetToGroup(cardSetName, groupId) {
+    $.ajax({
+        url: "/study-group/add-card-set-to-group",
+        type: "POST",
+        dataType: "json",
+        data: {
+            cardSetName: cardSetName,
+            groupId: groupId
+        },
+        success: function (response) {
+            if (response.success) {
+                console.log(`Card set ${cardSetName} added to group ${groupId}`);
+                loadGroupDetailsNew(groupId);
+            } else {
+                console.error("Ошибка добавления набора карточек.");
+            }
+        },
+        error: function (error) {
+            console.error("Ошибка при добавлении набора карточек:", error);
         }
     });
 }
@@ -430,7 +509,7 @@ function saveGroupDetails(groupId) {
       data: JSON.stringify(updatedGroup),
       success: function () {
         loadTeacherStudyingGroups();
-        loadGroupDetails(groupId);
+        loadGroupDetailsNew(groupId);
       },
       error: function (error) {
         console.error("Ошибка сохранения деталей группы:", error);
@@ -438,3 +517,26 @@ function saveGroupDetails(groupId) {
     });
 }
 
+function activateCardSet() {
+    const activationDetails = {
+        cardSetName: $("#selectedCardSetName").val(),
+        activationStart: $("#activationStartTeacherForm").val(),
+        cardsPerBatch: $("#cardsPerBatchTeacherForm").val(),
+        activationInterval: $("#activationIntervalTeacherForm").val(),
+        intervalUnit: $("#intervalUnitTeacherForm").val(),
+    };
+
+    $.ajax({
+        url: "/student/" + currentGroupId + "/activate-card-set",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(activationDetails),
+        success: function(response) {
+            console.log("Card set activated successfully.");
+            $("#activateFormContainer").hide();
+        },
+        error: function(error) {
+            console.error("Ошибка при активации набора карточек:", error);
+        }
+    });
+}

@@ -33,28 +33,6 @@ $(document).ready(function () {
     });
   }
 
-  //        function loadCardSet(cardSetId) {
-  //                $.ajax({
-  //                    url: '/card-sets/' + cardSetId,
-  //                    type: 'GET',
-  //                    dataType: 'json',
-  //                    success: function(cardSet) {
-  //                        currentCardSet = cardSet;
-  //                        $('#editCardSetName').val(cardSet.setName);
-  //                        $('#editCardSetDescription').val(cardSet.setDescription);
-  //                        $('#editCardSetSize').text(cardSet.setSize);
-  //                        closeAllContainers();
-  //                        $('#addWordFormContainer').show();
-  //                        $('#editCardSetContainer').show();
-  //                        $('#userCardSetCardsContainer').show();
-  //                        $('#editCardSetForm').show();
-  //                    },
-  //                    error: function(error) {
-  //                        console.error('Ошибка загрузки набора карточек:', error);
-  //                    }
-  //                });
-  //            }
-
   function loadStatistics() {
     $.ajax({
       url: "/cards/intervals/stats",
@@ -145,12 +123,6 @@ $(document).ready(function () {
     $(".tabcontent").hide();
     $("#" + tabName).show();
   });
-
-  //        $(document).on('click', '.card-set', function() {
-  //            const cardSetId = $(this).data('set-id');
-  //            loadCardSet(cardSetId);
-  //            loadUserCardSetCards(cardSetId);
-  //        });
 
   $(document).on("click", ".card", function () {
     const cardId = $(this).data("id");
@@ -355,28 +327,6 @@ $(document).ready(function () {
     loadRandomCard();
   });
 
-  //        $('#editCardSetForm').submit(function(e) {
-  //        e.preventDefault();
-  //        const updatedCardSet = {
-  //            setName: $('#editCardSetName').val(),
-  //            setDescription: $('#editCardSetDescription').val()
-  //        };
-
-  //        $.ajax({
-  //            url: '/card-sets/' + currentCardSet.id,
-  //            type: 'PUT',
-  //            contentType: 'application/json',
-  //            data: JSON.stringify(updatedCardSet),
-  //            success: function(response) {
-  //                alert('Набор карточек успешно обновлен');
-  //                closeAllContainers()
-  //            },
-  //            error: function(error) {
-  //                console.error('Ошибка обновления набора карточек:', error);
-  //            }
-  //        });
-  //    });
-
   applyTheme();
 
   document.querySelectorAll(".theme-button").forEach((button) => {
@@ -389,8 +339,6 @@ $(document).ready(function () {
   loadRandomCard();
 
   loadCards();
-
-  //        loadUserCardSets();
 
   function changeTheme(theme) {
     localStorage.setItem("theme", theme);
@@ -555,62 +503,9 @@ function getErrorIndicatorColor(errorPercentage) {
   }
 }
 
-//function loadUserCardSets() {
-//                $.ajax({
-//                    url: '/card-sets/all',
-//                    type: 'GET',
-//                    dataType: 'json',
-//                    success: function(cardSets) {
-//                        let cardSetsHtml = '';
-//                        cardSets.forEach(function(cardSet) {
-//                            const cardClass = cardSet.active ? 'active-card-set' : 'inactive-card-set';
-//                            cardSetsHtml += '<div class="card-set ' + cardClass + '" data-set-id="' + cardSet.id + '">' +
-//                                            '<h2>' + cardSet.setName + '</h2>' +
-//                                            '<p>' + cardSet.setDescription + '</p>' +
-//                                            '<p>Cards number: ' + cardSet.setSize + '</p>' +
-//                                            '</div>';
-//                        });
-//                        $('#userCardSetsContainer').html(cardSetsHtml).show();
-//                        $('#addWordFormContainer').show();
-//                        $('#addWordForm').show();
-//                        $('#uploadFileForm').show();
-//                    },
-//                    error: function(error) {
-//                        console.error('Ошибка загрузки наборов карточек:', error);
-//                    }
-//                });
-//            }
-
-//function loadUserCardSetCards(cardSetId) {
-//        $.ajax({
-//            url: '/card-sets/' + cardSetId + '/cards',
-//            type: 'GET',
-//            dataType: 'json',
-//            success: function(cards) {
-//                if (cards && cards.length > 0) {
-//                    let cardsHtml = '';
-//                    cards.forEach(function(card) {
-//                        cardsHtml += '<div class="card" data-id="' + card.id + '">' +
-//                                      '<h2>' + card.content + '</h2>' +
-//                                      '<p>' + card.title + '</p>' +
-//                                      '</div>';
-//                    });
-//                    $('#userCardSetCardsContainer').html(cardsHtml).show();
-//                } else {
-//                    $('#userCardSetCardsContainer').empty();
-//                }
-//            },
-//            error: function(error) {
-//                console.error('Ошибка загрузки карточек:', error);
-//            }
-//        });
-//    }
-
 function uploadCards() {
   const formData = new FormData();
   const fileInput = document.getElementById("uploadFile");
-  //            const cardSetName = document.getElementById('cardSetName').value;
-  //            const setDescription = document.getElementById('setDescription').value;
   const activationStart = document.getElementById("activationStart").value;
   const cardsPerBatch = document.getElementById("cardsPerBatch").value;
   const activationInterval =
@@ -618,8 +513,6 @@ function uploadCards() {
   const intervalUnit = document.getElementById("intervalUnit").value;
 
   formData.append("file", fileInput.files[0]);
-  //            formData.append('cardSetName', cardSetName);
-  //            formData.append('setDescription', setDescription);
 
   formData.append("activationStart", activationStart);
   formData.append("cardsPerBatch", cardsPerBatch);

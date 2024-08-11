@@ -20,8 +20,6 @@ public class CardUploadController {
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadCards(
             @RequestParam(value = "file") MultipartFile file,
-//            @RequestParam(value = "cardSetName", required = false) String cardSetName,
-//            @RequestParam(value = "setDescription", required = false) String setDescription,
             @RequestParam(value = "activationStart", required = false) String activationStart,
             @RequestParam(value = "cardsPerBatch", required = false, defaultValue = "0") int cardsPerBatch,
             @RequestParam(value = "activationInterval", required = false, defaultValue = "0") int activationInterval,

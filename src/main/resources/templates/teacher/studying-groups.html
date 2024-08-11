@@ -20,24 +20,32 @@
     <div class="content">
         <div id="teacherStudyingGroups">
         </div>
-        <div id="groupDetailsContainer" class="group-details">
-            <div class="form-group">
-                <p><strong>Group name:</strong> <span id="detailGroupName"></span></p>
-                <p><strong>Group description:</strong> <span id="detailGroupDescription"
-                                                             class="group-description"></span></p>
-                <p><strong>Students number:</strong> <span id="detailGroupSize"></span></p>
-                <p><strong>Join code:</strong> <span id="detailJoinCode"></span></p>
-                <button id="editGroupButton" class="btn-edit">Edit</button>
+        <div id="groupDetailsContainer">
+            <div class="form-group-details">
+                <div class="group-details">Group name: <span id="detailGroupName"></span></div>
+                <div class="group-details">Group description: <span id="detailGroupDescription"></span></div>
+                <div class="group-details">Students number: <span id="detailGroupSize"></span></div>
+                <div class="group-details">Join code: <span id="detailJoinCode"></span></div>
             </div>
             <div class="form-group">
                 <h3>Students</h3>
                 <ul id="studentList">
                 </ul>
             </div>
+
             <div class="form-group">
                 <h3>Card Sets</h3>
                 <ul id="cardSetList">
                 </ul>
+                <button id="addCardSetButton" class="btn-add">Add</button>
+            </div>
+            <div id="cardSetModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h4>Select Card Set to Add</h4>
+                    <ul id="availableCardSets">
+                    </ul>
+                    <button id="closeModalButton" class="btn-close">Close</button>
+                </div>
             </div>
             <div id="editGroupForm" class="edit-group-form" style="display: none;">
                 <div class="form-group">
@@ -50,6 +58,33 @@
                 </div>
                 <div class="form-group">
                     <button id="saveGroupButton" class="btn-save">Save</button>
+                </div>
+            </div>
+        </div>
+        <div id="activateFormContainer" class="form-style" style="display: none;">
+            <input type="hidden" id="selectedCardSetName" name="cardSetName">
+            <div class="form-group">
+                <label for="activationStartTeacherForm">Activation start:</label>
+                <input type="datetime-local" id="activationStartTeacherForm" name="activationStart" required>
+            </div>
+            <div class="form-group">
+                <label for="cardsPerBatchTeacherForm">Number of Cards for Initial Activation:</label>
+                <input type="number" id="cardsPerBatchTeacherForm" name="cardsPerBatch" min="1"
+                       placeholder="Enter number of cards for initial activation" required>
+            </div>
+            <div class="form-group">
+                <label for="activationIntervalTeacherForm">Interval for Next Batch Activation:</label>
+                <div class="form-group-inline">
+                    <input type="number" id="activationIntervalTeacherForm" name="activationInterval" min="1"
+                           placeholder="Enter number of hours, days, or weeks" required>
+                    <select id="intervalUnitTeacherForm" name="intervalUnit" required>
+                        <option value="" disabled selected>Select interval unit</option>
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                    </select>
+                    <button type="button" class="save-activate-set-btn" onclick="activateCardSet()">Activate
+                    </button>
                 </div>
             </div>
         </div>

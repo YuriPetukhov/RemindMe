@@ -7,6 +7,7 @@ import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.CardSet;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CardSetService {
     Long createCardSet(CreateCardSetDTO cardSet, Long userId);
@@ -32,4 +33,7 @@ public interface CardSetService {
     CardSet getCardSet(Long cardSetId, Long aLong);
 
     List<CardDTO> getCardSetCards(Long setId);
+
+    Optional<CardSet> findCardSetByName(String cardSetName);
+
 }

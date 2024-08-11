@@ -13,7 +13,8 @@
             <label for="cardTitleAdd">New word:</label>
             <input type="text" id="cardTitleAdd" name="title" placeholder="Enter the new word or card title" required>
             <label for="cardContentAdd">Meaning:</label>
-            <textarea id="cardContentAdd" name="content" placeholder="Enter the definition or meaning of the word" required></textarea>
+            <textarea id="cardContentAdd" name="content" placeholder="Enter the definition or meaning of the word"
+                      required></textarea>
             <button type="submit">Add word</button>
         </form>
         <form id="uploadFileForm" enctype="multipart/form-data" class="form-style">
@@ -21,26 +22,20 @@
                 <label for="uploadFile">Upload CSV/Excel file:</label>
                 <input type="file" id="uploadFile" name="file" accept=".csv, .xlsx" required>
             </div>
-<!--            <div class="form-group">-->
-<!--                <label for="cardSetName">Card's set name:</label>-->
-<!--                <input type="text" id="cardSetName" name="cardSetName">-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--                <label for="setDescription">Card's set description:</label>-->
-<!--                <input type="text" id="setDescription" name="setDescription">-->
-<!--            </div>-->
             <div class="form-group">
                 <label for="activationStart">Activation start:</label>
                 <input type="datetime-local" id="activationStart" name="activationStart" required>
             </div>
             <div class="form-group">
                 <label for="cardsPerBatch">Number of Cards for Initial Activation:</label>
-                <input type="number" id="cardsPerBatch" name="cardsPerBatch" min="1" placeholder="Enter number of cards for initial activation" required>
+                <input type="number" id="cardsPerBatch" name="cardsPerBatch" min="1"
+                       placeholder="Enter number of cards for initial activation" required>
             </div>
             <div class="form-group">
                 <label for="activationInterval">Interval for Next Batch Activation:</label>
                 <div class="form-group-inline">
-                    <input type="number" id="activationInterval" name="activationInterval" min="1" placeholder="Enter number of hours, days, or weeks" required>
+                    <input type="number" id="activationInterval" name="activationInterval" min="1"
+                           placeholder="Enter number of hours, days, or weeks" required>
                     <select id="intervalUnit" name="intervalUnit" required>
                         <option value="" disabled selected>Select interval unit</option>
                         <option value="hours">Hours</option>

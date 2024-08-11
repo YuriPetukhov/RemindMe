@@ -40,7 +40,6 @@ public class CardSetController {
     }
 
 
-
     @PutMapping("/cards/{cardSetId}")
     @PreAuthorize(value = "hasRole('ROLE_ADMIN') or @cardSetServiceImpl.isAuthorCardSet(authentication.getName(), #cardSetId)")
     @Operation(summary = "Добавление списка карточек в набор")
@@ -93,5 +92,4 @@ public class CardSetController {
         cardSetService.updateCardSet(setId, createCardSetDTO);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }
