@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum Command {
-    START("/start");
+    START("/start"),
+    WEB("/web"),
+    ADD("/add"),
+    STUDENT("/student");
 
     private final String name;
 
