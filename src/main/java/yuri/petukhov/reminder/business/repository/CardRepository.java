@@ -21,14 +21,13 @@ public interface CardRepository extends JpaRepository<Card, Long> {
             LocalDateTime dateTime, CardActivity activity, RecallMode recallMode);
 
     @Query("SELECT c FROM cards c " +
-           "WHERE c.recallMode = 'RECALL' " +
-           "AND c.user.cardState <> 'ANSWER' " +
-           "AND c.id IN (SELECT MIN(c2.id) " +
-           "FROM cards c2 " +
-           "WHERE c2.recallMode = 'RECALL' " +
-           "GROUP BY c2.user.id)")
+            "WHERE c.recallMode = 'RECALL' " +
+            "AND c.user.cardState <> 'ANSWER' " +
+            "AND c.id IN (SELECT MIN(c2.id) " +
+            "FROM cards c2 " +
+            "WHERE c2.recallMode = 'RECALL' " +
+            "GROUP BY c2.user.id)")
     List<Card> findDistinctRecallCardsByUserExcludingAnswer();
-
 
     Optional<Card> findFirstByUserIdAndRecallMode(Long userId, RecallMode recallMode);
 
@@ -56,24 +55,26 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findCardByReminderDateTime(Long userId, LocalDateTime startTime, LocalDateTime endTime);
 
     @Query("SELECT c FROM cards c " +
-           "WHERE c.user.id = :userId " +
-           "AND c.cardName IN (" +
-           "    SELECT c2.cardName FROM cards c2 " +
-           "    WHERE c2.user.id = :userId " +
-           "    GROUP BY c2.cardName " +
-           "    HAVING COUNT(c2.cardName) > 1" +
-           ")")
+            "WHERE c.user.id = :userId " +
+            "AND c.cardName IN (" +
+            "    SELECT c2.cardName FROM cards c2 " +
+            "    WHERE c2.user.id = :userId " +
+            "    GROUP BY c2.cardName " +
+            "    HAVING COUNT(c2.cardName) > 1" +
+            ")")
     List<Card> findCardNameDuplicates(Long userId);
+
     @Query("SELECT c FROM cards c " +
-           "WHERE c.user.id = :userId " +
-           "AND c.cardMeaning IN (" +
-           "    SELECT c2.cardMeaning FROM cards c2 " +
-           "    WHERE c2.user.id = :userId " +
-           "    GROUP BY c2.cardMeaning " +
-           "    HAVING COUNT(c2.cardMeaning) > 1" +
-           ")")
+            "WHERE c.user.id = :userId " +
+            "AND c.cardMeaning IN (" +
+            "    SELECT c2.cardMeaning FROM cards c2 " +
+            "    WHERE c2.user.id = :userId " +
+            "    GROUP BY c2.cardMeaning " +
+            "    HAVING COUNT(c2.cardMeaning) > 1" +
+            ")")
     List<Card> findCardMeaningDuplicates(Long userId);
-    @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.interval = :interval")
+
+    @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.interval = :interval AND c.activity != 'FINISHED'")
     Integer findAllCardsNumberByUserIdAndReminderInterval(Long userId, ReminderInterval interval);
 
     @Query("SELECT COUNT(c) FROM cards c WHERE c.interval = :interval")
@@ -84,10 +85,13 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId ORDER BY RANDOM() LIMIT :limit")
     List<Card> findRandomCardsByUserId(Long userId, int limit);
+
     @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.activity != 'FINISHED'")
     int getAllCardsNumber(Long userId);
+
     @Query("SELECT COUNT(c) FROM cards c WHERE c.activity != 'FINISHED'")
     int getAllCardsNumber();
+
     @Query("SELECT COUNT(c) FROM cards c WHERE c.user.id = :userId AND c.activity = :activity")
     int getFinishedCardsNumber(Long userId, CardActivity activity);
 

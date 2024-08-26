@@ -42,6 +42,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Creates a new card with the given word and associates it with the provided user.
+     *
      * @param word The word to create a card for.
      * @param user The user to associate the card with.
      */
@@ -55,7 +56,8 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Adds a meaning to a newly created card.
-     * @param card The card to add the meaning to.
+     *
+     * @param card    The card to add the meaning to.
      * @param meaning The meaning to add to the card.
      */
 
@@ -68,6 +70,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a list of users who are eligible for recall mode based on their cards.
+     *
      * @return A list of users for recall mode.
      */
 
@@ -82,6 +85,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Finds cards that are within the reminder interval up to the specified recall time.
+     *
      * @param recallTime The time before which cards should be recalled.
      * @return A list of cards within the reminder interval.
      */
@@ -94,7 +98,8 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Sets the recall mode for a list of cards.
-     * @param cards The list of cards to set the recall mode for.
+     *
+     * @param cards      The list of cards to set the recall mode for.
      * @param recallMode The recall mode to set.
      */
 
@@ -109,7 +114,8 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Sets the recall mode for a single card.
-     * @param card The card to set the recall mode for.
+     *
+     * @param card       The card to set the recall mode for.
      * @param recallMode The recall mode to be applied to the card.
      */
 
@@ -123,6 +129,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Finds the active card associated with a given user ID.
+     *
      * @param userId The ID of the user to find the active card for.
      * @return An Optional containing the active card if found.
      */
@@ -135,7 +142,8 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Sets the activity status of a card.
-     * @param card The card to set the activity for.
+     *
+     * @param card         The card to set the activity for.
      * @param cardActivity The activity status to be set for the card.
      */
 
@@ -148,6 +156,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Saves the card information to the repository.
+     *
      * @param card The card to be saved.
      */
 
@@ -159,8 +168,9 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Sets the reminder interval and time for a card.
-     * @param card The card to set the reminder for.
-     * @param time The time to set for the reminder.
+     *
+     * @param card     The card to set the reminder for.
+     * @param time     The time to set for the reminder.
      * @param interval The interval to set for the reminder.
      */
 
@@ -174,6 +184,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Finds the first card in recall mode for a given user ID.
+     *
      * @param userId The ID of the user to find the card for.
      * @return An Optional containing the card if found.
      */
@@ -186,6 +197,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Deletes a card from the repository.
+     *
      * @param card The card to be deleted.
      */
 
@@ -196,9 +208,10 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves all cards for a user based on page number and size.
-     * @param userId The ID of the user whose cards are to be retrieved.
+     *
+     * @param userId     The ID of the user whose cards are to be retrieved.
      * @param pageNumber The page number for pagination.
-     * @param pageSize The size of the page for pagination.
+     * @param pageSize   The size of the page for pagination.
      * @return A list of CardDTOs for the specified page.
      */
 
@@ -213,10 +226,11 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves all cards for a user within a specific reminder interval.
-     * @param userId The ID of the user whose cards are to be retrieved.
-     * @param interval The reminder interval to filter the cards.
+     *
+     * @param userId     The ID of the user whose cards are to be retrieved.
+     * @param interval   The reminder interval to filter the cards.
      * @param pageNumber The page number for pagination.
-     * @param pageSize The size of the page for pagination.
+     * @param pageSize   The size of the page for pagination.
      * @return A list of CardDTOs within the specified reminder interval.
      */
 
@@ -231,7 +245,8 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a list of cards by name for a given user.
-     * @param userId The ID of the user to search for cards.
+     *
+     * @param userId   The ID of the user to search for cards.
      * @param cardName The name of the card to search for.
      * @return A list of FindCardDTOs matching the card name.
      */
@@ -240,14 +255,15 @@ public class CardServiceImpl implements CardService {
     public List<CardDTO> getCardByName(Long userId, String cardName) {
         List<Card> results = cardRepository.findAllByCardNameAndUserId(userId, cardName);
         return results.stream()
-                .map(mapper:: toCardDTO)
+                .map(mapper::toCardDTO)
                 .toList();
     }
 
     /**
      * Updates a card's information based on the provided update data.
-     * @param userId The ID of the user who owns the card.
-     * @param cardId The ID of the card to be updated.
+     *
+     * @param userId      The ID of the user who owns the card.
+     * @param cardId      The ID of the card to be updated.
      * @param updatedCard The updated card information.
      * @return The updated Card object.
      */
@@ -261,6 +277,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Deletes a card by its ID, ensuring it belongs to the specified user.
+     *
      * @param userId The ID of the user who owns the card.
      * @param cardId The ID of the card to be deleted.
      */
@@ -278,7 +295,8 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Adds a new card with the provided information for a user.
-     * @param card The information for the new card.
+     *
+     * @param card   The information for the new card.
      * @param userId The ID of the user to add the new card for.
      */
 
@@ -293,7 +311,8 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a list of cards for a user based on card activity status.
-     * @param userId The ID of the user to retrieve cards for.
+     *
+     * @param userId   The ID of the user to retrieve cards for.
      * @param activity The activity status to filter the cards.
      * @return A list of Cards with the specified activity status.
      */
@@ -305,8 +324,9 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a list of cards for a user based on recall mode.
+     *
      * @param userId The ID of the user to retrieve cards for.
-     * @param mode The recall mode to filter the cards.
+     * @param mode   The recall mode to filter the cards.
      * @return A list of Cards in the specified recall mode.
      */
 
@@ -317,9 +337,10 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a list of cards for a user within a specific time range.
-     * @param userId The ID of the user to retrieve cards for.
+     *
+     * @param userId    The ID of the user to retrieve cards for.
      * @param startTime The start time of the range.
-     * @param endTime The end time of the range.
+     * @param endTime   The end time of the range.
      * @return A list of Cards within the specified time range.
      */
 
@@ -330,6 +351,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Finds duplicate card names for a given user.
+     *
      * @param userId The ID of the user to check for duplicate card names.
      * @return A list of Cards with duplicate names.
      */
@@ -341,6 +363,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Finds duplicate card meanings for a given user.
+     *
      * @param userId The ID of the user to check for duplicate card meanings.
      * @return A list of Cards with duplicate meanings.
      */
@@ -351,7 +374,8 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Counts all cards for a user within a specific reminder interval.
-     * @param userId The ID of the user to count cards for.
+     *
+     * @param userId   The ID of the user to count cards for.
      * @param interval The reminder interval to filter the cards.
      * @return The number of cards within the specified interval.
      */
@@ -362,6 +386,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a specific card for a user by card ID.
+     *
      * @param cardId The ID of the card to retrieve.
      * @return The requested Card object.
      */
@@ -382,13 +407,14 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Activates a card for a user, ensuring that only one card is active at a time.
-     * @param card The card to activate.
+     *
+     * @param card   The card to activate.
      * @param userId The ID of the user for whom the card is to be activated.
      */
 
     @Override
     public void activateCard(Card card, Long userId) {
-        synchronized(lock) {
+        synchronized (lock) {
             Optional<Card> activeCard = findActiveCardByUserId(userId);
             if (activeCard.isPresent()) {
                 log.info("Attempt to activate a second card for user: " + userId);
@@ -400,6 +426,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a list of card data transfer objects (DTOs) for a user.
+     *
      * @param userId The ID of the user whose cards are to be retrieved.
      * @return A list of CardDTOs for the user.
      */
@@ -414,6 +441,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Gathers statistics for all reminder intervals for a user.
+     *
      * @param userId The ID of the user whose statistics are to be gathered.
      * @return A list of integers representing the statistics for all intervals.
      */
@@ -427,6 +455,7 @@ public class CardServiceImpl implements CardService {
         }
         int allCardsNumber = cardRepository.getAllCardsNumber(userId);
         int finishedCardsNumber = cardRepository.getFinishedCardsNumber(userId, FINISHED);
+
         stats.add(allCardsNumber);
         stats.add(finishedCardsNumber);
 
@@ -435,6 +464,7 @@ public class CardServiceImpl implements CardService {
 
     /**
      * Retrieves a random card DTO for a user.
+     *
      * @param userId The ID of the user to retrieve a random card for.
      * @return A CardDTO representing the random card.
      */
@@ -451,7 +481,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Card findById(Long cardId) {
         Optional<Card> optCard = cardRepository.findById(cardId);
-        if(optCard.isPresent()) {
+        if (optCard.isPresent()) {
             return optCard.get();
         } else {
             throw new CardNotFoundException("Card " + cardId + " not found");
@@ -460,7 +490,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List <Card> saveAll(List<Card> cardToSave) {
+    public List<Card> saveAll(List<Card> cardToSave) {
         return cardRepository.saveAll(cardToSave);
     }
 

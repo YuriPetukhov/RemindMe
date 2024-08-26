@@ -8,7 +8,31 @@
 </head>
 <body>
 <div th:fragment="studentsStatistics">
-
+    <div id="studyGroupsButtonsContainer" class="button-container">
+        <div id="studentStatsTable" style="display:none;">
+            <div class="stat-container">
+                <table class="stats-table">
+                    <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>20 minutes</th>
+                        <th>1 hour</th>
+                        <th>4 hours</th>
+                        <th>8 hours</th>
+                        <th>24 hours</th>
+                        <th>48 hours</th>
+                        <th>96 hours</th>
+                        <th>14 days</th>
+                        <th>30 days</th>
+                        <th>60 days</th>
+                    </tr>
+                    </thead>
+                    <tbody id="statsTableBody09">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

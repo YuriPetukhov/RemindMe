@@ -6,14 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuri.petukhov.reminder.business.dto.CardActivateDTO;
 import yuri.petukhov.reminder.business.dto.CommandEntity;
+import yuri.petukhov.reminder.business.dto.StudentStatisticDTO;
 import yuri.petukhov.reminder.business.enums.RoleName;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
 import yuri.petukhov.reminder.business.model.*;
 import yuri.petukhov.reminder.business.repository.StudentRepository;
-import yuri.petukhov.reminder.business.service.CardSetService;
-import yuri.petukhov.reminder.business.service.StudentService;
-import yuri.petukhov.reminder.business.service.StudyGroupService;
-import yuri.petukhov.reminder.business.service.UserService;
+import yuri.petukhov.reminder.business.service.*;
 import yuri.petukhov.reminder.handling.creator.MenuMessageCreator;
 
 import java.util.ArrayList;
@@ -29,6 +27,8 @@ public class StudentServiceImpl implements StudentService {
     private final MenuMessageCreator menuMessageCreator;
     private final StudentRepository studentRepository;
     private final CardSetService cardSetService;
+    private final CardService cardService;
+    private final MatchResultService matchResultService;
 
     @Transactional
     @Override
@@ -157,5 +157,25 @@ public class StudentServiceImpl implements StudentService {
             userService.setCardSet(student.getUser(), cards, cardActivateDTO);
         }
 
+    }
+
+    @Override
+    public List<StudentStatisticDTO> getStudentsStatisticByGroupId(Long groupId) {
+        List<StudentStatisticDTO> statistics = new ArrayList<>();
+        Optional<StudyGroup> groupOpt = studyGroupService.findById(groupId);
+        List<Student> students;
+        if (groupOpt.isPresent() && groupOpt.get().getStudents() != null) {
+            students = groupOpt.get().getStudents();
+        } else {
+            return null;
+        }
+        for (Student student : students) {
+            StudentStatisticDTO studentStatisticDTO = new StudentStatisticDTO();
+            studentStatisticDTO.setStudentName(student.getFirstName() + " " + student.getLastName());
+            studentStatisticDTO.setErrorsReportDTO(matchResultService.getCardsErrorsAndIntervalsReport(student.getId()));
+            studentStatisticDTO.setCards(cardService.getStatsForAllIntervals(student.getId()));
+            statistics.add(studentStatisticDTO);
+        }
+        return statistics;
     }
 }

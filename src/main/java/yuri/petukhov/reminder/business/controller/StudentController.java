@@ -10,7 +10,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import yuri.petukhov.reminder.business.dto.CardActivateDTO;
+import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
+import yuri.petukhov.reminder.business.dto.StudentStatisticDTO;
 import yuri.petukhov.reminder.business.service.StudentService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,5 +34,14 @@ public class StudentController {
         log.info("activate card set " + cardActivateDTO.getCardSetName());
         studentService.activateCardSet(groupId, cardActivateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/{groupId}/statistics")
+    @Operation(summary = "Получение статистики по студентам группы")
+    public ResponseEntity<List<StudentStatisticDTO>> getStudentsStatisticByGroupId(
+            @PathVariable Long groupId,
+            Authentication authentication) {
+        log.info("get students statistics of the group " + groupId);
+        return ResponseEntity.ok().body(studentService.getStudentsStatisticByGroupId(groupId));
     }
 }

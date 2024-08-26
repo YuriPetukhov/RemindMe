@@ -82,32 +82,6 @@ let currentGroupId;
     createFolder(folderName, parentFolderId);
   });
 
-  function loadStudentStatistics() {
-    $.ajax({
-      url: "/teacher/student/intervals/stats",
-      type: "GET",
-      dataType: "json",
-      success: function (data) {
-        handleProgressData(data, "#statsTableBody05");
-      },
-      error: function (error) {
-        console.error("Ошибка загрузки статистики:", error);
-      },
-    });
-
-    $.ajax({
-      url: "/teacher/students/reports",
-      type: "GET",
-      dataType: "json",
-      success: function (data) {
-        handleReportData(data, "#statsTableBody06");
-      },
-      error: function (error) {
-        console.error("Ошибка загрузки отчета по ошибкам:", error);
-      },
-    });
-  }
-
   $(".menu__link").click(function (e) {
     e.preventDefault();
     closeAllTeacherContainers();
@@ -120,7 +94,8 @@ let currentGroupId;
       $("#addStudyGroupTeacherContainer").show();
       loadTeacherStudyingGroups();
     } else if (target === "/students-statistics") {
-      $("#").show();
+      $("#studentStatsTable").show();
+//      loadStudyGroupsNamesAndIds();
     } else if (target === "#addCardSet") {
       $("#addCardSetFormContainer").show();
       $("#addCardSetForm").show();
@@ -134,7 +109,7 @@ let currentGroupId;
     $("#" + tabName).show();
   });
 
-    $(document).on("click", ".teacher-study-group", function() {
+  $(document).on("click", ".teacher-study-group", function() {
         console.log("Clicked on .teacher-study-group");
         closeAllTeacherContainers();
         let groupId = $(this).data("group-id");
@@ -146,18 +121,18 @@ let currentGroupId;
         }
     });
 
-    $("#editGroupButton").on("click", function() {
+  $("#editGroupButton").on("click", function() {
       $("#editGroupForm").show();
       $("#detailGroupName").hide();
       $("#detailGroupDescription").hide();
     });
 
-    $("#saveGroupButton").on("click", function() {
+  $("#saveGroupButton").on("click", function() {
       let groupId = $("#editGroupForm").data("group-id");
       saveGroupDetails(groupId);
     });
 
-    $(document).on("click", ".select-activate-btn", function() {
+  $(document).on("click", ".select-activate-btn", function() {
         const cardSetName = $(this).data("card-set-name");
 
         $("#selectedCardSetName").val(cardSetName);
@@ -166,8 +141,9 @@ let currentGroupId;
         $("#activateFormContainer").show();
     });
 
-    loadTeacherCardSets();
-    loadTeacherStudyingGroups();
+  loadTeacherCardSets();
+  loadTeacherStudyingGroups();
+
 });
 
 function closeAllTeacherContainers() {
@@ -183,146 +159,7 @@ function closeAllTeacherContainers() {
   $("#cardSetsContainer").hide();
   $("#groupDetailsContainer").hide();
   $("#activateFormContainer").hide();
-}
-
-function handleProgressData(progressData, tableBodyId) {
-  const intervals = [
-    "20 minutes",
-    "1 hour",
-    "4 hours",
-    "8 hours",
-    "24 hours",
-    "48 hours",
-    "96 hours",
-    "14 days",
-    "30 days",
-    "60 days",
-  ];
-
-  let statsHtml = intervals
-    .map((interval, index) => {
-      const completedWords = progressData[index];
-      const totalWords = progressData[progressData.length - 2];
-      const percentage =
-        totalWords > 0 ? (completedWords / totalWords) * 100 : 0;
-      const progressBarColor = getProgressBarColor(percentage);
-      return `
-                        <tr>
-                            <td>${interval}</td>
-                            <td>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar" style="width: ${percentage}%; background-color: ${progressBarColor};">
-                                        ${Math.round(percentage)}% (${completedWords}/${totalWords})
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-    })
-    .join("");
-
-  const totalWords = progressData[progressData.length - 2];
-  const finishedWords = progressData[progressData.length - 1];
-  statsHtml += `
-                    <tr>
-                        <td>Total</td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar" style="width: 100%; background-color: green;">${totalWords}</div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Finished</td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar" style="width: ${(finishedWords / totalWords) * 100}%; background-color: ${getProgressBarColor((finishedWords / totalWords) * 100)};">
-                                    ${finishedWords}
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-
-  $(tableBodyId).html(statsHtml);
-}
-
-function handleReportData(reportData, tableBodyId) {
-  const intervals = [
-    "20 minutes",
-    "1 hour",
-    "4 hours",
-    "8 hours",
-    "24 hours",
-    "48 hours",
-    "96 hours",
-    "14 days",
-    "30 days",
-    "60 days",
-  ];
-
-  let tableHtml = "";
-  let totalAttempts = 0;
-  let totalErrors = 0;
-
-  reportData.forEach(function (report, index) {
-    const errorPercentage =
-      report.attemptsCount > 0
-        ? (report.errorCount / report.attemptsCount) * 100
-        : 0;
-    const errorIndicatorColor = getErrorIndicatorColor(errorPercentage);
-    tableHtml += `
-                        <tr>
-                            <td>${intervals[index]}</td>
-                            <td>${report.attemptsCount}</td>
-                            <td>
-                                <div class="error-indicator" style="width: ${errorPercentage}%; background-color: ${errorIndicatorColor};">
-                                    ${report.errorCount} (${Math.round(errorPercentage)}%)
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-    totalAttempts += report.attemptsCount;
-    totalErrors += report.errorCount;
-  });
-
-  const totalErrorPercentage =
-    totalAttempts > 0 ? (totalErrors / totalAttempts) * 100 : 0;
-  tableHtml += `
-                    <tr>
-                        <td>Total</td>
-                        <td>${totalAttempts}</td>
-                        <td>
-                            <div class="error-indicator" style="width: ${totalErrorPercentage}%; background-color: ${getErrorIndicatorColor(totalErrorPercentage)};">
-                                ${totalErrors} (${Math.round(totalErrorPercentage)}%)
-                            </div>
-                        </td>
-                    </tr>
-                `;
-
-  $(tableBodyId).html(tableHtml);
-}
-
-function getProgressBarColor(percentage) {
-  if (percentage >= 75) {
-    return "green";
-  } else if (percentage >= 50) {
-    return "orange";
-  } else if (percentage > 0) {
-    return "red";
-  } else {
-    return "grey";
-  }
-}
-
-function getErrorIndicatorColor(errorPercentage) {
-  if (errorPercentage === 0) {
-    return "green";
-  } else if (errorPercentage <= 5) {
-    return "orange";
-  } else {
-    return "red";
-  }
+  $("#studentStatsTable").hide();
 }
 
 function loadTeacherCardSets() {
@@ -542,3 +379,45 @@ function activateCardSet() {
         }
     });
 }
+
+//function loadStudentsStatistics(groupId) {
+//    $.ajax({
+//      url: "/student/" + groupId + "/statistics",
+//      type: "GET",
+//      dataType: "json",
+//      success: function (data) {
+//        handleProgressData(data, "#statsTableBody09");
+//      },
+//      error: function (error) {
+//        console.error("Ошибка загрузки статистики:", error);
+//      },
+//    });
+//}
+
+//function loadStudyGroupsNamesAndIds() {
+//    $.ajax({
+//        url: "/study-group/all",
+//        type: "GET",
+//        dataType: "json",
+//        success: function(groups) {
+//            const container = $("#studyGroupsButtonsContainer");
+//            container.empty(); // Очистить контейнер перед добавлением новых кнопок
+//
+//            // Создаем кнопку для каждой группы
+//            groups.forEach(function(group) {
+//                const button = $('<button>')
+//                    .addClass('group-button')
+//                    .text(group.groupName) // Текст кнопки — название группы
+//                    .attr('data-group-id', group.groupId) // Присваиваем ID группы в data атрибут
+//                    .on('click', function() {
+//                        const groupId = $(this).data('group-id'); // Получаем ID группы при нажатии
+//                        loadGroupStatistics(groupId); // Загружаем статистику для выбранной группы
+//                    });
+//                container.append(button); // Добавляем кнопку в контейнер
+//            });
+//        },
+//        error: function(error) {
+//            console.error("Ошибка при загрузке групп:", error);
+//        }
+//    });
+//}
