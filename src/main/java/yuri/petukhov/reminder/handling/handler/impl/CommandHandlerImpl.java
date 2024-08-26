@@ -52,7 +52,7 @@ public class CommandHandlerImpl implements CommandHandler {
 
     @Override
     public void handle(CommandEntity commandEntity) {
-        CommandToRun commandToRun = commandMap.get(commandEntity.getMessageText().toUpperCase());
+        CommandToRun commandToRun = commandMap.get(commandEntity.getMessageText().toLowerCase());
         if (commandToRun != null) {
             commandToRun.run(commandEntity);
         } else {

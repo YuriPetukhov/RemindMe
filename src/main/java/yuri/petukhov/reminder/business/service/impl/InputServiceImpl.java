@@ -9,6 +9,7 @@ import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
 import yuri.petukhov.reminder.business.enums.UserCardInputState;
+import yuri.petukhov.reminder.business.exception.CardNotFoundException;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.User;
 import yuri.petukhov.reminder.business.service.*;
@@ -46,8 +47,13 @@ public class InputServiceImpl implements InputService {
     public void createInputWordMessage(CommandEntity commandEntity) {
         Long chatId = commandEntity.getChatId();
         User user = userService.findUserByChatId(commandEntity.getChatId()).orElseThrow();
-        userService.setCardInputState(user, UserCardInputState.WORD);
-        menuMessageCreator.createInputWordMessage(chatId);
+        Optional<Card> cardOpt = cardService.findActiveCardByUserId(commandEntity.getUserId());
+        if (cardOpt.isEmpty()) {
+            userService.setCardInputState(user, UserCardInputState.WORD);
+            menuMessageCreator.createInputWordMessage(chatId);
+        } else {
+            menuMessageCreator.createNoNewWordsMessage(chatId);
+        }
     }
 
     /**
@@ -162,8 +168,8 @@ public class InputServiceImpl implements InputService {
         log.info("findActiveCard() is started");
         Optional<Card> cardOpt = cardService.findActiveCardByUserId(userId);
         if (cardOpt.isEmpty()) {
-            log.info("An active card was not detected");
-            throw new NoSuchElementException();
+            log.info("No active card detected");
+            throw new CardNotFoundException("No active card detected");
         }
         return cardOpt.get();
     }

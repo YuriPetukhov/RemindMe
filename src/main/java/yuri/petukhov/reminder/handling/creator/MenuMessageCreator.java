@@ -43,4 +43,6 @@ public interface MenuMessageCreator {
     void createLastNameMessage(Long chatId);
 
     void createAlreadyAddedMessage(Long chatId);
+
+    void createNoNewWordsMessage(Long chatId);
 }
