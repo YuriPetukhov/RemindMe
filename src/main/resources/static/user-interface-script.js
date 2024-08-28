@@ -591,21 +591,17 @@ let socket2 = new SockJS("/ws/recall");
 let stompClient2 = Stomp.over(socket2);
 
 stompClient2.connect({}, function (frame) {
-  console.log("Connected: " + frame);
-
-  stompClient2.subscribe("/topic/recall", function (message) {
+  const userId = getUserIdFromFrame(frame);
+  stompClient2.subscribe(`/user/${userId}/queue/recall`, function (message) {
     console.log("New message received:", message.body);
-
-    const messageContent = message.body.toLowerCase();
-    console.log("message is ", messageContent);
-
-    if (messageContent.startsWith("questions remain")) {
-      displayQuestion(message.body);
-    } else {
-      displayResponse(message.body);
-    }
+    handleMessage(message.body);
   });
 });
+
+function getUserIdFromFrame(frame) {
+  return JSON.parse(frame.headers['user-name']);
+}
+
 
 function displayQuestion(question) {
   const questionBoard = document.getElementById("questionBoard");
