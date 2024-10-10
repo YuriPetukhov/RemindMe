@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
@@ -16,6 +17,7 @@ import yuri.petukhov.reminder.business.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -133,7 +135,6 @@ class CardServiceImplTest {
     }
 
 
-
     @Test
     @DisplayName("Test finding a card by User ID - successful case")
     void findActiveCardByUserId() {
@@ -200,15 +201,15 @@ class CardServiceImplTest {
         card.setUser(user);
         card.setRecallMode(RecallMode.RECALL);
 
-        when(cardRepository.findFirstByUserIdAndRecallMode(user.getId(), RecallMode.RECALL))
-                .thenReturn(Optional.of(card));
+        when(cardRepository.findRecallCardWithSmallestInterval(user.getId(), PageRequest.of(0, 1)))
+                .thenReturn(Collections.singletonList(card));
 
         Optional<Card> foundCard = cardService.findCardForRecallMode(user.getId());
 
         assertTrue(foundCard.isPresent());
         assertEquals(card, foundCard.get());
 
-        verify(cardRepository).findFirstByUserIdAndRecallMode(user.getId(), RecallMode.RECALL);
+        verify(cardRepository).findRecallCardWithSmallestInterval(user.getId(), PageRequest.of(0, 1));
     }
 
 
