@@ -44,6 +44,10 @@ public class CommandHandlerImpl implements CommandHandler {
             log.info("Received command /ADD");
             inputService.createInputWordMessage(commandEntity);
         });
+        commandMap.put(Command.TEACHER.getName(), (commandEntity) -> {
+            log.info("Received command /TEACHER");
+            inputService.createTeacherRoleAddedMessage(commandEntity);
+        });
         commandMap.put(Command.STUDENT.getName(), (commandEntity) -> {
             log.info("Received command /STUDENT");
             inputService.promptGroupJoinCode(commandEntity);

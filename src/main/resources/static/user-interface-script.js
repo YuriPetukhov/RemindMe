@@ -414,7 +414,7 @@ function handleProgressData(progressData, tableBodyId) {
                             <td>Finished</td>
                             <td>
                                 <div class="progress-bar-container">
-                                    <div class="progress-bar" style="width: ${(finishedWords / totalWords) * 100}%; background-color: ${getProgressBarColor((finishedWords / totalWords) * 100)};">
+                                    <div class="progress-bar-finished" style="width: 100%; background-color: black;">
                                         ${finishedWords}
                                     </div>
                                 </div>

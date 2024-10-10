@@ -5,11 +5,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import yuri.petukhov.reminder.business.dto.CardDTO;
 import yuri.petukhov.reminder.business.dto.ErrorsReportDTO;
 import yuri.petukhov.reminder.business.service.AdminService;
+import yuri.petukhov.reminder.business.service.CardService;
 
 import java.util.List;
 
@@ -20,6 +24,7 @@ import java.util.List;
 @PreAuthorize(value = "hasRole('ADMIN')")
 public class AdminController {
     private final AdminService adminService;
+    private final CardService cardService;
 
     @GetMapping("/users/intervals/stats")
     @Operation(summary = "Получить статистику карточек пользователя для всех интервалов")
@@ -32,4 +37,5 @@ public class AdminController {
     public ResponseEntity<List<ErrorsReportDTO>> getCardsErrorsAndIntervalsReport() {
         return ResponseEntity.ok().body(adminService.getCardsErrorsAndIntervalsReport());
     }
+
 }

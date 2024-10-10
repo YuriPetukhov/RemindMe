@@ -191,8 +191,9 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Optional<Card> findCardForRecallMode(Long userId) {
-        log.info("findCardForRecallMode() is started");
-        return cardRepository.findFirstByUserIdAndRecallMode(userId, RecallMode.RECALL);
+        PageRequest pageRequest = PageRequest.of(0, 1);
+        List<Card> cards = cardRepository.findRecallCardWithSmallestInterval(userId, pageRequest);
+        return cards.isEmpty() ? Optional.empty() : Optional.of(cards.get(0));
     }
 
     /**

@@ -7,6 +7,7 @@ public enum Command {
     START("/start"),
     WEB("/web"),
     ADD("/add"),
+    TEACHER("/teacher"),
     STUDENT("/student");
 
     private final String name;

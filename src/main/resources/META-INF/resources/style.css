@@ -432,6 +432,9 @@ body {
 .stats-table tr:hover {
     background-color: var(--stats-table-hover-bg-color);
 }
+.progress-bar-finished {
+color: white;
+}
 
 /* Стиль для заголовка таблицы */
 .stats-table-title {

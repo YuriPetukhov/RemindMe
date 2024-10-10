@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import yuri.petukhov.reminder.business.dto.CardMonitoring;
-import yuri.petukhov.reminder.business.enums.CardActivity;
-import yuri.petukhov.reminder.business.enums.RecallMode;
-import yuri.petukhov.reminder.business.enums.ReminderInterval;
-import yuri.petukhov.reminder.business.enums.UserCardInputState;
+import yuri.petukhov.reminder.business.enums.*;
 import yuri.petukhov.reminder.business.exception.CardNotFoundException;
 import yuri.petukhov.reminder.business.model.Card;
 import yuri.petukhov.reminder.business.model.User;
@@ -123,6 +120,13 @@ public class InputServiceImpl implements InputService {
         User user = userService.findUserByChatId(commandEntity.getChatId()).orElseThrow();
         userService.setCardInputState(user, UserCardInputState.STUDENT);
         menuMessageCreator.createGroupJoinCodeMessage(chatId);
+    }
+
+    @Override
+    public void createTeacherRoleAddedMessage(CommandEntity commandEntity) {
+        Long userId = commandEntity.getUserId();
+        userService.addRole(userId, RoleName.ROLE_TEACHER);
+        menuMessageCreator.createTeacherRoleAddedMessage(userId);
     }
 
 

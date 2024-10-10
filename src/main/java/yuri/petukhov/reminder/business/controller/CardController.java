@@ -37,6 +37,7 @@ public class CardController {
 
     /**
      * Creates a new card for a user.
+     *
      * @param card The data for creating a card.
      * @return Status CREATED if the card is successfully created.
      */
@@ -51,25 +52,39 @@ public class CardController {
 
     /**
      * Retrieves all cards for a user with pagination.
+     *
      * @param pageNumber The page number to retrieve.
-     * @param pageSize The number of items per page.
+     * @param pageSize   The number of items per page.
      * @return A list of CardDTO objects.
      */
 
     @GetMapping("/all")
-    @Operation(summary = "Получить все карточки пользователя: указать количество и размер страницы")
+    @Operation(summary = "Получить карточки пользователя: указать id пользователя (только для админа), количество и размер страницы")
     public ResponseEntity<List<CardDTO>> getAllCards(
+            @RequestParam(value = "userId", required = false) Long userId,
             @RequestParam(value = "page") Integer pageNumber,
             @RequestParam(value = "size") Integer pageSize,
             Authentication authentication) {
-        return ResponseEntity.ok().body(cardService.getAllCardsByUserId(Long.valueOf(authentication.getName()), pageNumber, pageSize));
+
+        Long currentUserId = Long.valueOf(authentication.getName());
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin || userId == null) {
+            userId = currentUserId;
+        }
+
+        return ResponseEntity.ok().body(cardService.getAllCardsByUserId(userId, pageNumber, pageSize));
     }
+
 
     /**
      * Retrieves all cards for a user within a specific reminder interval with pagination.
-     * @param interval The reminder interval.
+     *
+     * @param interval   The reminder interval.
      * @param pageNumber The page number to retrieve.
-     * @param pageSize The number of items per page.
+     * @param pageSize   The number of items per page.
      * @return A list of CardDTO objects.
      */
 
@@ -85,6 +100,7 @@ public class CardController {
 
     /**
      * Gets the number of cards for a user within a specific reminder interval.
+     *
      * @param interval The reminder interval.
      * @return The number of cards for the specified interval.
      */
@@ -98,6 +114,7 @@ public class CardController {
 
     /**
      * Retrieves a user's card by its name.
+     *
      * @param cardName The name of the card.
      * @return A list of cards matching the name.
      */
@@ -112,6 +129,7 @@ public class CardController {
 
     /**
      * Retrieves user's cards based on their activity status.
+     *
      * @param activity The activity status of the cards.
      * @return A list of cards with the selected activity status.
      */
@@ -126,6 +144,7 @@ public class CardController {
 
     /**
      * Retrieves user's cards based on their recall mode.
+     *
      * @param mode The recall mode of the cards.
      * @return A list of cards with the selected recall mode.
      */
@@ -140,8 +159,9 @@ public class CardController {
 
     /**
      * Retrieves user's cards within a selected range of next activation interval.
+     *
      * @param startTime The start time of the interval.
-     * @param endTime The end time of the interval.
+     * @param endTime   The end time of the interval.
      * @return A list of cards within the specified interval.
      */
 
@@ -156,6 +176,7 @@ public class CardController {
 
     /**
      * Retrieves duplicates in card names or answers for a user.
+     *
      * @return A list of cards with duplicate names or answers.
      */
 
@@ -168,6 +189,7 @@ public class CardController {
 
     /**
      * Retrieves duplicates in card meanings or questions for a user.
+     *
      * @return A list of cards with duplicate meanings or questions.
      */
 
@@ -180,6 +202,7 @@ public class CardController {
 
     /**
      * Retrieves a user's card by its ID.
+     *
      * @param cardId The ID of the card.
      * @return The card with the specified ID.
      */
@@ -195,7 +218,8 @@ public class CardController {
 
     /**
      * Updates a user's card.
-     * @param cardId The ID of the card to update.
+     *
+     * @param cardId      The ID of the card to update.
      * @param updatedCard The new data for the card.
      * @return The updated card.
      */
@@ -212,6 +236,7 @@ public class CardController {
 
     /**
      * Deletes a user's card by its ID.
+     *
      * @param cardId The ID of the card to delete.
      */
 
@@ -227,6 +252,7 @@ public class CardController {
 
     /**
      * Retrieves a set of 60 random cards for a user.
+     *
      * @return A list of 60 random CardDTO objects.
      */
 
@@ -239,6 +265,7 @@ public class CardController {
 
     /**
      * Retrieves a random card for a user.
+     *
      * @return A random CardDTO object.
      */
 
@@ -248,8 +275,10 @@ public class CardController {
         log.info("user " + authentication.getName());
         return ResponseEntity.ok(cardService.getRandomCardsDTOByUserId(Long.valueOf(authentication.getName())));
     }
+
     /**
      * Retrieves statistics for all intervals of reminders.
+     *
      * @return A list of integers representing statistics for all intervals.
      */
     @GetMapping("/intervals/stats")

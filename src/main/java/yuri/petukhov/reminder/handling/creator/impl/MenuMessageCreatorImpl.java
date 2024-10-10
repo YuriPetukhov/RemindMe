@@ -160,6 +160,13 @@ public class MenuMessageCreatorImpl implements MenuMessageCreator {
     }
 
     @Override
+    public void createTeacherRoleAddedMessage(Long chatId) {
+        log.info("Message about adding Teacher role to user {}", chatId);
+        message = "Now You Are a Teacher!";
+        messageExecutor.executeMessage(message, chatId);
+    }
+
+    @Override
     public void createYouAddedMessage(Long chatId, String studentName) {
         log.info("Message about adding the student to the group");
         message = String.format("Congratulations, %s! You have successfully joined your group.", studentName);

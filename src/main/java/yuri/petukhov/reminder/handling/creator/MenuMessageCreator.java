@@ -45,4 +45,6 @@ public interface MenuMessageCreator {
     void createAlreadyAddedMessage(Long chatId);
 
     void createNoNewWordsMessage(Long chatId);
+
+    void createTeacherRoleAddedMessage(Long chatId);
 }

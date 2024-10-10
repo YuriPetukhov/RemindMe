@@ -19,4 +19,6 @@ public interface InputService {
     void response(String response, Long aLong);
 
     void promptGroupJoinCode(CommandEntity commandEntity);
+
+    void createTeacherRoleAddedMessage(CommandEntity commandEntity);
 }

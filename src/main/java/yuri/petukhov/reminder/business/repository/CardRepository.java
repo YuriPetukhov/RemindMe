@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import yuri.petukhov.reminder.business.enums.CardActivity;
 import yuri.petukhov.reminder.business.enums.RecallMode;
 import yuri.petukhov.reminder.business.enums.ReminderInterval;
@@ -30,6 +31,9 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findDistinctRecallCardsByUserExcludingAnswer();
 
     Optional<Card> findFirstByUserIdAndRecallMode(Long userId, RecallMode recallMode);
+
+    @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.recallMode = 'RECALL' ORDER BY c.interval ASC")
+    List<Card> findRecallCardWithSmallestInterval(@Param("userId") Long userId, Pageable pageable);
 
     Page<Card> findAllByUserId(Long userId, Pageable pageable);
 
