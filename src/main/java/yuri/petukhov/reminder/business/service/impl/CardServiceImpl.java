@@ -2,6 +2,7 @@ package yuri.petukhov.reminder.business.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -192,8 +193,8 @@ public class CardServiceImpl implements CardService {
     @Override
     public Optional<Card> findCardForRecallMode(Long userId) {
         PageRequest pageRequest = PageRequest.of(0, 1);
-        List<Card> cards = cardRepository.findRecallCardWithSmallestInterval(userId, pageRequest);
-        return cards.isEmpty() ? Optional.empty() : Optional.of(cards.get(0));
+        Page<Card> cards = cardRepository.findRecallCardWithSmallestInterval(userId, pageRequest);
+        return cards.stream().findFirst();
     }
 
     /**
