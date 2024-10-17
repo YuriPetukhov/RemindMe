@@ -35,6 +35,9 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.recallMode = 'RECALL' ORDER BY c.interval ASC")
     Page<Card> findRecallCardWithSmallestInterval(@Param("userId") Long userId, Pageable pageable);
 
+    @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.recallMode = 'RECALL'")
+    List<Card> findAllRecallCards(@Param("userId") Long userId);
+
     Page<Card> findAllByUserId(Long userId, Pageable pageable);
 
     @Query("SELECT c FROM cards c WHERE c.user.id = :userId AND c.interval = :interval")

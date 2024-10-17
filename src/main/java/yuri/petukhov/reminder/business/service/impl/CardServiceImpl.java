@@ -189,12 +189,10 @@ public class CardServiceImpl implements CardService {
      * @param userId The ID of the user to find the card for.
      * @return An Optional containing the card if found.
      */
-
     @Override
     public Optional<Card> findCardForRecallMode(Long userId) {
-        PageRequest pageRequest = PageRequest.of(0, 1);
-        Page<Card> cards = cardRepository.findRecallCardWithSmallestInterval(userId, pageRequest);
-        return cards.stream().findFirst();
+        List<Card> cards = cardRepository.findAllRecallCards(userId);
+        return cards.stream().min(Comparator.comparing(Card::getInterval));
     }
 
     /**
@@ -398,13 +396,7 @@ public class CardServiceImpl implements CardService {
         Card card = cardRepository.findById(cardId).orElseThrow(() ->
                 new CardNotFoundException("Card with id " + cardId + " was not found"));
 
-        CardDTO cardDTO = new CardDTO();
-        cardDTO.setId(cardId);
-        cardDTO.setTitle(card.getCardName());
-        cardDTO.setContent(card.getCardMeaning());
-        cardDTO.setReminderDateTime(card.getReminderDateTime());
-
-        return cardDTO;
+        return mapper.toCardDTO(card);
     }
 
     /**
